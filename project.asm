@@ -1,6 +1,34 @@
 
 title "Bank Account Manager"
 
+.MODEL small
+.STACK 100h
+.DATA
+    in_card_no      db  17, ?, 17 dup(' ')
+    in_pin_code     db   7, ?,  7 dup(' ')
+    
+    time            db  "Time:$"
+    timestamp       db  "00:00:00$"
+                    ;   [0]   [1]   [2]   [3]   [4]   [5]   [6]   [7]   [8]   [9]   [10]  [11]
+    _sym            db  185d, 186d, 187d, 188d, 200d, 201d, 202d, 203d, 204d, 205d, 206d, 175d                                                                      
+
+	login_accnt     db "Welcome, JC!", "$"
+	login_desc      db "Your personal bank acc't manager$"
+	login_frm_text  db "CARD NO.$", "PIN CODE$" 
+    login_frm_sel   db "[ OK ]$", "[ CANCEL ]$", "[-OK-]$", "[-CANCEL-]$"
+    
+    menu_frm_text   db  "Withdraw$", "Deposit$", "Balance$", "Reset PIN$", "Log Out$", "Details$"
+    menu_hdr        db  201d, 15 dup(205d),  187d, "$"
+    menu_frm_ftr    db  200d, 15 dup(205d), 188d, "$"
+    
+    err_blank       db  "NOT VALID INPUT$"
+    err_incorrect   db  "Incorrect! Try again.$"
+	
+    exit_msg        db "Thank you. Goodbye!$"
+    app_blank       db "                                    $"
+    app_version     db "Teller Machine © 2020 ", 179d, " v1.0$" 	
+.CODE
+
 ;**************************************************************************;
 ;------------------------------   MACRO   --------------------------------;
 ;**************************************************************************;
@@ -31,7 +59,7 @@ ENDM
 ; string printing
 prints MACRO msg
     pusha
-    mov dx, offset msg
+    lea msg
     mov ah, 9
     int 21h
     popa
@@ -63,33 +91,6 @@ alert MACRO msg
     popa
 ENDM
 
-.MODEL small
-.STACK 100h
-.DATA
-    in_card_no      db  17, ?, 17 dup(' ')
-    in_pin_code     db   7, ?,  7 dup(' ')
-    
-    time            db  "Time:$"
-    timestamp       db  "00:00:00$"
-                    ;   [0]   [1]   [2]   [3]   [4]   [5]   [6]   [7]   [8]   [9]   [10]  [11]
-    _sym            db  185d, 186d, 187d, 188d, 200d, 201d, 202d, 203d, 204d, 205d, 206d, 175d                                                                      
-
-	login_accnt     db "Welcome, JC!", "$"
-	login_desc      db "Your personal bank acc't manager$"
-	login_frm_text  db "CARD NO.$", "PIN CODE$" 
-    login_frm_sel   db "[ OK ]$", "[ CANCEL ]$", "[-OK-]$", "[-CANCEL-]$"
-    
-    menu_frm_text   db  "Withdraw$", "Deposit$", "Balance$", "Reset PIN$", "Log Out$", "Details$"
-    menu_hdr        db  201d, 15 dup(205d),  187d, "$"
-    menu_frm_ftr    db  200d, 15 dup(205d), 188d, "$"
-    
-    err_blank       db  "NOT VALID INPUT$"
-    err_incorrect   db  "Incorrect! Try again.$"
-	
-    exit_msg        db "Thank you. Goodbye!$"
-    app_blank       db "                                    $"
-    app_version     db "Teller Machine © 2020 ", 179d, " v1.0$" 	
-.CODE
 main PROC
     call setup
     
