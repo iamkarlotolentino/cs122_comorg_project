@@ -28,7 +28,6 @@ title "Bank Account Manager"
     app_blank       db "                                    $"
     app_version     db "Teller Machine © 2020 ", 179d, " v1.0$" 	
 .CODE
-
 ;**************************************************************************;
 ;------------------------------   MACRO   --------------------------------;
 ;**************************************************************************;
@@ -59,7 +58,7 @@ ENDM
 ; string printing
 prints MACRO msg
     pusha
-    lea msg
+    mov dx, offset msg
     mov ah, 9
     int 21h
     popa
