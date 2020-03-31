@@ -7,6 +7,8 @@ title "Bank Account Manager"
     in_card_no      db  17, ?, 17 dup(' ')
     in_pin_code     db   7, ?,  7 dup(' ')
     
+    balance_amnt    db  13, ?, 13 dup(' ')
+    
     time            db  "Time:$"
     timestamp       db  "00:00:00$"
                     ;   [0]   [1]   [2]   [3]   [4]   [5]   [6]   [7]   [8]   [9]   [10]  [11]
@@ -23,15 +25,18 @@ title "Bank Account Manager"
     
     err_blank       db  "NOT VALID INPUT$"
     err_incorrect   db  "Incorrect! Try again.$"
+    
+    input_text      db  "Enter amount:$"
+    input_amount    db  13, ?, 13 dup(" ")
+    input_note      db  "NOTE: Amount should be divisible by 20$"
 	
     exit_msg        db "Thank you. Goodbye!$"
     app_blank       db "                                    $"
-    app_version     db "Teller Machine © 2020 ", 179d, " v1.0$" 	
+    app_version     db "Teller Machine @ 2020 ", 179d, " v1.0$" 	
 .CODE
 ;**************************************************************************;
 ;------------------------------   MACRO   --------------------------------;
 ;**************************************************************************;
-
 cursor_at MACRO row,column
     pusha
     mov dh, row
@@ -193,7 +198,7 @@ login_page PROC
 	printc _sym[10]
 	printr _sym[9],21
 	printc _sym[0]
-                                                     
+
 	cursor_at 11,2
 	printc _sym[1]
 	cursor_at 11,4
@@ -221,19 +226,18 @@ login_page PROC
 	; listens to mouse-pos
 	keep_listening:
     	; get mouse state
-    	mov     ax, 3
-    	int     33h
+    	mov ax, 3
+    	int 33h
     	; left button click
-    	mov     ax, bx
-    	and     ax, 0000000000000001b
-    	jz      keep_listening
+    	cmp bx, 1
+    	jne keep_listening
     	; passes when left button is pressed
     	
     	; form-selected detection
-    	cmp     cx, 0080h
-    	jnge    menu_selection
-    	cmp     cx, 0126H
-    	jnle    menu_selection
+    	cmp cx, 0080h
+    	jnge menu_selection
+    	cmp cx, 0126H
+    	jnle menu_selection
     	
     	card_no:
         	cmp         dx, 0050h
@@ -272,131 +276,152 @@ login_page PROC
 login_page ENDP
 
 menu_page PROC
-    call cls                                       
-    ; al=row start
-    mov bl,   7
-    mov cl,   3
-    create_block:
-        cursor_at   bl,2
-        prints      menu_hdr
-        cursor_at   bl,20
-        prints      menu_hdr
-        inc bl
-        cursor_at   bl,2
-        printc      _sym[1]
-        cursor_at   bl,18
-        printc      _sym[1]
-        cursor_at   bl,20
-        printc      _sym[1]
-        cursor_at   bl,36
-        printc      _sym[1]
-        inc bl
-        cursor_at   bl,2
-        prints      menu_frm_ftr
-        cursor_at   bl,20
-        prints      menu_frm_ftr
-        inc bl
-        inc bl
-    loop create_block
-    
-    ; withdraw-text
-    cursor_at 8,6
-    prints menu_frm_text[0]
-    ; deposit-text
-    cursor_at 8,25
-    prints menu_frm_text[9]
-    ; balance-text
-    cursor_at 12,7
-    prints menu_frm_text[17]
-    ; reset-pin text
-    cursor_at 12,24
-    prints menu_frm_text[25]
-    ; log-out text
-    cursor_at 16,7
-    prints menu_frm_text[35]
-    ; details text
-    cursor_at 16,25
-    prints menu_frm_text[43]
-    
-    render_loop:
-    
-        ; time printing
-        lea bx,timestamp           
-        call get_time               
-        cursor_at 2,2
-        prints login_desc
-        cursor_at 4,2
-        prints time
-        cursor_at 4,8
-        prints timestamp
+    menu_start:
+        call cls                                       
+        ; al=row start
+        mov bl,   7
+        mov cl,   3
+        create_block:
+            cursor_at   bl,2
+            prints      menu_hdr
+            cursor_at   bl,20
+            prints      menu_hdr
+            inc bl
+            cursor_at   bl,2
+            printc      _sym[1]
+            cursor_at   bl,18
+            printc      _sym[1]
+            cursor_at   bl,20
+            printc      _sym[1]
+            cursor_at   bl,36
+            printc      _sym[1]
+            inc bl
+            cursor_at   bl,2
+            prints      menu_frm_ftr
+            cursor_at   bl,20
+            prints      menu_frm_ftr
+            inc bl
+            inc bl
+        loop create_block
         
-        call cls_menu
-           
-        ; get mouse state
-        mov ax, 3
-        int 33h
+        ; withdraw-text
+        cursor_at 8,6
+        prints menu_frm_text[0]
+        ; deposit-text
+        cursor_at 8,25
+        prints menu_frm_text[9]
+        ; balance-text
+        cursor_at 12,7
+        prints menu_frm_text[17]
+        ; reset-pin text
+        cursor_at 12,24
+        prints menu_frm_text[25]
+        ; log-out text
+        cursor_at 16,7
+        prints menu_frm_text[35]
+        ; details text
+        cursor_at 16,25
+        prints menu_frm_text[43]
         
-        col_1:
-            cmp cx, 0018h
-            jnge render_loop
-            cmp cx, 008Fh
-            jnle col_2
-                btn_withdraw:
+        render_loop:
+            
+            ; time printing
+            lea bx,timestamp           
+            call get_time               
+            cursor_at 2,2
+            prints login_desc
+            cursor_at 4,2
+            prints time
+            cursor_at 4,8
+            prints timestamp
+            
+            call cls_menu
+    
+            ; get mouse state
+            mov ax, 3
+            int 33h
+            
+            col_1:
+                cmp cx, 0018h
+                jnge render_loop
+                cmp cx, 008Fh
+                jnle col_2
+                    btn_withdraw:
+                        cmp dx, 0040h
+                        jnge render_loop
+                        cmp dx, 0047h
+                        jnle btn_balance
+                        cursor_at 8,3
+                        printc _sym[11]
+                        cmp bx, 1
+                        jne render_loop
+                        ; withdraw process
+                        call input_page
+                        jmp menu_start
+                    btn_balance:
+                        cmp dx, 0060h
+                        jnge render_loop
+                        cmp dx, 0067h
+                        jnle btn_logout
+                        cursor_at 12,3
+                        printc _sym[11]
+                        jmp render_loop
+                    btn_logout:
+                        cmp dx, 0080h
+                        jnge render_loop
+                        cmp dx, 0087h
+                        jnle render_loop
+                        cursor_at 16,3
+                        printc _sym[11]
+                        jmp render_loop
+                jmp render_loop
+            col_2:
+                btn_deposit:
                     cmp dx, 0040h
                     jnge render_loop
                     cmp dx, 0047h
-                    jnle btn_balance
-                    cursor_at 8,3
+                    jnle btn_reset_pin
+                    cursor_at 8,21
                     printc _sym[11]
                     jmp render_loop
-                btn_balance:
+                btn_reset_pin:
                     cmp dx, 0060h
                     jnge render_loop
                     cmp dx, 0067h
-                    jnle btn_logout
-                    cursor_at 12,3
+                    jnle btn_details
+                    cursor_at 12,21
                     printc _sym[11]
                     jmp render_loop
-                btn_logout:
+                btn_details:
                     cmp dx, 0080h
                     jnge render_loop
                     cmp dx, 0087h
                     jnle render_loop
-                    cursor_at 16,3
+                    cursor_at 16,21
                     printc _sym[11]
                     jmp render_loop
             jmp render_loop
-        col_2:
-            btn_deposit:
-                cmp dx, 0040h
-                jnge render_loop
-                cmp dx, 0047h
-                jnle btn_reset_pin
-                cursor_at 8,21
-                printc _sym[11]
-                jmp render_loop
-            btn_reset_pin:
-                cmp dx, 0060h
-                jnge render_loop
-                cmp dx, 0067h
-                jnle btn_details
-                cursor_at 12,21
-                printc _sym[11]
-                jmp render_loop
-            btn_details:
-                cmp dx, 0080h
-                jnge render_loop
-                cmp dx, 0087h
-                jnle render_loop
-                cursor_at 16,21
-                printc _sym[11]
-                jmp render_loop
-        jmp render_loop
-    ; stopper 
+        ; pause 
+        mov ah, 1
+        int 21h
+    ret
+menu_page ENDP
+
+input_page PROC
+    call cls
+    cursor_at 9,11
+    prints input_text
+    cursor_at 12,11
+    printr '-',12
+    cursor_at 15,1
+    prints input_note 
+    cursor_at 11,11
+    reads input_amount
+    ; pause
     mov ah, 1
     int 21h
     ret
-menu_page ENDP
+input_page ENDP
 
 cls_menu PROC
     ; withdraw
@@ -464,7 +489,7 @@ get_time PROC
     mov al, dh                    
     call to_ascii                
     mov [bx+6], ax               
-                                                 
+
     pop cx
     pop ax  
 
