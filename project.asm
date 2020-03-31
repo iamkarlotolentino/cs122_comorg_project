@@ -8,13 +8,14 @@ title "Bank Account Manager"
     in_pin_code     db   7, ?,  7 dup(' ')
     
     balance_amnt    db  13, ?, 13 dup(' ')
+    input_amount    db  13, ?, 13 dup(" ")
     
     time            db  "Time:$"
     timestamp       db  "00:00:00$"
                     ;   [0]   [1]   [2]   [3]   [4]   [5]   [6]   [7]   [8]   [9]   [10]  [11]
     _sym            db  185d, 186d, 187d, 188d, 200d, 201d, 202d, 203d, 204d, 205d, 206d, 175d                                                                      
 
-	login_accnt     db "Welcome, JC!", "$"
+	login_accnt     db "Welcome, JC!$"
 	login_desc      db "Your personal bank acc't manager$"
 	login_frm_text  db "CARD NO.$", "PIN CODE$" 
     login_frm_sel   db "[ OK ]$", "[ CANCEL ]$", "[-OK-]$", "[-CANCEL-]$"
@@ -27,7 +28,6 @@ title "Bank Account Manager"
     err_incorrect   db  "Incorrect! Try again.$"
     
     input_text      db  "Enter amount:$"
-    input_amount    db  13, ?, 13 dup(" ")
     input_note      db  "NOTE: Amount should be divisible by 20$"
 	
     exit_msg        db "Thank you. Goodbye!$"
@@ -121,12 +121,17 @@ main PROC
 main ENDP
 
 setup PROC
-    ; data segment address
-    mov ax, @data
-	mov ds, ax
+    ; set video mode
+	mov al, 00h
+	mov ah, 0
+	int 10h
 	
-	mov ax, 1003h ; disable blinking.  
-    mov bx, 0        
+	;mov ax, 1003h ; disable blinking.  
+    ;mov bx, 0        
+    ;int 10h
+    
+    mov ch, 32
+    mov ah, 1
     int 10h
     
     ; hide text cursor:
@@ -141,11 +146,10 @@ setup PROC
 	; display mouse cursor:
     mov ax, 1
     int 33h
-	
-	; set video mode
-	mov al, 00h
-	mov ah, 0
-	int 10h
+    
+    ; data segment address
+    mov ax, @data
+	mov ds, ax
 	
 	call cls
     ret   
