@@ -2,7 +2,7 @@ EMU8086 GENERATED LISTING. MACHINE CODE <- SOURCE.
  
 project.exe_ -- emu8086 assembler version: 4.08  
  
-[ 03/04/2020  --  11:11:02 pm ] 
+[ 03/04/2020  --  11:22:10 pm ] 
  
 ===================================================================================================
 [LINE]     LOC: MACHINE CODE                          SOURCE
@@ -45,12 +45,12 @@ project.exe_ -- emu8086 assembler version: 4.08
 [  27]    019E: B9 BA BB BC C8 C9 CA CB CC CD CE AF   _sym            db  185d, 186d, 187d, 188d, 200d, 201d, 202d, 203d, 204d, 205d, 206d, 175d
                                                     
 [  28]        :                                       
-[  29]    01AA: 57 65 6C 63 6F 6D 65 2C 20 4A 43 21   	login_accnt     db "Welcome, JC!$"
+[  29]    01AA: 57 65 6C 63 6F 6D 65 2C 20 4A 43 21   login_accnt     db "Welcome, JC!$"
                 24                                  
-[  30]    01B7: 59 6F 75 72 20 70 65 72 73 6F 6E 61   	login_desc      db "Your personal bank acc't manager$"
+[  30]    01B7: 59 6F 75 72 20 70 65 72 73 6F 6E 61   login_desc      db "Your personal bank acc't manager$"
                 6C 20 62 61 6E 6B 20 61 63 63 27 74 
                 20 6D 61 6E 61 67 65 72 24          
-[  31]    01D8: 43 41 52 44 20 4E 4F 2E 24 50 49 4E   	login_frm_text  db "CARD NO.$", "PIN CODE$"
+[  31]    01D8: 43 41 52 44 20 4E 4F 2E 24 50 49 4E   login_frm_text  db "CARD NO.$", "PIN CODE$"
                 20 43 4F 44 45 24                   
 [  32]    01EA: 5B 20 4F 4B 20 5D 24 5B 20 43 41 4E   login_frm_sel   db "[ OK ]$", "[ CANCEL ]$"
                 43 45 4C 20 5D 24                   
@@ -79,7 +79,7 @@ project.exe_ -- emu8086 assembler version: 4.08
                 20 73 68 6F 75 6C 64 20 62 65 20 64 
                 69 76 69 73 69 62 6C 65 20 62 79 20 
                 32 30 24                            
-[  44]        :                                       	
+[  44]        :                                       
 [  45]    02D1: 54 68 61 6E 6B 20 79 6F 75 2E 20 47   exit_msg        db "Thank you. Goodbye!$"
                 6F 6F 64 62 79 65 21 24             
 [  46]    02E5: 54 65 6C 6C 65 72 20 4D 61 63 68 69   app_version     db "Teller Machine @ 2020 ", 179d, " v1.0$"
@@ -122,14 +122,14 @@ project.exe_ -- emu8086 assembler version: 4.08
 [  81]        :                                       ; data segment address
 [  82]    0354: BA 10 00                              mov            dx, @data
 [  83]    0357: 8E DA                                 mov            ds, dx
-[  84]    0359: 8E C2                                 	                mov            es, dx
+[  84]    0359: 8E C2                                 mov            es, dx
 [  85]        :                                       
 [  86]        :                                       ; set video mode
-[  87]    035B: B0 00                                 	mov            al, 00h
-[  88]    035D: B4 00                                 	mov            ah, 00h
-[  89]    035F: CD 10                                 	int            10h
-[  90]        :                                       	
-[  91]        :                                       	; disable blinking
+[  87]    035B: B0 00                                 mov            al, 00h
+[  88]    035D: B4 00                                 mov            ah, 00h
+[  89]    035F: CD 10                                 int            10h
+[  90]        :                                       
+[  91]        :                                       ; disable blinking
 [  92]    0361: B8 03 10                              mov            ax, 1003h
 [  93]    0364: BB 00 00                              mov            bx, 00h
 [  94]    0367: CD 10                                 int            10h
@@ -138,12 +138,12 @@ project.exe_ -- emu8086 assembler version: 4.08
 [  97]    0369: B5 32                                 mov            ch, 32h
 [  98]    036B: B4 01                                 mov            ah, 01h
 [  99]    036D: CD 10                                 int            10h
-[ 100]        :                                       	
-[ 101]        :                                       	; initialize mouse
-[ 102]    036F: B8 00 00                              	mov            ax, 00h
-[ 103]    0372: CD 33                                 	int            33h
-[ 104]        :                                       	
-[ 105]        :                                       	; display mouse cursor:
+[ 100]        :                                       
+[ 101]        :                                       ; initialize mouse
+[ 102]    036F: B8 00 00                              mov            ax, 00h
+[ 103]    0372: CD 33                                 int            33h
+[ 104]        :                                       
+[ 105]        :                                       ; display mouse cursor:
 [ 106]    0374: B8 01 00                              mov            ax, 01h
 [ 107]    0377: CD 33                                 int            33h
 [ 108]        :                                       
@@ -192,9 +192,9 @@ project.exe_ -- emu8086 assembler version: 4.08
 [ 151]    03B8: B4 3E                                 mov            ah, 3Eh
 [ 152]    03BA: 8B 1E 67 00                           mov            bx, fhandle
 [ 153]    03BE: C3                                    ret
-[ 154]    03BF:                                       	fileerr:
-[ 155]    03BF: BA 79 01 B4 09 CD 21                  	    prints         err_file404
-[ 156]    03C6: E8 90 05                              	    call           sys_exit
+[ 154]    03BF:                                       fileerr:
+[ 155]    03BF: BA 79 01 B4 09 CD 21                  prints         err_file404
+[ 156]    03C6: E8 90 05                              call           sys_exit
 [ 157]        :                                       setup ENDP
 [ 158]        :                                       
 [ 159]        :                                       ;---------------------- LOGIN PAGE PROC -------------------------;
@@ -202,99 +202,99 @@ project.exe_ -- emu8086 assembler version: 4.08
 [ 161]        :                                       ; selection form printing
 [ 162]    03C9: B6 03 B2 02 B7 00 B4 02 CD 10         cursor_at      3,2
 [ 163]    03D3: 8A 16 A3 00 B4 02 CD 21               printc         _sym[5]
-[ 164]    03DB: B1 22 8A 16 A7 00 B4 02 CD 21 E2 F6   	                printr         _sym[9],34
+[ 164]    03DB: B1 22 8A 16 A7 00 B4 02 CD 21 E2 F6   printr         _sym[9],34
                                                     
-[ 165]    03E7: 8A 16 A0 00 B4 02 CD 21               	printc         _sym[2]
-[ 166]        :                                       	
-[ 167]    03EF: B6 04 B2 02 B7 00 B4 02 CD 10         	cursor_at      4,2
-[ 168]    03F9: 8A 16 9F 00 B4 02 CD 21               	printc         _sym[1]
-[ 169]    0401: B6 04 B2 25 B7 00 B4 02 CD 10         	cursor_at      4,37
-[ 170]    040B: 8A 16 9F 00 B4 02 CD 21               	printc         _sym[1]
-[ 171]    0413: B6 04 B2 04 B7 00 B4 02 CD 10         	cursor_at      4,4
-[ 172]    041D: BA AA 00 B4 09 CD 21                  	prints         login_accnt
-[ 173]        :                                       	
-[ 174]    0424: B6 05 B2 02 B7 00 B4 02 CD 10         	cursor_at      5,2
-[ 175]    042E: 8A 16 9F 00 B4 02 CD 21               	printc         _sym[1]
-[ 176]    0436: B6 05 B2 25 B7 00 B4 02 CD 10         	cursor_at      5,37
-[ 177]    0440: 8A 16 9F 00 B4 02 CD 21               	printc         _sym[1]
-[ 178]    0448: B6 05 B2 04 B7 00 B4 02 CD 10         	cursor_at      5,4
-[ 179]    0452: BA B7 00 B4 09 CD 21                  	prints         login_desc
-[ 180]        :                                       	
-[ 181]    0459: B6 06 B2 02 B7 00 B4 02 CD 10         	cursor_at      6,2
-[ 182]    0463: 8A 16 A2 00 B4 02 CD 21               	printc         _sym[4]
-[ 183]    046B: B1 22 8A 16 A7 00 B4 02 CD 21 E2 F6   	printr         _sym[9],34
+[ 165]    03E7: 8A 16 A0 00 B4 02 CD 21               printc         _sym[2]
+[ 166]        :                                       
+[ 167]    03EF: B6 04 B2 02 B7 00 B4 02 CD 10         cursor_at      4,2
+[ 168]    03F9: 8A 16 9F 00 B4 02 CD 21               printc         _sym[1]
+[ 169]    0401: B6 04 B2 25 B7 00 B4 02 CD 10         cursor_at      4,37
+[ 170]    040B: 8A 16 9F 00 B4 02 CD 21               printc         _sym[1]
+[ 171]    0413: B6 04 B2 04 B7 00 B4 02 CD 10         cursor_at      4,4
+[ 172]    041D: BA AA 00 B4 09 CD 21                  prints         login_accnt
+[ 173]        :                                       
+[ 174]    0424: B6 05 B2 02 B7 00 B4 02 CD 10         cursor_at      5,2
+[ 175]    042E: 8A 16 9F 00 B4 02 CD 21               printc         _sym[1]
+[ 176]    0436: B6 05 B2 25 B7 00 B4 02 CD 10         cursor_at      5,37
+[ 177]    0440: 8A 16 9F 00 B4 02 CD 21               printc         _sym[1]
+[ 178]    0448: B6 05 B2 04 B7 00 B4 02 CD 10         cursor_at      5,4
+[ 179]    0452: BA B7 00 B4 09 CD 21                  prints         login_desc
+[ 180]        :                                       
+[ 181]    0459: B6 06 B2 02 B7 00 B4 02 CD 10         cursor_at      6,2
+[ 182]    0463: 8A 16 A2 00 B4 02 CD 21               printc         _sym[4]
+[ 183]    046B: B1 22 8A 16 A7 00 B4 02 CD 21 E2 F6   printr         _sym[9],34
                                                     
-[ 184]    0477: 8A 16 A1 00 B4 02 CD 21               	printc         _sym[3]
-[ 185]        :                                       	
-[ 186]    047F: B6 08 B2 02 B7 00 B4 02 CD 10         	cursor_at      8,2
-[ 187]    0489: 8A 16 A3 00 B4 02 CD 21               	printc         _sym[5]
-[ 188]    0491: B1 0C 8A 16 A7 00 B4 02 CD 21 E2 F6   	printr         _sym[9],12
+[ 184]    0477: 8A 16 A1 00 B4 02 CD 21               printc         _sym[3]
+[ 185]        :                                       
+[ 186]    047F: B6 08 B2 02 B7 00 B4 02 CD 10         cursor_at      8,2
+[ 187]    0489: 8A 16 A3 00 B4 02 CD 21               printc         _sym[5]
+[ 188]    0491: B1 0C 8A 16 A7 00 B4 02 CD 21 E2 F6   printr         _sym[9],12
                                                     
-[ 189]    049D: 8A 16 A5 00 B4 02 CD 21               	printc         _sym[7]
-[ 190]    04A5: B1 15 8A 16 A7 00 B4 02 CD 21 E2 F6   	printr         _sym[9],21
+[ 189]    049D: 8A 16 A5 00 B4 02 CD 21               printc         _sym[7]
+[ 190]    04A5: B1 15 8A 16 A7 00 B4 02 CD 21 E2 F6   printr         _sym[9],21
                                                     
-[ 191]    04B1: 8A 16 A0 00 B4 02 CD 21               	printc         _sym[2]
-[ 192]        :                                       	
-[ 193]    04B9: B6 09 B2 02 B7 00 B4 02 CD 10         	cursor_at      9,2
-[ 194]    04C3: 8A 16 9F 00 B4 02 CD 21               	printc         _sym[1]
-[ 195]    04CB: B6 09 B2 0F B7 00 B4 02 CD 10         	cursor_at      9,15
-[ 196]    04D5: 8A 16 9F 00 B4 02 CD 21               	printc         _sym[1]
-[ 197]    04DD: B6 09 B2 25 B7 00 B4 02 CD 10         	cursor_at      9,37
-[ 198]    04E7: 8A 16 9F 00 B4 02 CD 21               	printc         _sym[1]
-[ 199]    04EF: B6 09 B2 04 B7 00 B4 02 CD 10         	cursor_at      9,4
-[ 200]    04F9: BA D8 00 B4 09 CD 21                  	prints         login_frm_text[0]
-[ 201]        :                                       	
-[ 202]    0500: B6 0A B2 02 B7 00 B4 02 CD 10         	cursor_at      10,2
-[ 203]    050A: 8A 16 A6 00 B4 02 CD 21               	printc         _sym[8]
-[ 204]    0512: B1 0C 8A 16 A7 00 B4 02 CD 21 E2 F6   	printr         _sym[9],12
+[ 191]    04B1: 8A 16 A0 00 B4 02 CD 21               printc         _sym[2]
+[ 192]        :                                       
+[ 193]    04B9: B6 09 B2 02 B7 00 B4 02 CD 10         cursor_at      9,2
+[ 194]    04C3: 8A 16 9F 00 B4 02 CD 21               printc         _sym[1]
+[ 195]    04CB: B6 09 B2 0F B7 00 B4 02 CD 10         cursor_at      9,15
+[ 196]    04D5: 8A 16 9F 00 B4 02 CD 21               printc         _sym[1]
+[ 197]    04DD: B6 09 B2 25 B7 00 B4 02 CD 10         cursor_at      9,37
+[ 198]    04E7: 8A 16 9F 00 B4 02 CD 21               printc         _sym[1]
+[ 199]    04EF: B6 09 B2 04 B7 00 B4 02 CD 10         cursor_at      9,4
+[ 200]    04F9: BA D8 00 B4 09 CD 21                  prints         login_frm_text[0]
+[ 201]        :                                       
+[ 202]    0500: B6 0A B2 02 B7 00 B4 02 CD 10         cursor_at      10,2
+[ 203]    050A: 8A 16 A6 00 B4 02 CD 21               printc         _sym[8]
+[ 204]    0512: B1 0C 8A 16 A7 00 B4 02 CD 21 E2 F6   printr         _sym[9],12
                                                     
-[ 205]    051E: 8A 16 A8 00 B4 02 CD 21               	printc         _sym[10]
-[ 206]    0526: B1 15 8A 16 A7 00 B4 02 CD 21 E2 F6   	printr         _sym[9],21
+[ 205]    051E: 8A 16 A8 00 B4 02 CD 21               printc         _sym[10]
+[ 206]    0526: B1 15 8A 16 A7 00 B4 02 CD 21 E2 F6   printr         _sym[9],21
                                                     
-[ 207]    0532: 8A 16 9E 00 B4 02 CD 21               	printc         _sym[0]
+[ 207]    0532: 8A 16 9E 00 B4 02 CD 21               printc         _sym[0]
 [ 208]        :                                       
-[ 209]    053A: B6 0B B2 02 B7 00 B4 02 CD 10         	cursor_at      11,2
-[ 210]    0544: 8A 16 9F 00 B4 02 CD 21               	printc         _sym[1]
-[ 211]    054C: B6 0B B2 04 B7 00 B4 02 CD 10         	cursor_at      11,4
-[ 212]    0556: BA E1 00 B4 09 CD 21                  	prints         login_frm_text[9]
-[ 213]    055D: B6 0B B2 0F B7 00 B4 02 CD 10         	cursor_at      11,15
-[ 214]    0567: 8A 16 9F 00 B4 02 CD 21               	printc         _sym[1]
-[ 215]    056F: B6 0B B2 25 B7 00 B4 02 CD 10         	cursor_at      11,37
-[ 216]    0579: 8A 16 9F 00 B4 02 CD 21               	printc         _sym[1]
-[ 217]        :                                       	
-[ 218]    0581: B6 0C B2 02 B7 00 B4 02 CD 10         	cursor_at      12,2
-[ 219]    058B: 8A 16 A2 00 B4 02 CD 21               	printc         _sym[4]
-[ 220]    0593: B1 0C 8A 16 A7 00 B4 02 CD 21 E2 F6   	printr         _sym[9],12
+[ 209]    053A: B6 0B B2 02 B7 00 B4 02 CD 10         cursor_at      11,2
+[ 210]    0544: 8A 16 9F 00 B4 02 CD 21               printc         _sym[1]
+[ 211]    054C: B6 0B B2 04 B7 00 B4 02 CD 10         cursor_at      11,4
+[ 212]    0556: BA E1 00 B4 09 CD 21                  prints         login_frm_text[9]
+[ 213]    055D: B6 0B B2 0F B7 00 B4 02 CD 10         cursor_at      11,15
+[ 214]    0567: 8A 16 9F 00 B4 02 CD 21               printc         _sym[1]
+[ 215]    056F: B6 0B B2 25 B7 00 B4 02 CD 10         cursor_at      11,37
+[ 216]    0579: 8A 16 9F 00 B4 02 CD 21               printc         _sym[1]
+[ 217]        :                                       
+[ 218]    0581: B6 0C B2 02 B7 00 B4 02 CD 10         cursor_at      12,2
+[ 219]    058B: 8A 16 A2 00 B4 02 CD 21               printc         _sym[4]
+[ 220]    0593: B1 0C 8A 16 A7 00 B4 02 CD 21 E2 F6   printr         _sym[9],12
                                                     
-[ 221]    059F: 8A 16 A4 00 B4 02 CD 21               	printc         _sym[6]
-[ 222]    05A7: B1 15 8A 16 A7 00 B4 02 CD 21 E2 F6   	printr         _sym[9],21
+[ 221]    059F: 8A 16 A4 00 B4 02 CD 21               printc         _sym[6]
+[ 222]    05A7: B1 15 8A 16 A7 00 B4 02 CD 21 E2 F6   printr         _sym[9],21
                                                     
-[ 223]    05B3: 8A 16 A1 00 B4 02 CD 21               	printc         _sym[3]
-[ 224]        :                                       	
-[ 225]    05BB: B6 0E B2 06 B7 00 B4 02 CD 10         	cursor_at      14,6
-[ 226]    05C5: BA EA 00 B4 09 CD 21                  	prints         login_frm_sel[0]
-[ 227]    05CC: B6 0E B2 12 B7 00 B4 02 CD 10         	cursor_at      14,18
-[ 228]    05D6: BA F1 00 B4 09 CD 21                  	prints         login_frm_sel[7]
-[ 229]        :                                       	
-[ 230]    05DD: B6 17 B2 02 B7 00 B4 02 CD 10         	cursor_at      23,2
-[ 231]    05E7: BA E5 01 B4 09 CD 21                  	prints         app_version
-[ 232]        :                                       	
-[ 233]        :                                       	; listens to mouse-pos
-[ 234]    05EE:                                       	keep_listening:
+[ 223]    05B3: 8A 16 A1 00 B4 02 CD 21               printc         _sym[3]
+[ 224]        :                                       
+[ 225]    05BB: B6 0E B2 06 B7 00 B4 02 CD 10         cursor_at      14,6
+[ 226]    05C5: BA EA 00 B4 09 CD 21                  prints         login_frm_sel[0]
+[ 227]    05CC: B6 0E B2 12 B7 00 B4 02 CD 10         cursor_at      14,18
+[ 228]    05D6: BA F1 00 B4 09 CD 21                  prints         login_frm_sel[7]
+[ 229]        :                                       
+[ 230]    05DD: B6 17 B2 02 B7 00 B4 02 CD 10         cursor_at      23,2
+[ 231]    05E7: BA E5 01 B4 09 CD 21                  prints         app_version
+[ 232]        :                                       
+[ 233]        :                                       ; listens to mouse-pos
+[ 234]    05EE:                                       keep_listening:
 [ 235]        :                                       ; get mouse state
 [ 236]    05EE: E8 F3 03                              call           whereis_mouse
 [ 237]        :                                       ; left button click
-[ 238]    05F1: 83 FB 01                              	cmp            bx, 01h
-[ 239]    05F4: 75 F8                                 	jne            keep_listening
-[ 240]        :                                       	; passes when left button is pressed
-[ 241]        :                                       	
-[ 242]        :                                       	; form-selected detection
-[ 243]    05F6: 81 F9 80 00                           	cmp            cx, 0080h
-[ 244]    05FA: 7C 72                                 	jnge           menu_selection
-[ 245]    05FC: 81 F9 26 01                           	cmp            cx, 0126H
-[ 246]    0600: 7F 6C                                 	jnle           menu_selection
-[ 247]        :                                       	
-[ 248]    0602:                                       	card_no:
+[ 238]    05F1: 83 FB 01                              cmp            bx, 01h
+[ 239]    05F4: 75 F8                                 jne            keep_listening
+[ 240]        :                                       ; passes when left button is pressed
+[ 241]        :                                       
+[ 242]        :                                       ; form-selected detection
+[ 243]    05F6: 81 F9 80 00                           cmp            cx, 0080h
+[ 244]    05FA: 7C 72                                 jnge           menu_selection
+[ 245]    05FC: 81 F9 26 01                           cmp            cx, 0126H
+[ 246]    0600: 7F 6C                                 jnle           menu_selection
+[ 247]        :                                       
+[ 248]    0602:                                       card_no:
 [ 249]    0602: 83 FA 50                              cmp            dx, 0050h
 [ 250]    0605: 7F 31                                 jnle           pin_code
 [ 251]    0607: 83 FA 48                              cmp            dx, 0048h
@@ -303,7 +303,7 @@ project.exe_ -- emu8086 assembler version: 4.08
 [ 254]    0616: B5 06 B1 07 B4 01 CD 10 BA 27 00 B4   reads          in_card_no
                 0A CD 21 33 DB 8A 1E 28 00 C6 47 29 
                 24 BA 29 00 B5 32 B4 01 CD 10       
-[ 255]    0638:                                       	pin_code:
+[ 255]    0638:                                       pin_code:
 [ 256]    0638: 83 FA 5E                              cmp            dx, 005Eh
 [ 257]    063B: 7F 31                                 jnle           menu_selection
 [ 258]    063D: 83 FA 59                              cmp            dx, 0059h
@@ -312,21 +312,21 @@ project.exe_ -- emu8086 assembler version: 4.08
 [ 261]    064C: B5 06 B1 07 B4 01 CD 10 BA 3A 00 B4   reads          in_pin_code
                 0A CD 21 33 DB 8A 1E 3B 00 C6 47 3C 
                 24 BA 3C 00 B5 32 B4 01 CD 10       
-[ 262]        :                                       	
-[ 263]        :                                       	; ok&cancel menu detection
-[ 264]    066E:                                       	menu_selection:
+[ 262]        :                                       
+[ 263]        :                                       ; ok&cancel menu detection
+[ 264]    066E:                                       menu_selection:
 [ 265]    066E: 83 FA 6E                              cmp            dx, 006Eh
 [ 266]    0671: 7D 03 E9 78 FF                        jnge           keep_listening
 [ 267]    0676: 83 FA 75                              cmp            dx, 0075h
 [ 268]    0679: 7E 03 E9 70 FF                        jnle           keep_listening
-[ 269]    067E:                                       	cancel_button:
+[ 269]    067E:                                       cancel_button:
 [ 270]    067E: 81 F9 90 00                           cmp            cx, 0090h
 [ 271]    0682: 7C 0C                                 jnge           ok_button
 [ 272]    0684: 81 F9 DF 00                           cmp            cx, 00DFh
 [ 273]    0688: 7E 03 E9 61 FF                        jnle           keep_listening
 [ 274]    068D: E8 C9 02                              call           sys_exit
-[ 275]    0690:                                       	ok_button:
-[ 276]    0690: 83 F9 30                              	cmp            cx, 0030h
+[ 275]    0690:                                       ok_button:
+[ 276]    0690: 83 F9 30                              cmp            cx, 0030h
 [ 277]    0693: 7D 03 E9 56 FF                        jnge           keep_listening
 [ 278]    0698: 83 F9 5F                              cmp            cx, 005Fh
 [ 279]    069B: 7E 03 E9 4E FF                        jnle           keep_listening
@@ -513,9 +513,9 @@ project.exe_ -- emu8086 assembler version: 4.08
 [ 458]    0959: B6 0B B2 0B B7 00 B4 02 CD 10         cursor_at      11,11
 [ 459]    0963: E8 E5 FF BA D1 01 B4 09 CD 21         alert          exit_msg
 [ 460]        :                                       ; DOS Exit
-[ 461]    096D: B4 4C                                 	mov            ah, 4ch
-[ 462]    096F: CD 21                                 	int            21h
-[ 463]    0971: C3                                    	ret
+[ 461]    096D: B4 4C                                 mov            ah, 4ch
+[ 462]    096F: CD 21                                 int            21h
+[ 463]    0971: C3                                    ret
 [ 464]        :                                       sys_exit ENDP
 [ 465]        :                                       
 [ 466]        :                                       ;---------------------- GET TIME PROC -------------------------;
@@ -598,8 +598,8 @@ project.exe_ -- emu8086 assembler version: 4.08
 [ 543]        :                                       ; one second delay
 [ 544]    09EA:                                       delay PROC
 [ 545]    09EA: B0 00                                 mov            al, 00h
-[ 546]    09EC: B9 01 00                              mov            cx, 01d
-[ 547]    09EF: BA 02 00                              mov            dx, 02d
+[ 546]    09EC: B9 0F 00                              mov            cx, 0Fh
+[ 547]    09EF: BA 40 42                              mov            dx, 4240h
 [ 548]    09F2: B4 86                                 mov            ah, 86h
 [ 549]    09F4: CD 15                                 int            15h
 [ 550]    09F6: C3                                    ret
@@ -629,8 +629,8 @@ EXE HEADER - bytes from 0000 to 01FF inclusive.
 000F: 00      -   SS - stack segment (h.byte)
 0010: 00      -   SP - stack pointer (l.byte)
 0011: 01      -   SP - stack pointer (h.byte)
-0012: A7      -   check sum (l.byte)
-0013: 75      -   check sum (h.byte)
+0012: 69      -   check sum (l.byte)
+0013: 25      -   check sum (h.byte)
 0014: 00      -   IP - instruction pointer (l.byte)
 0015: 00      -   IP - instruction pointer (h.byte)
 0016: 31      -   CS - code segment (l.byte)
