@@ -48,39 +48,40 @@ title "Bank Account Manager"
 ;---------------------- MAIN PROC -------------------------;
 main PROC
                     ; initialize all proper data and setup
-                    call            setup
+                    call           setup
     login:
-                    call            cls
-                    call            login_page
+                    call           cls
+                    call           login_page
                     ; evaluate if the input is valid
                     ; pin-code not empty
-                    cmp             in_pin_code[2], '$'
-                    je              login_error
+                    cmp            in_pin_code[2], '$'
+                    je             login_error
                     ; card-no not empty
-                    cmp             in_card_no[2], '$'
-                    je              login_error
+                    cmp            in_card_no[2], '$'
+                    je             login_error
                     ; validate acccount
-                    call            validate_acct
-                    cmp             acct_login, 01h
-                    jne             login
-                    jmp             continue
+                    call           validate_acct
+                    cmp            acct_login, 01h
+                    jne            login
+                    jmp            continue
     login_error:
-                    cursor_at       11,13
-                    alert           err_blank
-                    jmp             login
+                    cursor_at      11,13
+                    alert          err_blank
+                    call           delay
+                    jmp            login
     continue:
-                    call            cls
-                    call            menu_page
+                    call           cls
+                    call           menu_page
                     ; expected logout has been called
-                    jmp             login
+                    jmp            login
 main ENDP
 
 ;---------------------- SETUP PROC -------------------------;
 setup PROC
                     ; data segment address
-                    mov             dx, @data
-                    mov             ds, dx
-	                mov             es, dx
+                    mov            dx, @data
+                    mov            ds, dx
+	                mov            es, dx
     
                     ; set video mode
                 	mov            al, 00h
@@ -232,7 +233,7 @@ login_page PROC
 	; listens to mouse-pos
 	keep_listening:
                     ; get mouse state
-                    call          whereis_mouse
+                    call           whereis_mouse
                     ; left button click
                 	cmp            bx, 01h
                 	jne            keep_listening
@@ -307,8 +308,7 @@ menu_page PROC
                     prints         menu_frm_ftr
                     cursor_at      bl,20
                     prints         menu_frm_ftr
-                    inc            bl
-                    inc            bl
+                    add            bl, 2
                     loop           create_block
         
                     ; withdraw-text
@@ -329,21 +329,23 @@ menu_page PROC
                     ; details text
                     cursor_at      16,25
                     prints         menu_frm_text[43]
-        
+    
+                    ; prints time (text) 
+                    cursor_at      4,2
+                    prints         time   
     render_loop:
                     ; time printing
                     lea            bx,timestamp
                     call           get_time
                     cursor_at      2,2
                     prints         login_desc
-                    cursor_at      4,2
-                    prints         time
+                    
                     cursor_at      4,8
                     prints         timestamp
                     
-                    call           cls_menu
                     call           whereis_mouse
-            
+                    cmp            bx, 0001h
+                    jne            render_loop
     col_1:
                     ; checks if mouse coor is in first column
                     cmp            cx, 0018h
@@ -358,8 +360,6 @@ menu_page PROC
                     jnle           btn_balance
                     cursor_at      8,3
                     printc         _sym[11]
-                    cmp            bx, 0001h
-                    jne            render_loop
                     ; PROCESS: withdraw
                     ; withdraw process
                     call           input_page
@@ -393,7 +393,6 @@ menu_page PROC
                     ; ENDPRC
                     ; returns to main PROC
                     ret
-                    jmp            render_loop
     col_2:
     btn_deposit:
                     cmp            dx, 0040h
@@ -414,7 +413,7 @@ menu_page PROC
                     call           input_page
                     ; TODO
                     ; ENDPRC
-                    jmp            render_loop
+                    jmp            menu_start
     btn_details:
                     cmp            dx, 0080h
                     jnge           render_loop
@@ -442,29 +441,6 @@ input_page PROC
                     call           cls
                     ret
 input_page ENDP
-
-;---------------------- CLEAR MENU PROC -------------------------;
-cls_menu PROC
-                    ; withdraw
-                    cursor_at      8,3
-                    printc         ' '
-                    ; deposit
-                    cursor_at      8,21
-                    printc         ' '
-                    ; balance
-                    cursor_at      12,3
-                    printc         ' '
-                    ; reset pin
-                    cursor_at      12,21
-                    printc         ' '
-                    ; logout
-                    cursor_at      16,3
-                    printc         ' '
-                    ; details
-                    cursor_at      16,21
-                    printc         ' '
-                    ret        
-cls_menu ENDP
 
 ;---------------------- CLEAR PROC -------------------------;
 cls PROC
@@ -552,6 +528,7 @@ validate_acct PROC
     str_notequal:
                     cursor_at      10,10
                     alert          err_incorrect
+                    call           delay
                     ret    
 validate_acct ENDP
 
@@ -559,6 +536,21 @@ validate_acct ENDP
 whereis_mouse PROC
                     mov            ax, 03h
                     int            33h
+                    ret
+ENDP
+
+;---------------------- DELAY PROC -------------------------;
+; one second delay
+delay PROC
+                    mov            bp, 43690d
+                    mov            si, 43690d
+                    _delay:
+                    dec            bp
+                    nop
+                    jnz            _delay
+                    dec            si
+                    cmp            si,0    
+                    jnz            _delay
                     ret
 ENDP
 END main
