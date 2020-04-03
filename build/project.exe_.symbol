@@ -1,0 +1,82 @@
+< THE SYMBOL TABLE >  project.exe_  --  emu8086 assembler version: 4.08 
+===================================================================================================
+Name                     	Offset    	Size      	Type      	Segment   
+===================================================================================================
+STACK                    	00000     	-5        	SEGMENT   	(ITSELF)  
+DATA                     	00010     	-5        	SEGMENT   	(ITSELF)  
+ACCT_LOGIN               	00000     	1         	VAR       	data      
+FF_CARD_NO               	00001     	1         	VAR       	data      
+FF_PIN_CODE              	00012     	1         	VAR       	data      
+FF_BALANCE               	0001A     	1         	VAR       	data      
+IN_CARD_NO               	00027     	1         	VAR       	data      
+IN_PIN_CODE              	0003A     	1         	VAR       	data      
+NEW_PIN_CODE             	00043     	1         	VAR       	data      
+INPUT_AMOUNT             	0004C     	1         	VAR       	data      
+FNAME                    	0005B     	1         	VAR       	data      
+FHANDLE                  	00067     	2         	VAR       	data      
+FBUFFER                  	00069     	1         	VAR       	data      
+TIME                     	0008F     	1         	VAR       	data      
+TIMESTAMP                	00095     	1         	VAR       	data      
+_SYM                     	0009E     	1         	VAR       	data      
+LOGIN_ACCNT              	000AA     	1         	VAR       	data      
+LOGIN_DESC               	000B7     	1         	VAR       	data      
+LOGIN_FRM_TEXT           	000D8     	1         	VAR       	data      
+LOGIN_FRM_SEL            	000EA     	1         	VAR       	data      
+MENU_FRM_TEXT            	000FC     	1         	VAR       	data      
+MENU_HDR                 	0012F     	1         	VAR       	data      
+MENU_FRM_FTR             	00141     	1         	VAR       	data      
+ERR_BLANK                	00153     	1         	VAR       	data      
+ERR_INCORRECT            	00163     	1         	VAR       	data      
+ERR_FILE404              	00179     	1         	VAR       	data      
+INPUT_TEXT               	0019C     	1         	VAR       	data      
+INPUT_NOTE               	001AA     	1         	VAR       	data      
+EXIT_MSG                 	001D1     	1         	VAR       	data      
+APP_VERSION              	001E5     	1         	VAR       	data      
+CODE                     	00031     	-5        	SEGMENT   	(ITSELF)  
+MAIN                     	00000     	-1        	NEAR      	code      
+LOGIN                    	00003     	-1        	LABEL     	code      
+LOGIN_ERROR              	00023     	-1        	LABEL     	code      
+CONTINUE                 	00039     	-1        	LABEL     	code      
+SETUP                    	00041     	-1        	NEAR      	code      
+FILEERR                  	000AC     	-1        	LABEL     	code      
+LOGIN_PAGE               	000B6     	-1        	NEAR      	code      
+L_LOC1TMP                	000CA     	-1        	LABEL     	code      
+L_LOC2TMP                	0015A     	-1        	LABEL     	code      
+L_LOC3TMP                	00180     	-1        	LABEL     	code      
+L_LOC4TMP                	00194     	-1        	LABEL     	code      
+L_LOC5TMP                	00201     	-1        	LABEL     	code      
+L_LOC6TMP                	00215     	-1        	LABEL     	code      
+L_LOC7TMP                	00282     	-1        	LABEL     	code      
+L_LOC8TMP                	00296     	-1        	LABEL     	code      
+KEEP_LISTENING           	002DB     	-1        	LABEL     	code      
+CARD_NO                  	002EF     	-1        	LABEL     	code      
+PIN_CODE                 	00325     	-1        	LABEL     	code      
+MENU_SELECTION           	0035B     	-1        	LABEL     	code      
+CANCEL_BUTTON            	0036B     	-1        	LABEL     	code      
+OK_BUTTON                	0037D     	-1        	LABEL     	code      
+MENU_PAGE                	0038E     	-1        	NEAR      	code      
+MENU_START               	0038E     	-1        	LABEL     	code      
+CREATE_BLOCK             	00392     	-1        	LABEL     	code      
+RENDER_LOOP              	00492     	-1        	LABEL     	code      
+COL_1                    	004D1     	-1        	LABEL     	code      
+BTN_WITHDRAW             	004DF     	-1        	LABEL     	code      
+BTN_BALANCE              	00506     	-1        	LABEL     	code      
+BTN_LOGOUT               	00525     	-1        	LABEL     	code      
+COL_2                    	00564     	-1        	LABEL     	code      
+BTN_DEPOSIT              	00564     	-1        	LABEL     	code      
+BTN_RESET_PIN            	00586     	-1        	LABEL     	code      
+BTN_DETAILS              	005AB     	-1        	LABEL     	code      
+INPUT_PAGE               	005DA     	-1        	NEAR      	code      
+L_LOC9TMP                	005FA     	-1        	LABEL     	code      
+CLS_MENU                 	00643     	-1        	NEAR      	code      
+CLS                      	006A4     	-1        	NEAR      	code      
+SYS_EXIT                 	006B2     	-1        	NEAR      	code      
+GET_TIME                 	006CB     	-1        	NEAR      	code      
+TO_ASCII                 	006E7     	-1        	NEAR      	code      
+VALIDATE_ACCT            	006F1     	-1        	NEAR      	code      
+STR_NOTEQUAL             	00725     	-1        	LABEL     	code      
+WHEREIS_MOUSE            	0073A     	-1        	NEAR      	code      
+===================================================================================================
+[ 03/04/2020  --  9:45:50 pm ] 
+< END >
+ 

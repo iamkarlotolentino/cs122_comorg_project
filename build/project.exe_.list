@@ -1,0 +1,665 @@
+EMU8086 GENERATED LISTING. MACHINE CODE <- SOURCE.
+ 
+project.exe_ -- emu8086 assembler version: 4.08  
+ 
+[ 03/04/2020  --  9:45:50 pm ] 
+ 
+===================================================================================================
+[LINE]     LOC: MACHINE CODE                          SOURCE
+===================================================================================================
+ 
+[   1]        :                                       
+[   2]        :                                       include 'macros.inc'
+[   3]        :                                       
+[   4]        :                                       title "Bank Account Manager"
+[   5]        :                                       
+[   6]        :                                       .MODEL small
+[   7]        :                                       .STACK 100h
+[   8]        :                                       .DATA
+[   9]    0100: 00                                    acct_login      db   0
+[  10]    0101: 20 20 20 20 20 20 20 20 20 20 20 20   ff_card_no      db  16 dup(' '), '$'
+                20 20 20 20 24                      
+[  11]    0112: 20 20 20 20 20 20 20 24               ff_pin_code     db   7 dup(' '), '$'
+[  12]    011A: 20 20 20 20 20 20 20 20 20 20 20 20   ff_balance      db  12 dup(' '), '$'
+                24                                  
+[  13]        :                                       
+[  14]    0127: 11 00 24 24 24 24 24 24 24 24 24 24   in_card_no      db  17, ?, 17 dup('$')
+                24 24 24 24 24 24 24                
+[  15]    013A: 07 00 24 24 24 24 24 24 24            in_pin_code     db   7, ?,  7 dup('$')
+[  16]    0143: 07 00 24 24 24 24 24 24 24            new_pin_code    db   7, ?,  7 dup('$')
+[  17]        :                                       
+[  18]    014C: 0D 00 20 20 20 20 20 20 20 20 20 20   input_amount    db  13, ?, 13 dup(' ')
+                20 20 20                            
+[  19]        :                                       
+[  20]    015B: 61 63 63 6F 75 6E 74 2E 74 78 74 00   fname           db  "account.txt", 0
+                                                    
+[  21]    0167: 00 00                                 fhandle         dw  ?
+[  22]    0169: 00 00 00 00 00 00 00 00 00 00 00 00   fbuffer         db  38 dup(?)
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00                               
+[  23]        :                                       
+[  24]    018F: 54 69 6D 65 3A 24                     time            db  "Time:$"
+[  25]    0195: 30 30 3A 30 30 3A 30 30 24            timestamp       db  "00:00:00$"
+[  26]        :                                       ;   [0]   [1]   [2]   [3]   [4]   [5]   [6]   [7]   [8]   [9]   [10]  [11]
+[  27]    019E: B9 BA BB BC C8 C9 CA CB CC CD CE AF   _sym            db  185d, 186d, 187d, 188d, 200d, 201d, 202d, 203d, 204d, 205d, 206d, 175d
+                                                    
+[  28]        :                                       
+[  29]    01AA: 57 65 6C 63 6F 6D 65 2C 20 4A 43 21   	login_accnt     db "Welcome, JC!$"
+                24                                  
+[  30]    01B7: 59 6F 75 72 20 70 65 72 73 6F 6E 61   	login_desc      db "Your personal bank acc't manager$"
+                6C 20 62 61 6E 6B 20 61 63 63 27 74 
+                20 6D 61 6E 61 67 65 72 24          
+[  31]    01D8: 43 41 52 44 20 4E 4F 2E 24 50 49 4E   	login_frm_text  db "CARD NO.$", "PIN CODE$"
+                20 43 4F 44 45 24                   
+[  32]    01EA: 5B 20 4F 4B 20 5D 24 5B 20 43 41 4E   login_frm_sel   db "[ OK ]$", "[ CANCEL ]$"
+                43 45 4C 20 5D 24                   
+[  33]        :                                       
+[  34]    01FC: 57 69 74 68 64 72 61 77 24 44 65 70   menu_frm_text   db  "Withdraw$", "Deposit$", "Balance$", "Reset PIN$", "Log Out$", "Details$"
+                6F 73 69 74 24 42 61 6C 61 6E 63 65 
+                24 52 65 73 65 74 20 50 49 4E 24 4C 
+                6F 67 20 4F 75 74 24 44 65 74 61 69 
+                6C 73 24                            
+[  35]    022F: C9 CD CD CD CD CD CD CD CD CD CD CD   menu_hdr        db  201d, 15 dup(205d), 187d, '$'
+                CD CD CD CD BB 24                   
+[  36]    0241: C8 CD CD CD CD CD CD CD CD CD CD CD   menu_frm_ftr    db  200d, 15 dup(205d), 188d, '$'
+                CD CD CD CD BC 24                   
+[  37]        :                                       
+[  38]    0253: 4E 4F 54 20 56 41 4C 49 44 20 49 4E   err_blank       db  "NOT VALID INPUT$"
+                50 55 54 24                         
+[  39]    0263: 49 6E 63 6F 72 72 65 63 74 21 20 54   err_incorrect   db  "Incorrect! Try again.$"
+                72 79 20 61 67 61 69 6E 2E 24       
+[  40]    0279: 45 72 72 6F 72 2E 20 41 63 63 6F 75   err_file404     db  "Error. Account database not found!$"
+                6E 74 20 64 61 74 61 62 61 73 65 20 
+                6E 6F 74 20 66 6F 75 6E 64 21 24    
+[  41]        :                                       
+[  42]    029C: 45 6E 74 65 72 20 61 6D 6F 75 6E 74   input_text      db  "Enter amount:$"
+                3A 24                               
+[  43]    02AA: 4E 4F 54 45 3A 20 41 6D 6F 75 6E 74   input_note      db  "NOTE: Amount should be divisible by 20$"
+                20 73 68 6F 75 6C 64 20 62 65 20 64 
+                69 76 69 73 69 62 6C 65 20 62 79 20 
+                32 30 24                            
+[  44]        :                                       	
+[  45]    02D1: 54 68 61 6E 6B 20 79 6F 75 2E 20 47   exit_msg        db "Thank you. Goodbye!$"
+                6F 6F 64 62 79 65 21 24             
+[  46]    02E5: 54 65 6C 6C 65 72 20 4D 61 63 68 69   app_version     db "Teller Machine @ 2020 ", 179d, " v1.0$"
+                6E 65 20 40 20 32 30 32 30 20 B3 20 
+                76 31 2E 30 24                      
+[  47]        :                                       .CODE
+[  48]        :                                       ;---------------------- MAIN PROC -------------------------;
+[  49]    0310:                                       main PROC
+[  50]        :                                       ; initialize all proper data and setup
+[  51]    0310: E8 3E 00                              call            setup
+[  52]    0313:                                       login:
+[  53]    0313: E8 9E 06                              call            cls
+[  54]    0316: E8 AD 00                              call            login_page
+[  55]        :                                       ; evaluate if the input is valid
+[  56]        :                                       ; pin-code not empty
+[  57]    0319: 80 3E 3C 00 24                        cmp             in_pin_code[2], '$'
+[  58]    031E: 74 13                                 je              login_error
+[  59]        :                                       ; card-no not empty
+[  60]    0320: 80 3E 29 00 24                        cmp             in_card_no[2], '$'
+[  61]    0325: 74 0C                                 je              login_error
+[  62]        :                                       ; validate acccount
+[  63]    0327: E8 D7 06                              call            validate_acct
+[  64]    032A: 80 3E 00 00 01                        cmp             acct_login, 01h
+[  65]    032F: 75 E2                                 jne             login
+[  66]    0331: EB 16                                 jmp             continue
+[  67]    0333:                                       login_error:
+[  68]    0333: B6 0B B2 0D B7 00 B4 02 CD 10         cursor_at       11,13
+[  69]    033D: E8 74 06 BA 53 01 B4 09 CD 21         alert           err_blank
+[  70]    0347: EB CA                                 jmp             login
+[  71]    0349:                                       continue:
+[  72]    0349: E8 68 06                              call            cls
+[  73]    034C: E8 4F 03                              call            menu_page
+[  74]        :                                       ; expected logout has been called
+[  75]    034F: EB C2                                 jmp             login
+[  76]        :                                       main ENDP
+[  77]        :                                       
+[  78]        :                                       ;---------------------- SETUP PROC -------------------------;
+[  79]    0351:                                       setup PROC
+[  80]        :                                       ; data segment address
+[  81]    0351: BA 10 00                              mov             dx, @data
+[  82]    0354: 8E DA                                 mov             ds, dx
+[  83]    0356: 8E C2                                 	                mov             es, dx
+[  84]        :                                       
+[  85]        :                                       ; set video mode
+[  86]    0358: B0 00                                 	mov            al, 00h
+[  87]    035A: B4 00                                 	mov            ah, 00h
+[  88]    035C: CD 10                                 	int            10h
+[  89]        :                                       	
+[  90]        :                                       	; disable blinking
+[  91]    035E: B8 03 10                              mov            ax, 1003h
+[  92]    0361: BB 00 00                              mov            bx, 00h
+[  93]    0364: CD 10                                 int            10h
+[  94]        :                                       
+[  95]        :                                       ; hide text cursor:
+[  96]    0366: B5 32                                 mov            ch, 32h
+[  97]    0368: B4 01                                 mov            ah, 01h
+[  98]    036A: CD 10                                 int            10h
+[  99]        :                                       	
+[ 100]        :                                       	; initialize mouse
+[ 101]    036C: B8 00 00                              	mov            ax, 00h
+[ 102]    036F: CD 33                                 	int            33h
+[ 103]        :                                       	
+[ 104]        :                                       	; display mouse cursor:
+[ 105]    0371: B8 01 00                              mov            ax, 01h
+[ 106]    0374: CD 33                                 int            33h
+[ 107]        :                                       
+[ 108]        :                                       ; load account details
+[ 109]        :                                       ; open file
+[ 110]    0376: B0 02                                 mov            al, 02h
+[ 111]    0378: BA 5B 00                              mov            dx, offset fname
+[ 112]    037B: B4 3D                                 mov            ah, 3Dh
+[ 113]    037D: CD 21                                 int            21h
+[ 114]    037F: 72 3B                                 jc             fileerr
+[ 115]    0381: A3 67 00                              mov            fhandle, ax
+[ 116]        :                                       
+[ 117]        :                                       ; read file
+[ 118]    0384: 8B 1E 67 00                           mov            bx, fhandle
+[ 119]    0388: B9 30 00                              mov            cx, 30h
+[ 120]    038B: BA 69 00                              lea            dx, fbuffer
+[ 121]    038E: B4 3F                                 mov            ah, 3Fh
+[ 122]    0390: CD 21                                 int            21h
+[ 123]        :                                       
+[ 124]        :                                       ; parse data
+[ 125]        :                                       ; first 16 bytes is acc't no.
+[ 126]    0392: BE 68 00                              lea            si, [fbuffer-1]
+[ 127]    0395: BF 01 00                              lea            di, ff_card_no
+[ 128]    0398: B9 10 00                              mov            cx, 0010h
+[ 129]    039B: 46                                    inc            si
+[ 130]    039C: FC                                    cld
+[ 131]    039D: F3                                    rep
+[ 132]    039E: A4                                    movsb
+[ 133]        :                                       ; next 6 bytes is pin code
+[ 134]    039F: 46                                    inc            si
+[ 135]    03A0: BF 12 00                              lea            di, ff_pin_code
+[ 136]    03A3: B9 06 00                              mov            cx, 0006h
+[ 137]    03A6: 46                                    inc            si
+[ 138]    03A7: FC                                    cld
+[ 139]    03A8: F3                                    rep
+[ 140]    03A9: A4                                    movsb
+[ 141]        :                                       ; next 12 bytes is current balance
+[ 142]    03AA: 46                                    inc            si
+[ 143]    03AB: BF 1A 00                              lea            di, ff_balance
+[ 144]    03AE: B9 0C 00                              mov            cx, 000Ch
+[ 145]    03B1: 46                                    inc            si
+[ 146]    03B2: FC                                    cld
+[ 147]    03B3: F3                                    rep
+[ 148]    03B4: A4                                    movsb
+[ 149]        :                                       ; close file
+[ 150]    03B5: B4 3E                                 mov            ah, 3Eh
+[ 151]    03B7: 8B 1E 67 00                           mov            bx, fhandle
+[ 152]    03BB: C3                                    ret
+[ 153]    03BC:                                       	fileerr:
+[ 154]    03BC: BA 79 01 B4 09 CD 21                  	    prints         err_file404
+[ 155]    03C3: E8 FC 05                              	    call           sys_exit
+[ 156]        :                                       setup ENDP
+[ 157]        :                                       
+[ 158]        :                                       ;---------------------- LOGIN PAGE PROC -------------------------;
+[ 159]    03C6:                                       login_page PROC
+[ 160]        :                                       ; selection form printing
+[ 161]    03C6: B6 03 B2 02 B7 00 B4 02 CD 10         cursor_at      3,2
+[ 162]    03D0: 8A 16 A3 00 B4 02 CD 21               printc         _sym[5]
+[ 163]    03D8: B1 22 8A 16 A7 00 B4 02 CD 21 E2 F6   	                printr         _sym[9],34
+                                                    
+[ 164]    03E4: 8A 16 A0 00 B4 02 CD 21               	printc         _sym[2]
+[ 165]        :                                       	
+[ 166]    03EC: B6 04 B2 02 B7 00 B4 02 CD 10         	cursor_at      4,2
+[ 167]    03F6: 8A 16 9F 00 B4 02 CD 21               	printc         _sym[1]
+[ 168]    03FE: B6 04 B2 25 B7 00 B4 02 CD 10         	cursor_at      4,37
+[ 169]    0408: 8A 16 9F 00 B4 02 CD 21               	printc         _sym[1]
+[ 170]    0410: B6 04 B2 04 B7 00 B4 02 CD 10         	cursor_at      4,4
+[ 171]    041A: BA AA 00 B4 09 CD 21                  	prints         login_accnt
+[ 172]        :                                       	
+[ 173]    0421: B6 05 B2 02 B7 00 B4 02 CD 10         	cursor_at      5,2
+[ 174]    042B: 8A 16 9F 00 B4 02 CD 21               	printc         _sym[1]
+[ 175]    0433: B6 05 B2 25 B7 00 B4 02 CD 10         	cursor_at      5,37
+[ 176]    043D: 8A 16 9F 00 B4 02 CD 21               	printc         _sym[1]
+[ 177]    0445: B6 05 B2 04 B7 00 B4 02 CD 10         	cursor_at      5,4
+[ 178]    044F: BA B7 00 B4 09 CD 21                  	prints         login_desc
+[ 179]        :                                       	
+[ 180]    0456: B6 06 B2 02 B7 00 B4 02 CD 10         	cursor_at      6,2
+[ 181]    0460: 8A 16 A2 00 B4 02 CD 21               	printc         _sym[4]
+[ 182]    0468: B1 22 8A 16 A7 00 B4 02 CD 21 E2 F6   	printr         _sym[9],34
+                                                    
+[ 183]    0474: 8A 16 A1 00 B4 02 CD 21               	printc         _sym[3]
+[ 184]        :                                       	
+[ 185]    047C: B6 08 B2 02 B7 00 B4 02 CD 10         	cursor_at      8,2
+[ 186]    0486: 8A 16 A3 00 B4 02 CD 21               	printc         _sym[5]
+[ 187]    048E: B1 0C 8A 16 A7 00 B4 02 CD 21 E2 F6   	printr         _sym[9],12
+                                                    
+[ 188]    049A: 8A 16 A5 00 B4 02 CD 21               	printc         _sym[7]
+[ 189]    04A2: B1 15 8A 16 A7 00 B4 02 CD 21 E2 F6   	printr         _sym[9],21
+                                                    
+[ 190]    04AE: 8A 16 A0 00 B4 02 CD 21               	printc         _sym[2]
+[ 191]        :                                       	
+[ 192]    04B6: B6 09 B2 02 B7 00 B4 02 CD 10         	cursor_at      9,2
+[ 193]    04C0: 8A 16 9F 00 B4 02 CD 21               	printc         _sym[1]
+[ 194]    04C8: B6 09 B2 0F B7 00 B4 02 CD 10         	cursor_at      9,15
+[ 195]    04D2: 8A 16 9F 00 B4 02 CD 21               	printc         _sym[1]
+[ 196]    04DA: B6 09 B2 25 B7 00 B4 02 CD 10         	cursor_at      9,37
+[ 197]    04E4: 8A 16 9F 00 B4 02 CD 21               	printc         _sym[1]
+[ 198]    04EC: B6 09 B2 04 B7 00 B4 02 CD 10         	cursor_at      9,4
+[ 199]    04F6: BA D8 00 B4 09 CD 21                  	prints         login_frm_text[0]
+[ 200]        :                                       	
+[ 201]    04FD: B6 0A B2 02 B7 00 B4 02 CD 10         	cursor_at      10,2
+[ 202]    0507: 8A 16 A6 00 B4 02 CD 21               	printc         _sym[8]
+[ 203]    050F: B1 0C 8A 16 A7 00 B4 02 CD 21 E2 F6   	printr         _sym[9],12
+                                                    
+[ 204]    051B: 8A 16 A8 00 B4 02 CD 21               	printc         _sym[10]
+[ 205]    0523: B1 15 8A 16 A7 00 B4 02 CD 21 E2 F6   	printr         _sym[9],21
+                                                    
+[ 206]    052F: 8A 16 9E 00 B4 02 CD 21               	printc         _sym[0]
+[ 207]        :                                       
+[ 208]    0537: B6 0B B2 02 B7 00 B4 02 CD 10         	cursor_at      11,2
+[ 209]    0541: 8A 16 9F 00 B4 02 CD 21               	printc         _sym[1]
+[ 210]    0549: B6 0B B2 04 B7 00 B4 02 CD 10         	cursor_at      11,4
+[ 211]    0553: BA E1 00 B4 09 CD 21                  	prints         login_frm_text[9]
+[ 212]    055A: B6 0B B2 0F B7 00 B4 02 CD 10         	cursor_at      11,15
+[ 213]    0564: 8A 16 9F 00 B4 02 CD 21               	printc         _sym[1]
+[ 214]    056C: B6 0B B2 25 B7 00 B4 02 CD 10         	cursor_at      11,37
+[ 215]    0576: 8A 16 9F 00 B4 02 CD 21               	printc         _sym[1]
+[ 216]        :                                       	
+[ 217]    057E: B6 0C B2 02 B7 00 B4 02 CD 10         	cursor_at      12,2
+[ 218]    0588: 8A 16 A2 00 B4 02 CD 21               	printc         _sym[4]
+[ 219]    0590: B1 0C 8A 16 A7 00 B4 02 CD 21 E2 F6   	printr         _sym[9],12
+                                                    
+[ 220]    059C: 8A 16 A4 00 B4 02 CD 21               	printc         _sym[6]
+[ 221]    05A4: B1 15 8A 16 A7 00 B4 02 CD 21 E2 F6   	printr         _sym[9],21
+                                                    
+[ 222]    05B0: 8A 16 A1 00 B4 02 CD 21               	printc         _sym[3]
+[ 223]        :                                       	
+[ 224]    05B8: B6 0E B2 06 B7 00 B4 02 CD 10         	cursor_at      14,6
+[ 225]    05C2: BA EA 00 B4 09 CD 21                  	prints         login_frm_sel[0]
+[ 226]    05C9: B6 0E B2 12 B7 00 B4 02 CD 10         	cursor_at      14,18
+[ 227]    05D3: BA F1 00 B4 09 CD 21                  	prints         login_frm_sel[7]
+[ 228]        :                                       	
+[ 229]    05DA: B6 17 B2 02 B7 00 B4 02 CD 10         	cursor_at      23,2
+[ 230]    05E4: BA E5 01 B4 09 CD 21                  	prints         app_version
+[ 231]        :                                       	
+[ 232]        :                                       	; listens to mouse-pos
+[ 233]    05EB:                                       	keep_listening:
+[ 234]        :                                       ; get mouse state
+[ 235]    05EB: E8 5C 04                              call          whereis_mouse
+[ 236]        :                                       ; left button click
+[ 237]    05EE: 83 FB 01                              	cmp            bx, 01h
+[ 238]    05F1: 75 F8                                 	jne            keep_listening
+[ 239]        :                                       	; passes when left button is pressed
+[ 240]        :                                       	
+[ 241]        :                                       	; form-selected detection
+[ 242]    05F3: 81 F9 80 00                           	cmp            cx, 0080h
+[ 243]    05F7: 7C 72                                 	jnge           menu_selection
+[ 244]    05F9: 81 F9 26 01                           	cmp            cx, 0126H
+[ 245]    05FD: 7F 6C                                 	jnle           menu_selection
+[ 246]        :                                       	
+[ 247]    05FF:                                       	card_no:
+[ 248]    05FF: 83 FA 50                              cmp            dx, 0050h
+[ 249]    0602: 7F 31                                 jnle           pin_code
+[ 250]    0604: 83 FA 48                              cmp            dx, 0048h
+[ 251]    0607: 7C 62                                 jnge           menu_selection
+[ 252]    0609: B6 09 B2 10 B7 00 B4 02 CD 10         cursor_at      9,16
+[ 253]    0613: B5 06 B1 07 B4 01 CD 10 BA 27 00 B4   reads          in_card_no
+                0A CD 21 33 DB 8A 1E 28 00 C6 47 29 
+                24 BA 29 00 B5 32 B4 01 CD 10       
+[ 254]    0635:                                       	pin_code:
+[ 255]    0635: 83 FA 5E                              cmp            dx, 005Eh
+[ 256]    0638: 7F 31                                 jnle           menu_selection
+[ 257]    063A: 83 FA 59                              cmp            dx, 0059h
+[ 258]    063D: 7C 2C                                 jnge           menu_selection
+[ 259]    063F: B6 0B B2 10 B7 00 B4 02 CD 10         cursor_at      11,16
+[ 260]    0649: B5 06 B1 07 B4 01 CD 10 BA 3A 00 B4   reads          in_pin_code
+                0A CD 21 33 DB 8A 1E 3B 00 C6 47 3C 
+                24 BA 3C 00 B5 32 B4 01 CD 10       
+[ 261]        :                                       	
+[ 262]        :                                       	; ok&cancel menu detection
+[ 263]    066B:                                       	menu_selection:
+[ 264]    066B: 83 FA 6E                              cmp            dx, 006Eh
+[ 265]    066E: 7D 03 E9 78 FF                        jnge           keep_listening
+[ 266]    0673: 83 FA 75                              cmp            dx, 0075h
+[ 267]    0676: 7E 03 E9 70 FF                        jnle           keep_listening
+[ 268]    067B:                                       	cancel_button:
+[ 269]    067B: 81 F9 90 00                           cmp            cx, 0090h
+[ 270]    067F: 7C 0C                                 jnge           ok_button
+[ 271]    0681: 81 F9 DF 00                           cmp            cx, 00DFh
+[ 272]    0685: 7E 03 E9 61 FF                        jnle           keep_listening
+[ 273]    068A: E8 35 03                              call           sys_exit
+[ 274]    068D:                                       	ok_button:
+[ 275]    068D: 83 F9 30                              	cmp            cx, 0030h
+[ 276]    0690: 7D 03 E9 56 FF                        jnge           keep_listening
+[ 277]    0695: 83 F9 5F                              cmp            cx, 005Fh
+[ 278]    0698: 7E 03 E9 4E FF                        jnle           keep_listening
+[ 279]        :                                       ; returns to check credibility
+[ 280]    069D: C3                                    ret
+[ 281]        :                                       login_page ENDP
+[ 282]        :                                       
+[ 283]        :                                       ;---------------------- MENU PAGE PROC -------------------------;
+[ 284]    069E:                                       menu_page PROC
+[ 285]    069E:                                       menu_start:
+[ 286]        :                                       ; al=row start
+[ 287]    069E: B3 07                                 mov bl,        07h
+[ 288]    06A0: B1 03                                 mov cl,        03h
+[ 289]        :                                       ; print the selection box
+[ 290]    06A2:                                       create_block:
+[ 291]        :                                       ; creates block
+[ 292]    06A2: 8A F3 B2 02 B7 00 B4 02 CD 10         cursor_at      bl,2
+[ 293]    06AC: BA 2F 01 B4 09 CD 21                  prints         menu_hdr
+[ 294]    06B3: 8A F3 B2 14 B7 00 B4 02 CD 10         cursor_at      bl,20
+[ 295]    06BD: BA 2F 01 B4 09 CD 21                  prints         menu_hdr
+[ 296]    06C4: FE C3                                 inc            bl
+[ 297]    06C6: 8A F3 B2 02 B7 00 B4 02 CD 10         cursor_at      bl,2
+[ 298]    06D0: 8A 16 9F 00 B4 02 CD 21               printc         _sym[1]
+[ 299]    06D8: 8A F3 B2 12 B7 00 B4 02 CD 10         cursor_at      bl,18
+[ 300]    06E2: 8A 16 9F 00 B4 02 CD 21               printc         _sym[1]
+[ 301]    06EA: 8A F3 B2 14 B7 00 B4 02 CD 10         cursor_at      bl,20
+[ 302]    06F4: 8A 16 9F 00 B4 02 CD 21               printc        _sym[1]
+[ 303]    06FC: 8A F3 B2 24 B7 00 B4 02 CD 10         cursor_at      bl,36
+[ 304]    0706: 8A 16 9F 00 B4 02 CD 21               printc         _sym[1]
+[ 305]    070E: FE C3                                 inc            bl
+[ 306]    0710: 8A F3 B2 02 B7 00 B4 02 CD 10         cursor_at      bl,2
+[ 307]    071A: BA 41 01 B4 09 CD 21                  prints         menu_frm_ftr
+[ 308]    0721: 8A F3 B2 14 B7 00 B4 02 CD 10         cursor_at      bl,20
+[ 309]    072B: BA 41 01 B4 09 CD 21                  prints         menu_frm_ftr
+[ 310]    0732: FE C3                                 inc            bl
+[ 311]    0734: FE C3                                 inc            bl
+[ 312]    0736: 49 E3 03 E9 66 FF                     loop           create_block
+[ 313]        :                                       
+[ 314]        :                                       ; withdraw-text
+[ 315]    073C: B6 08 B2 06 B7 00 B4 02 CD 10         cursor_at      8,6
+[ 316]    0746: BA FC 00 B4 09 CD 21                  prints         menu_frm_text[0]
+[ 317]        :                                       ; deposit-text
+[ 318]    074D: B6 08 B2 19 B7 00 B4 02 CD 10         cursor_at      8,25
+[ 319]    0757: BA 05 01 B4 09 CD 21                  prints         menu_frm_text[9]
+[ 320]        :                                       ; balance-text
+[ 321]    075E: B6 0C B2 07 B7 00 B4 02 CD 10         cursor_at      12,7
+[ 322]    0768: BA 0D 01 B4 09 CD 21                  prints         menu_frm_text[17]
+[ 323]        :                                       ; reset-pin text
+[ 324]    076F: B6 0C B2 18 B7 00 B4 02 CD 10         cursor_at      12,24
+[ 325]    0779: BA 15 01 B4 09 CD 21                  prints         menu_frm_text[25]
+[ 326]        :                                       ; log-out text
+[ 327]    0780: B6 10 B2 07 B7 00 B4 02 CD 10         cursor_at      16,7
+[ 328]    078A: BA 1F 01 B4 09 CD 21                  prints         menu_frm_text[35]
+[ 329]        :                                       ; details text
+[ 330]    0791: B6 10 B2 19 B7 00 B4 02 CD 10         cursor_at      16,25
+[ 331]    079B: BA 27 01 B4 09 CD 21                  prints         menu_frm_text[43]
+[ 332]        :                                       
+[ 333]    07A2:                                       render_loop:
+[ 334]        :                                       ; time printing
+[ 335]    07A2: BB 95 00                              lea            bx,timestamp
+[ 336]    07A5: E8 33 02                              call           get_time
+[ 337]    07A8: B6 02 B2 02 B7 00 B4 02 CD 10         cursor_at      2,2
+[ 338]    07B2: BA B7 00 B4 09 CD 21                  prints         login_desc
+[ 339]    07B9: B6 04 B2 02 B7 00 B4 02 CD 10         cursor_at      4,2
+[ 340]    07C3: BA 8F 00 B4 09 CD 21                  prints         time
+[ 341]    07CA: B6 04 B2 08 B7 00 B4 02 CD 10         cursor_at      4,8
+[ 342]    07D4: BA 95 00 B4 09 CD 21                  prints         timestamp
+[ 343]        :                                       
+[ 344]    07DB: E8 75 01                              call           cls_menu
+[ 345]    07DE: E8 69 02                              call           whereis_mouse
+[ 346]        :                                       
+[ 347]    07E1:                                       col_1:
+[ 348]        :                                       ; checks if mouse coor is in first column
+[ 349]    07E1: 83 F9 18                              cmp            cx, 0018h
+[ 350]    07E4: 7C BC                                 jnge           render_loop
+[ 351]    07E6: 81 F9 8F 00                           cmp            cx, 008Fh
+[ 352]        :                                       ; if not, check if it is in second column
+[ 353]    07EA: 7E 03 E9 85 00                        jnle           col_2
+[ 354]    07EF:                                       btn_withdraw:
+[ 355]    07EF: 83 FA 40                              cmp            dx, 0040h
+[ 356]    07F2: 7C AE                                 jnge           render_loop
+[ 357]    07F4: 83 FA 47                              cmp            dx, 0047h
+[ 358]    07F7: 7F 1D                                 jnle           btn_balance
+[ 359]    07F9: B6 08 B2 03 B7 00 B4 02 CD 10         cursor_at      8,3
+[ 360]    0803: 8A 16 A9 00 B4 02 CD 21               printc         _sym[11]
+[ 361]    080B: 83 FB 01                              cmp            bx, 0001h
+[ 362]    080E: 75 92                                 jne            render_loop
+[ 363]        :                                       ; PROCESS: withdraw
+[ 364]        :                                       ; withdraw process
+[ 365]    0810: E8 D7 00                              call           input_page
+[ 366]        :                                       ; ENDPRC
+[ 367]        :                                       ; go back to menu
+[ 368]    0813: E9 88 FE                              jmp            menu_start
+[ 369]    0816:                                       btn_balance:
+[ 370]    0816: 83 FA 60                              cmp            dx, 0060h
+[ 371]    0819: 7C 87                                 jnge           render_loop
+[ 372]    081B: 83 FA 67                              cmp            dx, 0067h
+[ 373]    081E: 7F 15                                 jnle           btn_logout
+[ 374]    0820: B6 0C B2 03 B7 00 B4 02 CD 10         cursor_at      12,3
+[ 375]    082A: 8A 16 A9 00 B4 02 CD 21               printc         _sym[11]
+[ 376]        :                                       ; PROCESS: balance
+[ 377]        :                                       ; ENDPRC
+[ 378]    0832: E9 6D FF                              jmp            render_loop
+[ 379]    0835:                                       btn_logout:
+[ 380]    0835: 81 FA 80 00                           cmp            dx, 0080h
+[ 381]    0839: 7D 03 E9 64 FF                        jnge           render_loop
+[ 382]    083E: 81 FA 87 00                           cmp            dx, 0087h
+[ 383]    0842: 7E 03 E9 5B FF                        jnle           render_loop
+[ 384]    0847: B6 10 B2 03 B7 00 B4 02 CD 10         cursor_at      16,3
+[ 385]    0851: 8A 16 A9 00 B4 02 CD 21               printc         _sym[11]
+[ 386]    0859: 83 FB 01                              cmp            bx, 0001h
+[ 387]    085C: 74 03 E9 41 FF                        jne            render_loop
+[ 388]        :                                       ; PROCESS: logout
+[ 389]        :                                       ; sets all significant data to invalid state
+[ 390]    0861: C6 06 29 00 24                        mov            in_card_no[2], '$'
+[ 391]    0866: C6 06 3C 00 24                        mov            in_pin_code[2], '$'
+[ 392]    086B: C6 06 00 00 00                        mov            acct_login[0], 00h
+[ 393]        :                                       ; ENDPRC
+[ 394]        :                                       ; returns to main PROC
+[ 395]    0870: C3                                    ret
+[ 396]    0871: E9 2E FF                              jmp            render_loop
+[ 397]    0874:                                       col_2:
+[ 398]    0874:                                       btn_deposit:
+[ 399]    0874: 83 FA 40                              cmp            dx, 0040h
+[ 400]    0877: 7D 03 E9 26 FF                        jnge           render_loop
+[ 401]    087C: 83 FA 47                              cmp            dx, 0047h
+[ 402]    087F: 7F 15                                 jnle           btn_reset_pin
+[ 403]    0881: B6 08 B2 15 B7 00 B4 02 CD 10         cursor_at      8,21
+[ 404]    088B: 8A 16 A9 00 B4 02 CD 21               printc         _sym[11]
+[ 405]    0893: E9 0C FF                              jmp            render_loop
+[ 406]    0896:                                       btn_reset_pin:
+[ 407]    0896: 83 FA 60                              cmp            dx, 0060h
+[ 408]    0899: 7D 03 E9 04 FF                        jnge           render_loop
+[ 409]    089E: 83 FA 67                              cmp            dx, 0067h
+[ 410]    08A1: 7F 18                                 jnle           btn_details
+[ 411]    08A3: B6 0C B2 15 B7 00 B4 02 CD 10         cursor_at      12,21
+[ 412]    08AD: 8A 16 A9 00 B4 02 CD 21               printc         _sym[11]
+[ 413]        :                                       ; PROCESS: reset pin
+[ 414]    08B5: E8 32 00                              call           input_page
+[ 415]        :                                       ; TODO
+[ 416]        :                                       ; ENDPRC
+[ 417]    08B8: E9 E7 FE                              jmp            render_loop
+[ 418]    08BB:                                       btn_details:
+[ 419]    08BB: 81 FA 80 00                           cmp            dx, 0080h
+[ 420]    08BF: 7D 03 E9 DE FE                        jnge           render_loop
+[ 421]    08C4: 81 FA 87 00                           cmp            dx, 0087h
+[ 422]    08C8: 7E 03 E9 D5 FE                        jnle           render_loop
+[ 423]    08CD: B6 10 B2 15 B7 00 B4 02 CD 10         cursor_at      16,21
+[ 424]    08D7: 8A 16 A9 00 B4 02 CD 21               printc         _sym[11]
+[ 425]    08DF: E9 C0 FE                              jmp            render_loop
+[ 426]    08E2: E9 BD FE                              jmp            render_loop
+[ 427]    08E5: B4 01 CD 21                           pause
+[ 428]    08E9: C3                                    ret
+[ 429]        :                                       menu_page ENDP
+[ 430]        :                                       
+[ 431]        :                                       ;---------------------- INPUT PAGE PROC -------------------------;
+[ 432]    08EA:                                       input_page PROC
+[ 433]    08EA: E8 C7 00                              call           cls
+[ 434]    08ED: B6 09 B2 0B B7 00 B4 02 CD 10         cursor_at      9,11
+[ 435]    08F7: BA 9C 01 B4 09 CD 21                  prints         input_text
+[ 436]    08FE: B6 0C B2 0B B7 00 B4 02 CD 10         cursor_at      12,11
+[ 437]    0908: B1 0C B2 2D B4 02 CD 21 E2 F8         printr         '-',12
+[ 438]    0912: B6 0F B2 01 B7 00 B4 02 CD 10         cursor_at      15,1
+[ 439]    091C: BA AA 01 B4 09 CD 21                  prints         input_note
+[ 440]    0923: B6 0B B2 0B B7 00 B4 02 CD 10         cursor_at      11,11
+[ 441]    092D: B5 06 B1 07 B4 01 CD 10 BA 4C 00 B4   reads          input_amount
+                0A CD 21 33 DB 8A 1E 4D 00 C6 47 4E 
+                24 BA 4E 00 B5 32 B4 01 CD 10       
+[ 442]    094F: E8 62 00                              call           cls
+[ 443]    0952: C3                                    ret
+[ 444]        :                                       input_page ENDP
+[ 445]        :                                       
+[ 446]        :                                       ;---------------------- CLEAR MENU PROC -------------------------;
+[ 447]    0953:                                       cls_menu PROC
+[ 448]        :                                       ; withdraw
+[ 449]    0953: B6 08 B2 03 B7 00 B4 02 CD 10         cursor_at      8,3
+[ 450]    095D: B2 20 B4 02 CD 21                     printc         ' '
+[ 451]        :                                       ; deposit
+[ 452]    0963: B6 08 B2 15 B7 00 B4 02 CD 10         cursor_at      8,21
+[ 453]    096D: B2 20 B4 02 CD 21                     printc         ' '
+[ 454]        :                                       ; balance
+[ 455]    0973: B6 0C B2 03 B7 00 B4 02 CD 10         cursor_at      12,3
+[ 456]    097D: B2 20 B4 02 CD 21                     printc         ' '
+[ 457]        :                                       ; reset pin
+[ 458]    0983: B6 0C B2 15 B7 00 B4 02 CD 10         cursor_at      12,21
+[ 459]    098D: B2 20 B4 02 CD 21                     printc         ' '
+[ 460]        :                                       ; logout
+[ 461]    0993: B6 10 B2 03 B7 00 B4 02 CD 10         cursor_at      16,3
+[ 462]    099D: B2 20 B4 02 CD 21                     printc         ' '
+[ 463]        :                                       ; details
+[ 464]    09A3: B6 10 B2 15 B7 00 B4 02 CD 10         cursor_at      16,21
+[ 465]    09AD: B2 20 B4 02 CD 21                     printc         ' '
+[ 466]    09B3: C3                                    ret
+[ 467]        :                                       cls_menu ENDP
+[ 468]        :                                       
+[ 469]        :                                       ;---------------------- CLEAR PROC -------------------------;
+[ 470]    09B4:                                       cls PROC
+[ 471]    09B4: 32 C0                                 xor            al, al
+[ 472]    09B6: 33 C9                                 xor            cx, cx
+[ 473]    09B8: BA 4F 18                              mov            dx, 184fh
+[ 474]    09BB: B7 1E                                 mov            bh, 1eh
+[ 475]    09BD: B4 06                                 mov            ah, 06h
+[ 476]    09BF: CD 10                                 int            10h
+[ 477]    09C1: C3                                    ret
+[ 478]        :                                       cls ENDP
+[ 479]        :                                       
+[ 480]        :                                       ;---------------------- EXIT PROC -------------------------;
+[ 481]    09C2:                                       sys_exit PROC
+[ 482]    09C2: B6 0B B2 0B B7 00 B4 02 CD 10         cursor_at      11,11
+[ 483]    09CC: E8 E5 FF BA D1 01 B4 09 CD 21         alert          exit_msg
+[ 484]        :                                       ; DOS Exit
+[ 485]    09D6: B4 4C                                 	mov            ah, 4ch
+[ 486]    09D8: CD 21                                 	int            21h
+[ 487]    09DA: C3                                    	ret
+[ 488]        :                                       sys_exit ENDP
+[ 489]        :                                       
+[ 490]        :                                       ;---------------------- GET TIME PROC -------------------------;
+[ 491]    09DB:                                       get_time PROC
+[ 492]        :                                       ; input  : BX=offset address of the string TIME
+[ 493]        :                                       ; output : BX=current time
+[ 494]        :                                       ; get current system time
+[ 495]    09DB: B4 2C                                 mov            ah, 2ch
+[ 496]    09DD: CD 21                                 int            21h
+[ 497]        :                                       
+[ 498]        :                                       ; ch=hours
+[ 499]    09DF: 8A C5                                 mov            al, ch
+[ 500]    09E1: E8 13 00                              call           to_ascii
+[ 501]    09E4: 89 07                                 mov            [bx], ax
+[ 502]        :                                       
+[ 503]        :                                       ; cl=minutes
+[ 504]    09E6: 8A C1                                 mov            al, cl
+[ 505]    09E8: E8 0C 00                              call           to_ascii
+[ 506]    09EB: 89 47 03                              mov            [bx+3], ax
+[ 507]        :                                       ; dh=seconds
+[ 508]    09EE: 8A C6                                 mov            al, dh
+[ 509]    09F0: E8 04 00                              call           to_ascii
+[ 510]    09F3: 89 47 06                              mov            [bx+6], ax
+[ 511]    09F6: C3                                    ret
+[ 512]        :                                       get_time ENDP
+[ 513]        :                                       
+[ 514]        :                                       ;---------------------- TO ASCII PROC -------------------------;
+[ 515]    09F7:                                       to_ascii PROC
+[ 516]        :                                       ; input  : AL=binary code
+[ 517]        :                                       ; output : AX=ASCII code
+[ 518]    09F7: B4 00                                 mov            ah, 00h
+[ 519]    09F9: B2 0A                                 mov            dl, 10d
+[ 520]    09FB: F6 F2                                 div            dl
+[ 521]    09FD: 0D 30 30                              or             ax, 3030H
+[ 522]    0A00: C3                                    ret
+[ 523]        :                                       to_ascii ENDP
+[ 524]        :                                       
+[ 525]        :                                       ;---------------------- VALIDATE ACCOUNT PROC -------------------------;
+[ 526]    0A01:                                       validate_acct PROC
+[ 527]        :                                       ; compare card_no
+[ 528]    0A01: BE 01 00                              lea            si, ff_card_no
+[ 529]    0A04: BF 29 00                              lea            di, [in_card_no+2]
+[ 530]    0A07: 33 C9                                 xor            cx, cx
+[ 531]    0A09: B9 10 00                              mov            cx, 10h
+[ 532]    0A0C: 8A 04                                 mov            al, [si]
+[ 533]    0A0E: 8A 1D                                 mov            bl, [di]
+[ 534]    0A10: 3A C3                                 cmp            al, bl
+[ 535]    0A12: 75 21                                 jne            str_notequal
+[ 536]    0A14: F3 A6                                 repe cmpsb
+[ 537]    0A16: 75 1D                                 jne            str_notequal
+[ 538]        :                                       ; compare pin_code
+[ 539]    0A18: BE 12 00                              lea            si, ff_pin_code
+[ 540]    0A1B: BF 3C 00                              lea            di, [in_pin_code+2]
+[ 541]    0A1E: 33 C9                                 xor            cx, cx
+[ 542]    0A20: B9 06 00                              mov            cx, 06h
+[ 543]    0A23: 8A 04                                 mov            al, [si]
+[ 544]    0A25: 8A 1D                                 mov            bl, [di]
+[ 545]    0A27: 3A C3                                 cmp            al, bl
+[ 546]    0A29: 75 0A                                 jne            str_notequal
+[ 547]    0A2B: F3 A6                                 repe cmpsb
+[ 548]    0A2D: 75 06                                 jne            str_notequal
+[ 549]        :                                       ; equal
+[ 550]    0A2F: C6 06 00 00 01                        mov            acct_login[0], 01h
+[ 551]    0A34: C3                                    ret
+[ 552]    0A35:                                       str_notequal:
+[ 553]    0A35: B6 0A B2 0A B7 00 B4 02 CD 10         cursor_at      10,10
+[ 554]    0A3F: E8 72 FF BA 63 01 B4 09 CD 21         alert          err_incorrect
+[ 555]    0A49: C3                                    ret
+[ 556]        :                                       validate_acct ENDP
+[ 557]        :                                       
+[ 558]        :                                       ;---------------------- GET MOUSE COORDINATE PROC -------------------------;
+[ 559]    0A4A:                                       whereis_mouse PROC
+[ 560]    0A4A: B8 03 00                              mov            ax, 03h
+[ 561]    0A4D: CD 33                                 int            33h
+[ 562]    0A4F: C3                                    ret
+[ 563]        :                                       ENDP
+[ 564]        :                                       END main
+[ 565]        :                                       
+ 
+===================================================================================================
+ 
+EXE HEADER - bytes from 0000 to 01FF inclusive.
+
+0000: 4D      -   exe signature (M)
+0001: 5A      -   exe signature (Z)
+0002: 50      -   bytes on last page (l.byte)
+0003: 00      -   bytes on last page (h.byte)
+0004: 07      -   512 byte pages in file (l.byte)
+0005: 00      -   512 byte pages in file (h.byte)
+0006: 01      -   relocations (l.byte)
+0007: 00      -   relocations (h.byte)
+0008: 20      -   paragraphs in header (l.byte)
+0009: 00      -   paragraphs in header (h.byte)
+000A: 00      -   minimum memory (l.byte)
+000B: 00      -   minimum memory (h.byte)
+000C: FF      -   maximum memory (l.byte)
+000D: FF      -   maximum memory (h.byte)
+000E: 00      -   SS - stack segment (l.byte)
+000F: 00      -   SS - stack segment (h.byte)
+0010: 00      -   SP - stack pointer (l.byte)
+0011: 01      -   SP - stack pointer (h.byte)
+0012: 21      -   check sum (l.byte)
+0013: 07      -   check sum (h.byte)
+0014: 00      -   IP - instruction pointer (l.byte)
+0015: 00      -   IP - instruction pointer (h.byte)
+0016: 31      -   CS - code segment (l.byte)
+0017: 00      -   CS - code segment (h.byte)
+0018: 1E      -   relocation table adress (l.byte)
+0019: 00      -   relocation table adress (h.byte)
+001A: 00      -   overlay number (l.byte)
+001B: 00      -   overlay number (h.byte)
+001C: 01      -   signature (l.byte)
+001D: 00      -   signature (h.byte)
+001E: 42      -   relocation table - offset inside segment (l.byte)
+001F: 00      -   relocation table - offset inside segment (h.byte)
+0020: 31      -   relocation table - segment anchor (l.byte)
+0021: 00      -   relocation table - segment anchor (h.byte)
+0022 to 01FF  -   reserved relocation area  (00) 
+
+
+
+
+===================================================================================================

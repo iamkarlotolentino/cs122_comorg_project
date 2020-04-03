@@ -14,10 +14,9 @@ ENDM
 
 ; string scanner
 reads MACRO buffer
-    pusha
-    mov           ch, 6
-    mov           cl, 7
-    mov           ah, 1
+    mov           ch, 06h
+    mov           cl, 07h
+    mov           ah, 01h
     int           10h
     lea           dx, buffer
 	mov           ah, 0ah
@@ -26,45 +25,45 @@ reads MACRO buffer
 	mov           bl, buffer[1]
 	mov           buffer[bx+2], '$'
 	lea           dx, buffer + 2
-	mov           ch, 32
-	mov           ah, 1
+	mov           ch, 32h
+	mov           ah, 01h
 	int           10h
-	popa
 ENDM
 
 ; string printing
 prints MACRO msg
-    pusha
     mov           dx, offset msg
     mov           ah, 9
     int           21h
-    popa
 ENDM
 
 ; char printing
 printc MACRO char
-    pusha
     mov           dl, char
     mov           ah, 2
     int           21h
-    popa
 ENDM
 
 ; repeated char printing
 printr MACRO sym, count
     LOCAL l
-    pusha
     mov           cl, count
-    l: printc sym
+l:  printc        sym
     loop          l
-    popa
 ENDM
 
 alert MACRO msg
-    pusha
     call          cls
     prints        msg
-    popa
+ENDM
+
+; passes the new pin
+update_pin MACRO new_pin
+    
+ENDM
+
+update_balance MACRO new_balance
+
 ENDM
 
 ; reads character, act as a pause

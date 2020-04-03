@@ -15,12 +15,11 @@ title "Bank Account Manager"
     in_pin_code     db   7, ?,  7 dup('$')
     new_pin_code    db   7, ?,  7 dup('$')
     
-    input_amount    db  13, ?, 13 dup(" ")
+    input_amount    db  13, ?, 13 dup(' ')
     
-    fname           db  'account.txt', 0
+    fname           db  "account.txt", 0
     fhandle         dw  ?
-    fbuffer         db  23 dup(?)
-    fcount          db  22
+    fbuffer         db  38 dup(?)
     
     time            db  "Time:$"
     timestamp       db  "00:00:00$"
@@ -33,8 +32,8 @@ title "Bank Account Manager"
     login_frm_sel   db "[ OK ]$", "[ CANCEL ]$"
     
     menu_frm_text   db  "Withdraw$", "Deposit$", "Balance$", "Reset PIN$", "Log Out$", "Details$"
-    menu_hdr        db  201d, 15 dup(205d),  187d, "$"
-    menu_frm_ftr    db  200d, 15 dup(205d), 188d, "$"
+    menu_hdr        db  201d, 15 dup(205d), 187d, '$'
+    menu_frm_ftr    db  200d, 15 dup(205d), 188d, '$'
     
     err_blank       db  "NOT VALID INPUT$"
     err_incorrect   db  "Incorrect! Try again.$"
@@ -44,7 +43,6 @@ title "Bank Account Manager"
     input_note      db  "NOTE: Amount should be divisible by 20$"
 	
     exit_msg        db "Thank you. Goodbye!$"
-    app_blank       db "                                    $"
     app_version     db "Teller Machine @ 2020 ", 179d, " v1.0$"
 .CODE
 ;---------------------- MAIN PROC -------------------------;
@@ -86,30 +84,30 @@ setup PROC
     
                     ; set video mode
                 	mov            al, 00h
-                	mov            ah, 0
+                	mov            ah, 00h
                 	int            10h
                 	
                 	; disable blinking
                     mov            ax, 1003h
-                    mov            bx, 0
+                    mov            bx, 00h
                     int            10h   
                        
                     ; hide text cursor:
-                    mov            ch, 32
-                    mov            ah, 1
+                    mov            ch, 32h
+                    mov            ah, 01h
                     int            10h
                 	
                 	; initialize mouse
-                	mov            ax, 0
+                	mov            ax, 00h
                 	int            33h
                 	
                 	; display mouse cursor:
-                    mov            ax, 1
+                    mov            ax, 01h
                     int            33h
                     
                     ; load account details
                     ; open file
-                    mov            al, 2
+                    mov            al, 02h
                     mov            dx, offset fname
                     mov            ah, 3Dh
                     int            21h
@@ -118,30 +116,39 @@ setup PROC
                     
                     ; read file
                     mov            bx, fhandle
-                    mov            cx, 22
+                    mov            cx, 30h
                     lea            dx, fbuffer
                     mov            ah, 3Fh
                     int            21h
                     
                     ; parse data
-                    ; first 16 elements=acc't no.
+                    ; first 16 bytes is acc't no.
                     lea            si, [fbuffer-1]
                     lea            di, ff_card_no
-                    mov            cl, 10h
-                    mov            ch, 00h
+                    mov            cx, 0010h
                     inc            si
                     cld
                     rep
                     movsb
-                    ; next 6 elements=pin code
-                    dec            si
+                    ; next 6 bytes is pin code
+                    inc            si
                     lea            di, ff_pin_code
-                    mov            cl, 06h
-                    mov            ch, 00h
+                    mov            cx, 0006h
                     inc            si
                     cld
                     rep
-                    movsb   
+                    movsb
+                    ; next 12 bytes is current balance
+                    inc            si
+                    lea            di, ff_balance
+                    mov            cx, 000Ch
+                    inc            si
+                    cld
+                    rep
+                    movsb
+                    ; close file
+                    mov            ah, 3Eh
+                    mov            bx, fhandle   
                     ret 
 	fileerr:
             	    prints         err_file404
@@ -225,10 +232,9 @@ login_page PROC
 	; listens to mouse-pos
 	keep_listening:
                     ; get mouse state
-                    mov            ax, 3
-                    int            33h
+                    call          whereis_mouse
                     ; left button click
-                	cmp            bx, 1
+                	cmp            bx, 01h
                 	jne            keep_listening
                 	; passes when left button is pressed
                 	
@@ -278,8 +284,8 @@ login_page ENDP
 menu_page PROC
     menu_start:
                     ; al=row start
-                    mov bl,        7
-                    mov cl,        3
+                    mov bl,        07h
+                    mov cl,        03h
                     ; print the selection box
     create_block:
                     ; creates block
@@ -352,7 +358,7 @@ menu_page PROC
                     jnle           btn_balance
                     cursor_at      8,3
                     printc         _sym[11]
-                    cmp            bx, 1
+                    cmp            bx, 0001h
                     jne            render_loop
                     ; PROCESS: withdraw
                     ; withdraw process
@@ -377,13 +383,13 @@ menu_page PROC
                     jnle           render_loop
                     cursor_at      16,3
                     printc         _sym[11]
-                    cmp            bx, 1
+                    cmp            bx, 0001h
                     jne            render_loop
                     ; PROCESS: logout
                     ; sets all significant data to invalid state
                     mov            in_card_no[2], '$'
                     mov            in_pin_code[2], '$'
-                    mov            acct_login[0], 0
+                    mov            acct_login[0], 00h
                     ; ENDPRC
                     ; returns to main PROC
                     ret
@@ -405,9 +411,7 @@ menu_page PROC
                     cursor_at      12,21
                     printc         _sym[11]
                     ; PROCESS: reset pin
-                    mov            bx, fhandle
-                    mov            cx, 6
-                    mov            new_pin_code
+                    call           input_page
                     ; TODO
                     ; ENDPRC
                     jmp            render_loop
@@ -511,8 +515,8 @@ get_time ENDP
 to_ascii PROC
                     ; input  : AL=binary code
                     ; output : AX=ASCII code
-                    mov            ah, 0
-                    mov            dl, 10
+                    mov            ah, 00h
+                    mov            dl, 10d
                     div            dl
                     or             ax, 3030H
                     ret
@@ -543,7 +547,7 @@ validate_acct PROC
                     repe cmpsb
                     jne            str_notequal
                     ; equal
-                    mov            acct_login[0], 1
+                    mov            acct_login[0], 01h
                     ret
     str_notequal:
                     cursor_at      10,10
@@ -553,7 +557,7 @@ validate_acct ENDP
 
 ;---------------------- GET MOUSE COORDINATE PROC -------------------------;
 whereis_mouse PROC
-                    mov            ax, 3
+                    mov            ax, 03h
                     int            33h
                     ret
 ENDP
