@@ -84,7 +84,7 @@ mov            ds, dx
 mov            es, dx
 
 ; set video mode
-mov            al, 00h
+mov            al, 04h
 mov            ah, 00h
 int            10h
 
@@ -363,6 +363,7 @@ printc         _sym[11]
 ; PROCESS: withdraw
 ; withdraw process
 call           input_page
+withdrawable   input_amount, ff_balance
 ; ENDPRC
 ; go back to menu
 jmp            menu_start
@@ -423,7 +424,6 @@ cursor_at      16,21
 printc         _sym[11]
 jmp            render_loop
 jmp            render_loop
-pause
 ret
 menu_page ENDP
 

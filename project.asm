@@ -363,6 +363,7 @@ menu_page PROC
                     ; PROCESS: withdraw
                     ; withdraw process
                     call           input_page
+                    withdrawable   input_amount, ff_balance
                     ; ENDPRC
                     ; go back to menu
                     jmp            menu_start
@@ -423,7 +424,6 @@ menu_page PROC
                     printc         _sym[11]
                     jmp            render_loop
                     jmp            render_loop
-                    pause
                     ret
 menu_page ENDP
 

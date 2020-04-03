@@ -59,24 +59,25 @@ MENU_START               	00391     	-1        	LABEL     	code
 CREATE_BLOCK             	00395     	-1        	LABEL     	code      
 RENDER_LOOP              	004A5     	-1        	LABEL     	code      
 COL_1                    	004D5     	-1        	LABEL     	code      
-BTN_WITHDRAW             	004E0     	-1        	LABEL     	code      
-BTN_BALANCE              	00502     	-1        	LABEL     	code      
-BTN_LOGOUT               	00520     	-1        	LABEL     	code      
-COL_2                    	0055C     	-1        	LABEL     	code      
-BTN_DEPOSIT              	0055C     	-1        	LABEL     	code      
-BTN_RESET_PIN            	0057E     	-1        	LABEL     	code      
-BTN_DETAILS              	005A3     	-1        	LABEL     	code      
-INPUT_PAGE               	005D2     	-1        	NEAR      	code      
-L_LOC9TMP                	005F2     	-1        	LABEL     	code      
-CLS                      	0063B     	-1        	NEAR      	code      
-SYS_EXIT                 	00649     	-1        	NEAR      	code      
-GET_TIME                 	00662     	-1        	NEAR      	code      
-TO_ASCII                 	0067E     	-1        	NEAR      	code      
-VALIDATE_ACCT            	00688     	-1        	NEAR      	code      
-STR_NOTEQUAL             	006BC     	-1        	LABEL     	code      
-WHEREIS_MOUSE            	006D4     	-1        	NEAR      	code      
-DELAY                    	006DA     	-1        	NEAR      	code      
+BTN_WITHDRAW             	004E3     	-1        	LABEL     	code      
+PUSH_AMNT                	00508     	-1        	LABEL     	code      
+BTN_BALANCE              	00512     	-1        	LABEL     	code      
+BTN_LOGOUT               	00531     	-1        	LABEL     	code      
+COL_2                    	0056D     	-1        	LABEL     	code      
+BTN_DEPOSIT              	0056D     	-1        	LABEL     	code      
+BTN_RESET_PIN            	0058F     	-1        	LABEL     	code      
+BTN_DETAILS              	005B4     	-1        	LABEL     	code      
+INPUT_PAGE               	005DF     	-1        	NEAR      	code      
+L_LOC9TMP                	005FF     	-1        	LABEL     	code      
+CLS                      	00648     	-1        	NEAR      	code      
+SYS_EXIT                 	00656     	-1        	NEAR      	code      
+GET_TIME                 	0066F     	-1        	NEAR      	code      
+TO_ASCII                 	0068B     	-1        	NEAR      	code      
+VALIDATE_ACCT            	00695     	-1        	NEAR      	code      
+STR_NOTEQUAL             	006C9     	-1        	LABEL     	code      
+WHEREIS_MOUSE            	006E1     	-1        	NEAR      	code      
+DELAY                    	006E7     	-1        	NEAR      	code      
 ===================================================================================================
-[ 03/04/2020  --  11:22:10 pm ] 
+[ 04/04/2020  --  12:46:19 am ] 
 < END >
  

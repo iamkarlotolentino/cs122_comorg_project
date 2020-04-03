@@ -2,7 +2,7 @@ EMU8086 GENERATED LISTING. MACHINE CODE <- SOURCE.
  
 project.exe_ -- emu8086 assembler version: 4.08  
  
-[ 03/04/2020  --  11:22:10 pm ] 
+[ 04/04/2020  --  12:46:19 am ] 
  
 ===================================================================================================
 [LINE]     LOC: MACHINE CODE                          SOURCE
@@ -91,7 +91,7 @@ project.exe_ -- emu8086 assembler version: 4.08
 [  50]        :                                       ; initialize all proper data and setup
 [  51]    0310: E8 41 00                              call           setup
 [  52]    0313:                                       login:
-[  53]    0313: E8 35 06                              call           cls
+[  53]    0313: E8 42 06                              call           cls
 [  54]    0316: E8 B0 00                              call           login_page
 [  55]        :                                       ; evaluate if the input is valid
 [  56]        :                                       ; pin-code not empty
@@ -101,17 +101,17 @@ project.exe_ -- emu8086 assembler version: 4.08
 [  60]    0320: 80 3E 29 00 24                        cmp            in_card_no[2], '$'
 [  61]    0325: 74 0C                                 je             login_error
 [  62]        :                                       ; validate acccount
-[  63]    0327: E8 6E 06                              call           validate_acct
+[  63]    0327: E8 7B 06                              call           validate_acct
 [  64]    032A: 80 3E 00 00 01                        cmp            acct_login, 01h
 [  65]    032F: 75 E2                                 jne            login
 [  66]    0331: EB 19                                 jmp            continue
 [  67]    0333:                                       login_error:
 [  68]    0333: B6 0B B2 0D B7 00 B4 02 CD 10         cursor_at      11,13
-[  69]    033D: E8 0B 06 BA 53 01 B4 09 CD 21         alert          err_blank
-[  70]    0347: E8 A0 06                              call           delay
+[  69]    033D: E8 18 06 BA 53 01 B4 09 CD 21         alert          err_blank
+[  70]    0347: E8 AD 06                              call           delay
 [  71]    034A: EB C7                                 jmp            login
 [  72]    034C:                                       continue:
-[  73]    034C: E8 FC 05                              call           cls
+[  73]    034C: E8 09 06                              call           cls
 [  74]    034F: E8 4F 03                              call           menu_page
 [  75]        :                                       ; expected logout has been called
 [  76]    0352: EB BF                                 jmp            login
@@ -125,7 +125,7 @@ project.exe_ -- emu8086 assembler version: 4.08
 [  84]    0359: 8E C2                                 mov            es, dx
 [  85]        :                                       
 [  86]        :                                       ; set video mode
-[  87]    035B: B0 00                                 mov            al, 00h
+[  87]    035B: B0 04                                 mov            al, 04h
 [  88]    035D: B4 00                                 mov            ah, 00h
 [  89]    035F: CD 10                                 int            10h
 [  90]        :                                       
@@ -194,7 +194,7 @@ project.exe_ -- emu8086 assembler version: 4.08
 [ 153]    03BE: C3                                    ret
 [ 154]    03BF:                                       fileerr:
 [ 155]    03BF: BA 79 01 B4 09 CD 21                  prints         err_file404
-[ 156]    03C6: E8 90 05                              call           sys_exit
+[ 156]    03C6: E8 9D 05                              call           sys_exit
 [ 157]        :                                       setup ENDP
 [ 158]        :                                       
 [ 159]        :                                       ;---------------------- LOGIN PAGE PROC -------------------------;
@@ -282,7 +282,7 @@ project.exe_ -- emu8086 assembler version: 4.08
 [ 233]        :                                       ; listens to mouse-pos
 [ 234]    05EE:                                       keep_listening:
 [ 235]        :                                       ; get mouse state
-[ 236]    05EE: E8 F3 03                              call           whereis_mouse
+[ 236]    05EE: E8 00 04                              call           whereis_mouse
 [ 237]        :                                       ; left button click
 [ 238]    05F1: 83 FB 01                              cmp            bx, 01h
 [ 239]    05F4: 75 F8                                 jne            keep_listening
@@ -324,7 +324,7 @@ project.exe_ -- emu8086 assembler version: 4.08
 [ 271]    0682: 7C 0C                                 jnge           ok_button
 [ 272]    0684: 81 F9 DF 00                           cmp            cx, 00DFh
 [ 273]    0688: 7E 03 E9 61 FF                        jnle           keep_listening
-[ 274]    068D: E8 C9 02                              call           sys_exit
+[ 274]    068D: E8 D6 02                              call           sys_exit
 [ 275]    0690:                                       ok_button:
 [ 276]    0690: 83 F9 30                              cmp            cx, 0030h
 [ 277]    0693: 7D 03 E9 56 FF                        jnge           keep_listening
@@ -389,14 +389,14 @@ project.exe_ -- emu8086 assembler version: 4.08
 [ 336]    07B5:                                       render_loop:
 [ 337]        :                                       ; time printing
 [ 338]    07B5: BB 95 00                              lea            bx,timestamp
-[ 339]    07B8: E8 B7 01                              call           get_time
+[ 339]    07B8: E8 C4 01                              call           get_time
 [ 340]    07BB: B6 02 B2 02 B7 00 B4 02 CD 10         cursor_at      2,2
 [ 341]    07C5: BA B7 00 B4 09 CD 21                  prints         login_desc
 [ 342]        :                                       
 [ 343]    07CC: B6 04 B2 08 B7 00 B4 02 CD 10         cursor_at      4,8
 [ 344]    07D6: BA 95 00 B4 09 CD 21                  prints         timestamp
 [ 345]        :                                       
-[ 346]    07DD: E8 04 02                              call           whereis_mouse
+[ 346]    07DD: E8 11 02                              call           whereis_mouse
 [ 347]    07E0: 83 FB 01                              cmp            bx, 0001h
 [ 348]    07E3: 75 D0                                 jne            render_loop
 [ 349]    07E5:                                       col_1:
@@ -405,204 +405,205 @@ project.exe_ -- emu8086 assembler version: 4.08
 [ 352]    07E8: 7C CB                                 jnge           render_loop
 [ 353]    07EA: 81 F9 8F 00                           cmp            cx, 008Fh
 [ 354]        :                                       ; if not, check if it is in second column
-[ 355]    07EE: 7F 7C                                 jnle           col_2
-[ 356]    07F0:                                       btn_withdraw:
-[ 357]    07F0: 83 FA 40                              cmp            dx, 0040h
-[ 358]    07F3: 7C C0                                 jnge           render_loop
-[ 359]    07F5: 83 FA 47                              cmp            dx, 0047h
-[ 360]    07F8: 7F 18                                 jnle           btn_balance
-[ 361]    07FA: B6 08 B2 03 B7 00 B4 02 CD 10         cursor_at      8,3
-[ 362]    0804: 8A 16 A9 00 B4 02 CD 21               printc         _sym[11]
+[ 355]    07EE: 7E 03 E9 8A 00                        jnle           col_2
+[ 356]    07F3:                                       btn_withdraw:
+[ 357]    07F3: 83 FA 40                              cmp            dx, 0040h
+[ 358]    07F6: 7C BD                                 jnge           render_loop
+[ 359]    07F8: 83 FA 47                              cmp            dx, 0047h
+[ 360]    07FB: 7F 25                                 jnle           btn_balance
+[ 361]    07FD: B6 08 B2 03 B7 00 B4 02 CD 10         cursor_at      8,3
+[ 362]    0807: 8A 16 A9 00 B4 02 CD 21               printc         _sym[11]
 [ 363]        :                                       ; PROCESS: withdraw
 [ 364]        :                                       ; withdraw process
-[ 365]    080C: E8 D3 00                              call           input_page
-[ 366]        :                                       ; ENDPRC
-[ 367]        :                                       ; go back to menu
-[ 368]    080F: E9 8F FE                              jmp            menu_start
-[ 369]    0812:                                       btn_balance:
-[ 370]    0812: 83 FA 60                              cmp            dx, 0060h
-[ 371]    0815: 7C 9E                                 jnge           render_loop
-[ 372]    0817: 83 FA 67                              cmp            dx, 0067h
-[ 373]    081A: 7F 14                                 jnle           btn_logout
-[ 374]    081C: B6 0C B2 03 B7 00 B4 02 CD 10         cursor_at      12,3
-[ 375]    0826: 8A 16 A9 00 B4 02 CD 21               printc         _sym[11]
-[ 376]        :                                       ; PROCESS: balance
-[ 377]        :                                       ; ENDPRC
-[ 378]    082E: EB 85                                 jmp            render_loop
-[ 379]    0830:                                       btn_logout:
-[ 380]    0830: 81 FA 80 00                           cmp            dx, 0080h
-[ 381]    0834: 7D 03 E9 7C FF                        jnge           render_loop
-[ 382]    0839: 81 FA 87 00                           cmp            dx, 0087h
-[ 383]    083D: 7E 03 E9 73 FF                        jnle           render_loop
-[ 384]    0842: B6 10 B2 03 B7 00 B4 02 CD 10         cursor_at      16,3
-[ 385]    084C: 8A 16 A9 00 B4 02 CD 21               printc         _sym[11]
-[ 386]    0854: 83 FB 01                              cmp            bx, 0001h
-[ 387]    0857: 74 03 E9 59 FF                        jne            render_loop
-[ 388]        :                                       ; PROCESS: logout
-[ 389]        :                                       ; sets all significant data to invalid state
-[ 390]    085C: C6 06 29 00 24                        mov            in_card_no[2], '$'
-[ 391]    0861: C6 06 3C 00 24                        mov            in_pin_code[2], '$'
-[ 392]    0866: C6 06 00 00 00                        mov            acct_login[0], 00h
-[ 393]        :                                       ; ENDPRC
-[ 394]        :                                       ; returns to main PROC
-[ 395]    086B: C3                                    ret
-[ 396]    086C:                                       col_2:
-[ 397]    086C:                                       btn_deposit:
-[ 398]    086C: 83 FA 40                              cmp            dx, 0040h
-[ 399]    086F: 7D 03 E9 41 FF                        jnge           render_loop
-[ 400]    0874: 83 FA 47                              cmp            dx, 0047h
-[ 401]    0877: 7F 15                                 jnle           btn_reset_pin
-[ 402]    0879: B6 08 B2 15 B7 00 B4 02 CD 10         cursor_at      8,21
-[ 403]    0883: 8A 16 A9 00 B4 02 CD 21               printc         _sym[11]
-[ 404]    088B: E9 27 FF                              jmp            render_loop
-[ 405]    088E:                                       btn_reset_pin:
-[ 406]    088E: 83 FA 60                              cmp            dx, 0060h
-[ 407]    0891: 7D 03 E9 1F FF                        jnge           render_loop
-[ 408]    0896: 83 FA 67                              cmp            dx, 0067h
-[ 409]    0899: 7F 18                                 jnle           btn_details
-[ 410]    089B: B6 0C B2 15 B7 00 B4 02 CD 10         cursor_at      12,21
-[ 411]    08A5: 8A 16 A9 00 B4 02 CD 21               printc         _sym[11]
-[ 412]        :                                       ; PROCESS: reset pin
-[ 413]    08AD: E8 32 00                              call           input_page
-[ 414]        :                                       ; TODO
-[ 415]        :                                       ; ENDPRC
-[ 416]    08B0: E9 EE FD                              jmp            menu_start
-[ 417]    08B3:                                       btn_details:
-[ 418]    08B3: 81 FA 80 00                           cmp            dx, 0080h
-[ 419]    08B7: 7D 03 E9 F9 FE                        jnge           render_loop
-[ 420]    08BC: 81 FA 87 00                           cmp            dx, 0087h
-[ 421]    08C0: 7E 03 E9 F0 FE                        jnle           render_loop
-[ 422]    08C5: B6 10 B2 15 B7 00 B4 02 CD 10         cursor_at      16,21
-[ 423]    08CF: 8A 16 A9 00 B4 02 CD 21               printc         _sym[11]
-[ 424]    08D7: E9 DB FE                              jmp            render_loop
-[ 425]    08DA: E9 D8 FE                              jmp            render_loop
-[ 426]    08DD: B4 01 CD 21                           pause
-[ 427]    08E1: C3                                    ret
+[ 365]    080F: E8 DD 00                              call           input_page
+[ 366]    0812: B1 00 8A 2E 4D 00 33 C0 2C 30 50 E2   withdrawable   input_amount, ff_balance
+                F9                                  
+[ 367]        :                                       ; ENDPRC
+[ 368]        :                                       ; go back to menu
+[ 369]    081F: E9 7F FE                              jmp            menu_start
+[ 370]    0822:                                       btn_balance:
+[ 371]    0822: 83 FA 60                              cmp            dx, 0060h
+[ 372]    0825: 7C 8E                                 jnge           render_loop
+[ 373]    0827: 83 FA 67                              cmp            dx, 0067h
+[ 374]    082A: 7F 15                                 jnle           btn_logout
+[ 375]    082C: B6 0C B2 03 B7 00 B4 02 CD 10         cursor_at      12,3
+[ 376]    0836: 8A 16 A9 00 B4 02 CD 21               printc         _sym[11]
+[ 377]        :                                       ; PROCESS: balance
+[ 378]        :                                       ; ENDPRC
+[ 379]    083E: E9 74 FF                              jmp            render_loop
+[ 380]    0841:                                       btn_logout:
+[ 381]    0841: 81 FA 80 00                           cmp            dx, 0080h
+[ 382]    0845: 7D 03 E9 6B FF                        jnge           render_loop
+[ 383]    084A: 81 FA 87 00                           cmp            dx, 0087h
+[ 384]    084E: 7E 03 E9 62 FF                        jnle           render_loop
+[ 385]    0853: B6 10 B2 03 B7 00 B4 02 CD 10         cursor_at      16,3
+[ 386]    085D: 8A 16 A9 00 B4 02 CD 21               printc         _sym[11]
+[ 387]    0865: 83 FB 01                              cmp            bx, 0001h
+[ 388]    0868: 74 03 E9 48 FF                        jne            render_loop
+[ 389]        :                                       ; PROCESS: logout
+[ 390]        :                                       ; sets all significant data to invalid state
+[ 391]    086D: C6 06 29 00 24                        mov            in_card_no[2], '$'
+[ 392]    0872: C6 06 3C 00 24                        mov            in_pin_code[2], '$'
+[ 393]    0877: C6 06 00 00 00                        mov            acct_login[0], 00h
+[ 394]        :                                       ; ENDPRC
+[ 395]        :                                       ; returns to main PROC
+[ 396]    087C: C3                                    ret
+[ 397]    087D:                                       col_2:
+[ 398]    087D:                                       btn_deposit:
+[ 399]    087D: 83 FA 40                              cmp            dx, 0040h
+[ 400]    0880: 7D 03 E9 30 FF                        jnge           render_loop
+[ 401]    0885: 83 FA 47                              cmp            dx, 0047h
+[ 402]    0888: 7F 15                                 jnle           btn_reset_pin
+[ 403]    088A: B6 08 B2 15 B7 00 B4 02 CD 10         cursor_at      8,21
+[ 404]    0894: 8A 16 A9 00 B4 02 CD 21               printc         _sym[11]
+[ 405]    089C: E9 16 FF                              jmp            render_loop
+[ 406]    089F:                                       btn_reset_pin:
+[ 407]    089F: 83 FA 60                              cmp            dx, 0060h
+[ 408]    08A2: 7D 03 E9 0E FF                        jnge           render_loop
+[ 409]    08A7: 83 FA 67                              cmp            dx, 0067h
+[ 410]    08AA: 7F 18                                 jnle           btn_details
+[ 411]    08AC: B6 0C B2 15 B7 00 B4 02 CD 10         cursor_at      12,21
+[ 412]    08B6: 8A 16 A9 00 B4 02 CD 21               printc         _sym[11]
+[ 413]        :                                       ; PROCESS: reset pin
+[ 414]    08BE: E8 2E 00                              call           input_page
+[ 415]        :                                       ; TODO
+[ 416]        :                                       ; ENDPRC
+[ 417]    08C1: E9 DD FD                              jmp            menu_start
+[ 418]    08C4:                                       btn_details:
+[ 419]    08C4: 81 FA 80 00                           cmp            dx, 0080h
+[ 420]    08C8: 7D 03 E9 E8 FE                        jnge           render_loop
+[ 421]    08CD: 81 FA 87 00                           cmp            dx, 0087h
+[ 422]    08D1: 7E 03 E9 DF FE                        jnle           render_loop
+[ 423]    08D6: B6 10 B2 15 B7 00 B4 02 CD 10         cursor_at      16,21
+[ 424]    08E0: 8A 16 A9 00 B4 02 CD 21               printc         _sym[11]
+[ 425]    08E8: E9 CA FE                              jmp            render_loop
+[ 426]    08EB: E9 C7 FE                              jmp            render_loop
+[ 427]    08EE: C3                                    ret
 [ 428]        :                                       menu_page ENDP
 [ 429]        :                                       
 [ 430]        :                                       ;---------------------- INPUT PAGE PROC -------------------------;
-[ 431]    08E2:                                       input_page PROC
-[ 432]    08E2: E8 66 00                              call           cls
-[ 433]    08E5: B6 09 B2 0B B7 00 B4 02 CD 10         cursor_at      9,11
-[ 434]    08EF: BA 9C 01 B4 09 CD 21                  prints         input_text
-[ 435]    08F6: B6 0C B2 0B B7 00 B4 02 CD 10         cursor_at      12,11
-[ 436]    0900: B1 0C B2 2D B4 02 CD 21 E2 F8         printr         '-',12
-[ 437]    090A: B6 0F B2 01 B7 00 B4 02 CD 10         cursor_at      15,1
-[ 438]    0914: BA AA 01 B4 09 CD 21                  prints         input_note
-[ 439]    091B: B6 0B B2 0B B7 00 B4 02 CD 10         cursor_at      11,11
-[ 440]    0925: B5 06 B1 07 B4 01 CD 10 BA 4C 00 B4   reads          input_amount
+[ 431]    08EF:                                       input_page PROC
+[ 432]    08EF: E8 66 00                              call           cls
+[ 433]    08F2: B6 09 B2 0B B7 00 B4 02 CD 10         cursor_at      9,11
+[ 434]    08FC: BA 9C 01 B4 09 CD 21                  prints         input_text
+[ 435]    0903: B6 0C B2 0B B7 00 B4 02 CD 10         cursor_at      12,11
+[ 436]    090D: B1 0C B2 2D B4 02 CD 21 E2 F8         printr         '-',12
+[ 437]    0917: B6 0F B2 01 B7 00 B4 02 CD 10         cursor_at      15,1
+[ 438]    0921: BA AA 01 B4 09 CD 21                  prints         input_note
+[ 439]    0928: B6 0B B2 0B B7 00 B4 02 CD 10         cursor_at      11,11
+[ 440]    0932: B5 06 B1 07 B4 01 CD 10 BA 4C 00 B4   reads          input_amount
                 0A CD 21 33 DB 8A 1E 4D 00 C6 47 4E 
                 24 BA 4E 00 B5 32 B4 01 CD 10       
-[ 441]    0947: E8 01 00                              call           cls
-[ 442]    094A: C3                                    ret
+[ 441]    0954: E8 01 00                              call           cls
+[ 442]    0957: C3                                    ret
 [ 443]        :                                       input_page ENDP
 [ 444]        :                                       
 [ 445]        :                                       ;---------------------- CLEAR PROC -------------------------;
-[ 446]    094B:                                       cls PROC
-[ 447]    094B: 32 C0                                 xor            al, al
-[ 448]    094D: 33 C9                                 xor            cx, cx
-[ 449]    094F: BA 4F 18                              mov            dx, 184fh
-[ 450]    0952: B7 1E                                 mov            bh, 1eh
-[ 451]    0954: B4 06                                 mov            ah, 06h
-[ 452]    0956: CD 10                                 int            10h
-[ 453]    0958: C3                                    ret
+[ 446]    0958:                                       cls PROC
+[ 447]    0958: 32 C0                                 xor            al, al
+[ 448]    095A: 33 C9                                 xor            cx, cx
+[ 449]    095C: BA 4F 18                              mov            dx, 184fh
+[ 450]    095F: B7 1E                                 mov            bh, 1eh
+[ 451]    0961: B4 06                                 mov            ah, 06h
+[ 452]    0963: CD 10                                 int            10h
+[ 453]    0965: C3                                    ret
 [ 454]        :                                       cls ENDP
 [ 455]        :                                       
 [ 456]        :                                       ;---------------------- EXIT PROC -------------------------;
-[ 457]    0959:                                       sys_exit PROC
-[ 458]    0959: B6 0B B2 0B B7 00 B4 02 CD 10         cursor_at      11,11
-[ 459]    0963: E8 E5 FF BA D1 01 B4 09 CD 21         alert          exit_msg
+[ 457]    0966:                                       sys_exit PROC
+[ 458]    0966: B6 0B B2 0B B7 00 B4 02 CD 10         cursor_at      11,11
+[ 459]    0970: E8 E5 FF BA D1 01 B4 09 CD 21         alert          exit_msg
 [ 460]        :                                       ; DOS Exit
-[ 461]    096D: B4 4C                                 mov            ah, 4ch
-[ 462]    096F: CD 21                                 int            21h
-[ 463]    0971: C3                                    ret
+[ 461]    097A: B4 4C                                 mov            ah, 4ch
+[ 462]    097C: CD 21                                 int            21h
+[ 463]    097E: C3                                    ret
 [ 464]        :                                       sys_exit ENDP
 [ 465]        :                                       
 [ 466]        :                                       ;---------------------- GET TIME PROC -------------------------;
-[ 467]    0972:                                       get_time PROC
+[ 467]    097F:                                       get_time PROC
 [ 468]        :                                       ; input  : BX=offset address of the string TIME
 [ 469]        :                                       ; output : BX=current time
 [ 470]        :                                       ; get current system time
-[ 471]    0972: B4 2C                                 mov            ah, 2ch
-[ 472]    0974: CD 21                                 int            21h
+[ 471]    097F: B4 2C                                 mov            ah, 2ch
+[ 472]    0981: CD 21                                 int            21h
 [ 473]        :                                       
 [ 474]        :                                       ; ch=hours
-[ 475]    0976: 8A C5                                 mov            al, ch
-[ 476]    0978: E8 13 00                              call           to_ascii
-[ 477]    097B: 89 07                                 mov            [bx], ax
+[ 475]    0983: 8A C5                                 mov            al, ch
+[ 476]    0985: E8 13 00                              call           to_ascii
+[ 477]    0988: 89 07                                 mov            [bx], ax
 [ 478]        :                                       
 [ 479]        :                                       ; cl=minutes
-[ 480]    097D: 8A C1                                 mov            al, cl
-[ 481]    097F: E8 0C 00                              call           to_ascii
-[ 482]    0982: 89 47 03                              mov            [bx+3], ax
+[ 480]    098A: 8A C1                                 mov            al, cl
+[ 481]    098C: E8 0C 00                              call           to_ascii
+[ 482]    098F: 89 47 03                              mov            [bx+3], ax
 [ 483]        :                                       ; dh=seconds
-[ 484]    0985: 8A C6                                 mov            al, dh
-[ 485]    0987: E8 04 00                              call           to_ascii
-[ 486]    098A: 89 47 06                              mov            [bx+6], ax
-[ 487]    098D: C3                                    ret
+[ 484]    0992: 8A C6                                 mov            al, dh
+[ 485]    0994: E8 04 00                              call           to_ascii
+[ 486]    0997: 89 47 06                              mov            [bx+6], ax
+[ 487]    099A: C3                                    ret
 [ 488]        :                                       get_time ENDP
 [ 489]        :                                       
 [ 490]        :                                       ;---------------------- TO ASCII PROC -------------------------;
-[ 491]    098E:                                       to_ascii PROC
+[ 491]    099B:                                       to_ascii PROC
 [ 492]        :                                       ; input  : AL=binary code
 [ 493]        :                                       ; output : AX=ASCII code
-[ 494]    098E: B4 00                                 mov            ah, 00h
-[ 495]    0990: B2 0A                                 mov            dl, 10d
-[ 496]    0992: F6 F2                                 div            dl
-[ 497]    0994: 0D 30 30                              or             ax, 3030H
-[ 498]    0997: C3                                    ret
+[ 494]    099B: B4 00                                 mov            ah, 00h
+[ 495]    099D: B2 0A                                 mov            dl, 10d
+[ 496]    099F: F6 F2                                 div            dl
+[ 497]    09A1: 0D 30 30                              or             ax, 3030H
+[ 498]    09A4: C3                                    ret
 [ 499]        :                                       to_ascii ENDP
 [ 500]        :                                       
 [ 501]        :                                       ;---------------------- VALIDATE ACCOUNT PROC -------------------------;
-[ 502]    0998:                                       validate_acct PROC
+[ 502]    09A5:                                       validate_acct PROC
 [ 503]        :                                       ; compare card_no
-[ 504]    0998: BE 01 00                              lea            si, ff_card_no
-[ 505]    099B: BF 29 00                              lea            di, [in_card_no+2]
-[ 506]    099E: 33 C9                                 xor            cx, cx
-[ 507]    09A0: B9 10 00                              mov            cx, 10h
-[ 508]    09A3: 8A 04                                 mov            al, [si]
-[ 509]    09A5: 8A 1D                                 mov            bl, [di]
-[ 510]    09A7: 3A C3                                 cmp            al, bl
-[ 511]    09A9: 75 21                                 jne            str_notequal
-[ 512]    09AB: F3 A6                                 repe cmpsb
-[ 513]    09AD: 75 1D                                 jne            str_notequal
+[ 504]    09A5: BE 01 00                              lea            si, ff_card_no
+[ 505]    09A8: BF 29 00                              lea            di, [in_card_no+2]
+[ 506]    09AB: 33 C9                                 xor            cx, cx
+[ 507]    09AD: B9 10 00                              mov            cx, 10h
+[ 508]    09B0: 8A 04                                 mov            al, [si]
+[ 509]    09B2: 8A 1D                                 mov            bl, [di]
+[ 510]    09B4: 3A C3                                 cmp            al, bl
+[ 511]    09B6: 75 21                                 jne            str_notequal
+[ 512]    09B8: F3 A6                                 repe cmpsb
+[ 513]    09BA: 75 1D                                 jne            str_notequal
 [ 514]        :                                       ; compare pin_code
-[ 515]    09AF: BE 12 00                              lea            si, ff_pin_code
-[ 516]    09B2: BF 3C 00                              lea            di, [in_pin_code+2]
-[ 517]    09B5: 33 C9                                 xor            cx, cx
-[ 518]    09B7: B9 06 00                              mov            cx, 06h
-[ 519]    09BA: 8A 04                                 mov            al, [si]
-[ 520]    09BC: 8A 1D                                 mov            bl, [di]
-[ 521]    09BE: 3A C3                                 cmp            al, bl
-[ 522]    09C0: 75 0A                                 jne            str_notequal
-[ 523]    09C2: F3 A6                                 repe cmpsb
-[ 524]    09C4: 75 06                                 jne            str_notequal
+[ 515]    09BC: BE 12 00                              lea            si, ff_pin_code
+[ 516]    09BF: BF 3C 00                              lea            di, [in_pin_code+2]
+[ 517]    09C2: 33 C9                                 xor            cx, cx
+[ 518]    09C4: B9 06 00                              mov            cx, 06h
+[ 519]    09C7: 8A 04                                 mov            al, [si]
+[ 520]    09C9: 8A 1D                                 mov            bl, [di]
+[ 521]    09CB: 3A C3                                 cmp            al, bl
+[ 522]    09CD: 75 0A                                 jne            str_notequal
+[ 523]    09CF: F3 A6                                 repe cmpsb
+[ 524]    09D1: 75 06                                 jne            str_notequal
 [ 525]        :                                       ; equal
-[ 526]    09C6: C6 06 00 00 01                        mov            acct_login[0], 01h
-[ 527]    09CB: C3                                    ret
-[ 528]    09CC:                                       str_notequal:
-[ 529]    09CC: B6 0A B2 0A B7 00 B4 02 CD 10         cursor_at      10,10
-[ 530]    09D6: E8 72 FF BA 63 01 B4 09 CD 21         alert          err_incorrect
-[ 531]    09E0: E8 07 00                              call           delay
-[ 532]    09E3: C3                                    ret
+[ 526]    09D3: C6 06 00 00 01                        mov            acct_login[0], 01h
+[ 527]    09D8: C3                                    ret
+[ 528]    09D9:                                       str_notequal:
+[ 529]    09D9: B6 0A B2 0A B7 00 B4 02 CD 10         cursor_at      10,10
+[ 530]    09E3: E8 72 FF BA 63 01 B4 09 CD 21         alert          err_incorrect
+[ 531]    09ED: E8 07 00                              call           delay
+[ 532]    09F0: C3                                    ret
 [ 533]        :                                       validate_acct ENDP
 [ 534]        :                                       
 [ 535]        :                                       ;---------------------- GET MOUSE COORDINATE PROC -------------------------;
-[ 536]    09E4:                                       whereis_mouse PROC
-[ 537]    09E4: B8 03 00                              mov            ax, 03h
-[ 538]    09E7: CD 33                                 int            33h
-[ 539]    09E9: C3                                    ret
+[ 536]    09F1:                                       whereis_mouse PROC
+[ 537]    09F1: B8 03 00                              mov            ax, 03h
+[ 538]    09F4: CD 33                                 int            33h
+[ 539]    09F6: C3                                    ret
 [ 540]        :                                       ENDP
 [ 541]        :                                       
 [ 542]        :                                       ;---------------------- DELAY PROC -------------------------;
 [ 543]        :                                       ; one second delay
-[ 544]    09EA:                                       delay PROC
-[ 545]    09EA: B0 00                                 mov            al, 00h
-[ 546]    09EC: B9 0F 00                              mov            cx, 0Fh
-[ 547]    09EF: BA 40 42                              mov            dx, 4240h
-[ 548]    09F2: B4 86                                 mov            ah, 86h
-[ 549]    09F4: CD 15                                 int            15h
-[ 550]    09F6: C3                                    ret
+[ 544]    09F7:                                       delay PROC
+[ 545]    09F7: B0 00                                 mov            al, 00h
+[ 546]    09F9: B9 0F 00                              mov            cx, 0Fh
+[ 547]    09FC: BA 40 42                              mov            dx, 4240h
+[ 548]    09FF: B4 86                                 mov            ah, 86h
+[ 549]    0A01: CD 15                                 int            15h
+[ 550]    0A03: C3                                    ret
 [ 551]        :                                       ENDP
 [ 552]        :                                       END main
 [ 553]        :                                       
@@ -613,9 +614,9 @@ EXE HEADER - bytes from 0000 to 01FF inclusive.
 
 0000: 4D      -   exe signature (M)
 0001: 5A      -   exe signature (Z)
-0002: F7      -   bytes on last page (l.byte)
-0003: 01      -   bytes on last page (h.byte)
-0004: 06      -   512 byte pages in file (l.byte)
+0002: 04      -   bytes on last page (l.byte)
+0003: 00      -   bytes on last page (h.byte)
+0004: 07      -   512 byte pages in file (l.byte)
 0005: 00      -   512 byte pages in file (h.byte)
 0006: 01      -   relocations (l.byte)
 0007: 00      -   relocations (h.byte)
@@ -629,8 +630,8 @@ EXE HEADER - bytes from 0000 to 01FF inclusive.
 000F: 00      -   SS - stack segment (h.byte)
 0010: 00      -   SP - stack pointer (l.byte)
 0011: 01      -   SP - stack pointer (h.byte)
-0012: 69      -   check sum (l.byte)
-0013: 25      -   check sum (h.byte)
+0012: C6      -   check sum (l.byte)
+0013: 7B      -   check sum (h.byte)
 0014: 00      -   IP - instruction pointer (l.byte)
 0015: 00      -   IP - instruction pointer (h.byte)
 0016: 31      -   CS - code segment (l.byte)
