@@ -19,15 +19,15 @@ reads MACRO buffer
     mov           ah, 01h
     int           10h
     lea           dx, buffer
-	mov           ah, 0ah
-	int           21h
-	xor           bx, bx
-	mov           bl, buffer[1]
-	mov           buffer[bx+2], '$'
-	lea           dx, buffer + 2
-	mov           ch, 32h
-	mov           ah, 01h
-	int           10h
+    mov           ah, 0ah
+    int           21h
+    xor           bx, bx
+    mov           bl, buffer[1]
+    mov           buffer[bx+2], '$'
+    lea           dx, buffer + 2
+    mov           ch, 32h
+    mov           ah, 01h
+    int           10h
 ENDM
 
 ; string printing

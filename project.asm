@@ -26,9 +26,9 @@ title "Bank Account Manager"
                     ;   [0]   [1]   [2]   [3]   [4]   [5]   [6]   [7]   [8]   [9]   [10]  [11]
     _sym            db  185d, 186d, 187d, 188d, 200d, 201d, 202d, 203d, 204d, 205d, 206d, 175d
 
-	login_accnt     db "Welcome, JC!$"
-	login_desc      db "Your personal bank acc't manager$"
-	login_frm_text  db "CARD NO.$", "PIN CODE$" 
+    login_accnt     db "Welcome, JC!$"
+    login_desc      db "Your personal bank acc't manager$"
+    login_frm_text  db "CARD NO.$", "PIN CODE$" 
     login_frm_sel   db "[ OK ]$", "[ CANCEL ]$"
     
     menu_frm_text   db  "Withdraw$", "Deposit$", "Balance$", "Reset PIN$", "Log Out$", "Details$"
@@ -41,7 +41,7 @@ title "Bank Account Manager"
     
     input_text      db  "Enter amount:$"
     input_note      db  "NOTE: Amount should be divisible by 20$"
-	
+    
     exit_msg        db "Thank you. Goodbye!$"
     app_version     db "Teller Machine @ 2020 ", 179d, " v1.0$"
 .CODE
@@ -81,14 +81,14 @@ setup PROC
                     ; data segment address
                     mov            dx, @data
                     mov            ds, dx
-	                mov            es, dx
+                    mov            es, dx
     
                     ; set video mode
-                	mov            al, 00h
-                	mov            ah, 00h
-                	int            10h
-                	
-                	; disable blinking
+                    mov            al, 00h
+                    mov            ah, 00h
+                    int            10h
+                    
+                    ; disable blinking
                     mov            ax, 1003h
                     mov            bx, 00h
                     int            10h   
@@ -97,12 +97,12 @@ setup PROC
                     mov            ch, 32h
                     mov            ah, 01h
                     int            10h
-                	
-                	; initialize mouse
-                	mov            ax, 00h
-                	int            33h
-                	
-                	; display mouse cursor:
+                    
+                    ; initialize mouse
+                    mov            ax, 00h
+                    int            33h
+                    
+                    ; display mouse cursor:
                     mov            ax, 01h
                     int            33h
                     
@@ -151,9 +151,9 @@ setup PROC
                     mov            ah, 3Eh
                     mov            bx, fhandle   
                     ret 
-	fileerr:
-            	    prints         err_file404
-            	    call           sys_exit  
+    fileerr:
+                    prints         err_file404
+                    call           sys_exit  
 setup ENDP
 
 ;---------------------- LOGIN PAGE PROC -------------------------;
@@ -161,119 +161,119 @@ login_page PROC
                     ; selection form printing
                     cursor_at      3,2
                     printc         _sym[5]
-	                printr         _sym[9],34
-                	printc         _sym[2]
-                	
-                	cursor_at      4,2
-                	printc         _sym[1]
-                	cursor_at      4,37
-                	printc         _sym[1]
-                	cursor_at      4,4
-                	prints         login_accnt
-                	
-                	cursor_at      5,2
-                	printc         _sym[1]
-                	cursor_at      5,37
-                	printc         _sym[1]
-                	cursor_at      5,4
-                	prints         login_desc
-                	
-                	cursor_at      6,2
-                	printc         _sym[4]
-                	printr         _sym[9],34
-                	printc         _sym[3]
-                	 
-                	cursor_at      8,2
-                	printc         _sym[5]
-                	printr         _sym[9],12
-                	printc         _sym[7]
-                	printr         _sym[9],21
-                	printc         _sym[2]
-                	
-                	cursor_at      9,2
-                	printc         _sym[1]
-                	cursor_at      9,15
-                	printc         _sym[1]
-                	cursor_at      9,37
-                	printc         _sym[1]
-                	cursor_at      9,4
-                	prints         login_frm_text[0]
-                	
-                	cursor_at      10,2
-                	printc         _sym[8]
-                	printr         _sym[9],12
-                	printc         _sym[10]
-                	printr         _sym[9],21
-                	printc         _sym[0]
+                    printr         _sym[9],34
+                    printc         _sym[2]
+                    
+                    cursor_at      4,2
+                    printc         _sym[1]
+                    cursor_at      4,37
+                    printc         _sym[1]
+                    cursor_at      4,4
+                    prints         login_accnt
+                    
+                    cursor_at      5,2
+                    printc         _sym[1]
+                    cursor_at      5,37
+                    printc         _sym[1]
+                    cursor_at      5,4
+                    prints         login_desc
+                    
+                    cursor_at      6,2
+                    printc         _sym[4]
+                    printr         _sym[9],34
+                    printc         _sym[3]
+                     
+                    cursor_at      8,2
+                    printc         _sym[5]
+                    printr         _sym[9],12
+                    printc         _sym[7]
+                    printr         _sym[9],21
+                    printc         _sym[2]
+                    
+                    cursor_at      9,2
+                    printc         _sym[1]
+                    cursor_at      9,15
+                    printc         _sym[1]
+                    cursor_at      9,37
+                    printc         _sym[1]
+                    cursor_at      9,4
+                    prints         login_frm_text[0]
+                    
+                    cursor_at      10,2
+                    printc         _sym[8]
+                    printr         _sym[9],12
+                    printc         _sym[10]
+                    printr         _sym[9],21
+                    printc         _sym[0]
 
-                	cursor_at      11,2
-                	printc         _sym[1]
-                	cursor_at      11,4
-                	prints         login_frm_text[9]
-                	cursor_at      11,15
-                	printc         _sym[1]
-                	cursor_at      11,37
-                	printc         _sym[1]
-                 	
-                	cursor_at      12,2
-                	printc         _sym[4]
-                	printr         _sym[9],12
-                	printc         _sym[6]
-                	printr         _sym[9],21
-                	printc         _sym[3]
-                	
-                	cursor_at      14,6
-                	prints         login_frm_sel[0]
-                	cursor_at      14,18
-                	prints         login_frm_sel[7]
-                	
-                	cursor_at      23,2
-                	prints         app_version
-	
-	; listens to mouse-pos
-	keep_listening:
+                    cursor_at      11,2
+                    printc         _sym[1]
+                    cursor_at      11,4
+                    prints         login_frm_text[9]
+                    cursor_at      11,15
+                    printc         _sym[1]
+                    cursor_at      11,37
+                    printc         _sym[1]
+                    
+                    cursor_at      12,2
+                    printc         _sym[4]
+                    printr         _sym[9],12
+                    printc         _sym[6]
+                    printr         _sym[9],21
+                    printc         _sym[3]
+                    
+                    cursor_at      14,6
+                    prints         login_frm_sel[0]
+                    cursor_at      14,18
+                    prints         login_frm_sel[7]
+                    
+                    cursor_at      23,2
+                    prints         app_version
+
+    ; listens to mouse-pos
+    keep_listening:
                     ; get mouse state
                     call           whereis_mouse
                     ; left button click
-                	cmp            bx, 01h
-                	jne            keep_listening
-                	; passes when left button is pressed
-                	
-                	; form-selected detection
-                	cmp            cx, 0080h
-                	jnge           menu_selection
-                	cmp            cx, 0126H
-                	jnle           menu_selection
-                	
-	card_no:
+                    cmp            bx, 01h
+                    jne            keep_listening
+                    ; passes when left button is pressed
+                    
+                    ; form-selected detection
+                    cmp            cx, 0080h
+                    jnge           menu_selection
+                    cmp            cx, 0126H
+                    jnle           menu_selection
+                    
+    card_no:
                     cmp            dx, 0050h
                     jnle           pin_code
                     cmp            dx, 0048h
                     jnge           menu_selection
                     cursor_at      9,16
                     reads          in_card_no
-	pin_code:
+    pin_code:
                     cmp            dx, 005Eh
                     jnle           menu_selection
                     cmp            dx, 0059h
                     jnge           menu_selection
                     cursor_at      11,16
                     reads          in_pin_code
-                	    
-                	; ok&cancel menu detection 
-	menu_selection:
+
+                    ; ok&cancel menu detection 
+    menu_selection:
                     cmp            dx, 006Eh
                     jnge           keep_listening
                     cmp            dx, 0075h
                     jnle           keep_listening
-	cancel_button:
+    cancel_button:
                     cmp            cx, 0090h
                     jnge           ok_button
                     cmp            cx, 00DFh
                     jnle           keep_listening
                     call           sys_exit
-	ok_button:
-                	cmp            cx, 0030h
+    ok_button:
+                    cmp            cx, 0030h
                     jnge           keep_listening
                     cmp            cx, 005Fh
                     jnle           keep_listening
@@ -458,9 +458,9 @@ sys_exit PROC
                     cursor_at      11,11
                     alert          exit_msg
                     ; DOS Exit
-                	mov            ah, 4ch
-                	int            21h
-                	ret
+                    mov            ah, 4ch
+                    int            21h
+                    ret
 sys_exit ENDP            
 
 ;---------------------- GET TIME PROC -------------------------;
@@ -542,15 +542,11 @@ ENDP
 ;---------------------- DELAY PROC -------------------------;
 ; one second delay
 delay PROC
-                    mov            bp, 43690d
-                    mov            si, 43690d
-                    _delay:
-                    dec            bp
-                    nop
-                    jnz            _delay
-                    dec            si
-                    cmp            si,0    
-                    jnz            _delay
+                    mov            al, 00h
+                    mov            cx, 01d
+                    mov            dx, 02d
+                    mov            ah, 86h
+                    int            15h
                     ret
 ENDP
 END main

@@ -2,7 +2,7 @@ EMU8086 GENERATED LISTING. MACHINE CODE <- SOURCE.
  
 project.exe_ -- emu8086 assembler version: 4.08  
  
-[ 03/04/2020  --  11:01:26 pm ] 
+[ 03/04/2020  --  11:11:02 pm ] 
  
 ===================================================================================================
 [LINE]     LOC: MACHINE CODE                          SOURCE
@@ -597,19 +597,15 @@ project.exe_ -- emu8086 assembler version: 4.08
 [ 542]        :                                       ;---------------------- DELAY PROC -------------------------;
 [ 543]        :                                       ; one second delay
 [ 544]    09EA:                                       delay PROC
-[ 545]    09EA: BD AA AA                              mov            bp, 43690d
-[ 546]    09ED: BE AA AA                              mov            si, 43690d
-[ 547]    09F0:                                       _delay:
-[ 548]    09F0: 4D                                    dec            bp
-[ 549]    09F1: 90                                    nop
-[ 550]    09F2: 75 FC                                 jnz            _delay
-[ 551]    09F4: 4E                                    dec            si
-[ 552]    09F5: 83 FE 00                              cmp            si,0
-[ 553]    09F8: 75 F6                                 jnz            _delay
-[ 554]    09FA: C3                                    ret
-[ 555]        :                                       ENDP
-[ 556]        :                                       END main
-[ 557]        :                                       
+[ 545]    09EA: B0 00                                 mov            al, 00h
+[ 546]    09EC: B9 01 00                              mov            cx, 01d
+[ 547]    09EF: BA 02 00                              mov            dx, 02d
+[ 548]    09F2: B4 86                                 mov            ah, 86h
+[ 549]    09F4: CD 15                                 int            15h
+[ 550]    09F6: C3                                    ret
+[ 551]        :                                       ENDP
+[ 552]        :                                       END main
+[ 553]        :                                       
  
 ===================================================================================================
  
@@ -617,7 +613,7 @@ EXE HEADER - bytes from 0000 to 01FF inclusive.
 
 0000: 4D      -   exe signature (M)
 0001: 5A      -   exe signature (Z)
-0002: FB      -   bytes on last page (l.byte)
+0002: F7      -   bytes on last page (l.byte)
 0003: 01      -   bytes on last page (h.byte)
 0004: 06      -   512 byte pages in file (l.byte)
 0005: 00      -   512 byte pages in file (h.byte)
@@ -633,8 +629,8 @@ EXE HEADER - bytes from 0000 to 01FF inclusive.
 000F: 00      -   SS - stack segment (h.byte)
 0010: 00      -   SP - stack pointer (l.byte)
 0011: 01      -   SP - stack pointer (h.byte)
-0012: FB      -   check sum (l.byte)
-0013: B2      -   check sum (h.byte)
+0012: A7      -   check sum (l.byte)
+0013: 75      -   check sum (h.byte)
 0014: 00      -   IP - instruction pointer (l.byte)
 0015: 00      -   IP - instruction pointer (h.byte)
 0016: 31      -   CS - code segment (l.byte)

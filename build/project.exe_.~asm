@@ -542,15 +542,11 @@ ENDP
 ;---------------------- DELAY PROC -------------------------;
 ; one second delay
 delay PROC
-mov            bp, 43690d
-mov            si, 43690d
-_delay:
-dec            bp
-nop
-jnz            _delay
-dec            si
-cmp            si,0
-jnz            _delay
+mov            al, 00h
+mov            cx, 01d
+mov            dx, 02d
+mov            ah, 86h
+int            15h
 ret
 ENDP
 END main

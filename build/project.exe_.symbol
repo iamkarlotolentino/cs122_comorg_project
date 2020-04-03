@@ -76,8 +76,7 @@ VALIDATE_ACCT            	00688     	-1        	NEAR      	code
 STR_NOTEQUAL             	006BC     	-1        	LABEL     	code      
 WHEREIS_MOUSE            	006D4     	-1        	NEAR      	code      
 DELAY                    	006DA     	-1        	NEAR      	code      
-_DELAY                   	006E0     	-1        	LABEL     	code      
 ===================================================================================================
-[ 03/04/2020  --  11:01:26 pm ] 
+[ 03/04/2020  --  11:11:02 pm ] 
 < END >
  
