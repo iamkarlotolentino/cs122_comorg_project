@@ -20,6 +20,9 @@ title "Bank Account Manager"
     fname           db  "account.txt", 0
     fhandle         dw  ?
     fbuffer         db  38 dup(?)
+
+                    ;  [0][1][2][3][4][5][6][7]
+    page_buffer     db  0, 0, 0, 0, 0, 0, 0, 0
     
     time            db  "Time:$"
     timestamp       db  "00:00:00$"
@@ -50,7 +53,6 @@ main PROC
                     ; initialize all proper data and setup
                     call           setup
     login:
-                    call           cls
                     call           login_page
                     ; evaluate if the input is valid
                     ; pin-code not empty
@@ -65,12 +67,11 @@ main PROC
                     jne            login
                     jmp            continue
     login_error:
-                    cursor_at      11,13
+                    cursor_at      11,13,6
                     alert          err_blank
                     call           delay
                     jmp            login
     continue:
-                    call           cls
                     call           menu_page
                     ; expected logout has been called
                     jmp            login
@@ -158,77 +159,85 @@ setup ENDP
 
 ;---------------------- LOGIN PAGE PROC -------------------------;
 login_page PROC
+                    set_videopage  0
+                    ; check if page has been loaded
+                    cmp            page_buffer[0], 1
+                    je             keep_listening
+                    call           cls
                     ; selection form printing
-                    cursor_at      3,2
+                    cursor_at      3,2,0
                     printc         _sym[5]
                     printr         _sym[9],34
                     printc         _sym[2]
                     
-                    cursor_at      4,2
+                    cursor_at      4,2,0
                     printc         _sym[1]
-                    cursor_at      4,37
+                    cursor_at      4,37,0
                     printc         _sym[1]
-                    cursor_at      4,4
+                    cursor_at      4,4,0
                     prints         login_accnt
                     
-                    cursor_at      5,2
+                    cursor_at      5,2,0
                     printc         _sym[1]
-                    cursor_at      5,37
+                    cursor_at      5,37,0
                     printc         _sym[1]
-                    cursor_at      5,4
+                    cursor_at      5,4,0
                     prints         login_desc
                     
-                    cursor_at      6,2
+                    cursor_at      6,2,0
                     printc         _sym[4]
                     printr         _sym[9],34
                     printc         _sym[3]
                      
-                    cursor_at      8,2
+                    cursor_at      8,2,0
                     printc         _sym[5]
                     printr         _sym[9],12
                     printc         _sym[7]
                     printr         _sym[9],21
                     printc         _sym[2]
                     
-                    cursor_at      9,2
+                    cursor_at      9,2,0
                     printc         _sym[1]
-                    cursor_at      9,15
+                    cursor_at      9,15,0
                     printc         _sym[1]
-                    cursor_at      9,37
+                    cursor_at      9,37,0
                     printc         _sym[1]
-                    cursor_at      9,4
+                    cursor_at      9,4,0
                     prints         login_frm_text[0]
                     
-                    cursor_at      10,2
+                    cursor_at      10,2,0
                     printc         _sym[8]
                     printr         _sym[9],12
                     printc         _sym[10]
                     printr         _sym[9],21
                     printc         _sym[0]
 
-                    cursor_at      11,2
+                    cursor_at      11,2,0
                     printc         _sym[1]
-                    cursor_at      11,4
+                    cursor_at      11,4,0
                     prints         login_frm_text[9]
-                    cursor_at      11,15
+                    cursor_at      11,15,0
                     printc         _sym[1]
-                    cursor_at      11,37
+                    cursor_at      11,37,0
                     printc         _sym[1]
                     
-                    cursor_at      12,2
+                    cursor_at      12,2,0
                     printc         _sym[4]
                     printr         _sym[9],12
                     printc         _sym[6]
                     printr         _sym[9],21
                     printc         _sym[3]
                     
-                    cursor_at      14,6
+                    cursor_at      14,6,0
                     prints         login_frm_sel[0]
-                    cursor_at      14,18
+                    cursor_at      14,18,0
                     prints         login_frm_sel[7]
                     
-                    cursor_at      23,2
+                    cursor_at      23,2,0
                     prints         app_version
+
+                    ; mark the page has been loaded
+                    mov            page_buffer[0], 1
 
     ; listens to mouse-pos
     keep_listening:
@@ -250,14 +259,14 @@ login_page PROC
                     jnle           pin_code
                     cmp            dx, 0048h
                     jnge           menu_selection
-                    cursor_at      9,16
+                    cursor_at      9,16,0
                     reads          in_card_no
     pin_code:
                     cmp            dx, 005Eh
                     jnle           menu_selection
                     cmp            dx, 0059h
                     jnge           menu_selection
-                    cursor_at      11,16
+                    cursor_at      11,16,0
                     reads          in_pin_code
 
                     ; ok&cancel menu detection 
@@ -284,63 +293,72 @@ login_page ENDP
 ;---------------------- MENU PAGE PROC -------------------------;
 menu_page PROC
     menu_start:
+                    set_videopage  1
+                    ; check if page has been loaded
+                    cmp            page_buffer[1], 1
+                    je             render_loop
+                    call           cls
+
                     ; al=row start
                     mov bl,        07h
                     mov cl,        03h
                     ; print the selection box
     create_block:
                     ; creates block
-                    cursor_at      bl,2
+                    cursor_at      bl,2,1
                     prints         menu_hdr
-                    cursor_at      bl,20
+                    cursor_at      bl,20,1
                     prints         menu_hdr
                     inc            bl
-                    cursor_at      bl,2
+                    cursor_at      bl,2,1
                     printc         _sym[1]
-                    cursor_at      bl,18
+                    cursor_at      bl,18,1
                     printc         _sym[1]
-                    cursor_at      bl,20
+                    cursor_at      bl,20,1
                     printc        _sym[1]
-                    cursor_at      bl,36
+                    cursor_at      bl,36,1
                     printc         _sym[1]
                     inc            bl
-                    cursor_at      bl,2
+                    cursor_at      bl,2,1
                     prints         menu_frm_ftr
-                    cursor_at      bl,20
+                    cursor_at      bl,20,1
                     prints         menu_frm_ftr
                     add            bl, 2
                     loop           create_block
         
                     ; withdraw-text
-                    cursor_at      8,6
+                    cursor_at      8,6,1
                     prints         menu_frm_text[0]
                     ; deposit-text
-                    cursor_at      8,25
+                    cursor_at      8,25,1
                     prints         menu_frm_text[9]
                     ; balance-text
-                    cursor_at      12,7
+                    cursor_at      12,7,1
                     prints         menu_frm_text[17]
                     ; reset-pin text
-                    cursor_at      12,24
+                    cursor_at      12,24,1
                     prints         menu_frm_text[25]
                     ; log-out text
-                    cursor_at      16,7
+                    cursor_at      16,7,1
                     prints         menu_frm_text[35]
                     ; details text
-                    cursor_at      16,25
+                    cursor_at      16,25,1
                     prints         menu_frm_text[43]
     
                     ; prints time (text) 
-                    cursor_at      4,2
-                    prints         time   
+                    cursor_at      4,2,1
+                    prints         time
+
+                    ; mark the page has been loaded
+                    mov            page_buffer[1], 1
     render_loop:
                     ; time printing
                     lea            bx,timestamp
                     call           get_time
-                    cursor_at      2,2
+                    cursor_at      2,2,1
                     prints         login_desc
                     
-                    cursor_at      4,8
+                    cursor_at      4,8,1
                     prints         timestamp
                     
                     call           whereis_mouse
@@ -358,7 +376,7 @@ menu_page PROC
                     jnge           render_loop
                     cmp            dx, 0047h
                     jnle           btn_balance
-                    cursor_at      8,3
+                    cursor_at      8,3,1
                     printc         _sym[11]
                     ; PROCESS: withdraw
                     ; withdraw process
@@ -372,7 +390,7 @@ menu_page PROC
                     jnge           render_loop
                     cmp            dx, 0067h
                     jnle           btn_logout
-                    cursor_at      12,3
+                    cursor_at      12,3,1
                     printc         _sym[11]
                     ; PROCESS: balance
                     ; ENDPRC
@@ -382,10 +400,8 @@ menu_page PROC
                     jnge           render_loop
                     cmp            dx, 0087h
                     jnle           render_loop
-                    cursor_at      16,3
+                    cursor_at      16,3,1
                     printc         _sym[11]
-                    cmp            bx, 0001h
-                    jne            render_loop
                     ; PROCESS: logout
                     ; sets all significant data to invalid state
                     mov            in_card_no[2], '$'
@@ -400,7 +416,7 @@ menu_page PROC
                     jnge           render_loop
                     cmp            dx, 0047h
                     jnle           btn_reset_pin
-                    cursor_at      8,21
+                    cursor_at      8,21,1
                     printc         _sym[11]
                     jmp            render_loop
     btn_reset_pin:
@@ -408,7 +424,7 @@ menu_page PROC
                     jnge           render_loop
                     cmp            dx, 0067h
                     jnle           btn_details
-                    cursor_at      12,21
+                    cursor_at      12,21,1
                     printc         _sym[11]
                     ; PROCESS: reset pin
                     call           input_page
@@ -420,7 +436,7 @@ menu_page PROC
                     jnge           render_loop
                     cmp            dx, 0087h
                     jnle           render_loop
-                    cursor_at      16,21
+                    cursor_at      16,21,1
                     printc         _sym[11]
                     jmp            render_loop
                     jmp            render_loop
@@ -429,16 +445,21 @@ menu_page ENDP
 
 ;---------------------- INPUT PAGE PROC -------------------------;
 input_page PROC
+                    set_videopage  2
+                    ; check if page has been loaded
+                    cmp            page_buffer[2], 1
+                    je             input_read
                     call           cls
-                    cursor_at      9,11
+                    cursor_at      9,11,2
                     prints         input_text
-                    cursor_at      12,11
-                    printr         '-',12
-                    cursor_at      15,1
+                    cursor_at      12,11,2
+                    printr         '-',12d
+                    cursor_at      15,1,2
                     prints         input_note 
-                    cursor_at      11,11
+                    cursor_at      11,11,2
+                    mov            page_buffer[2], 1
+    input_read:
                     reads          input_amount
-                    call           cls
                     ret
 input_page ENDP
 
@@ -455,7 +476,7 @@ cls ENDP
 
 ;---------------------- EXIT PROC -------------------------;
 sys_exit PROC
-                    cursor_at      11,11
+                    cursor_at      11,11,6
                     alert          exit_msg
                     ; DOS Exit
                     mov            ah, 4ch
@@ -526,7 +547,7 @@ validate_acct PROC
                     mov            acct_login[0], 01h
                     ret
     str_notequal:
-                    cursor_at      10,10
+                    cursor_at      10,10,6
                     alert          err_incorrect
                     call           delay
                     ret    

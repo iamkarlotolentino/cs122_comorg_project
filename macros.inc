@@ -4,23 +4,26 @@
 ;**************************************************************************;
 
 ; set cursor position
-cursor_at MACRO row,column
+cursor_at MACRO row,column, page
             mov           dh, row
             mov           dl, column
-            mov           bh, 0
+            mov           bh, page
             mov           ah, 2
             int           10h
 ENDM
 
 ; string scanner
 reads MACRO buffer
+            ; show cursor
             mov           ch, 06h
             mov           cl, 07h
             mov           ah, 01h
             int           10h
+            ; read string
             lea           dx, buffer
             mov           ah, 0ah
             int           21h
+            ; add terminate character
             xor           bx, bx
             mov           bl, buffer[1]
             mov           buffer[bx+2], '$'
@@ -47,12 +50,14 @@ ENDM
 ; repeated char printing
 printr MACRO sym, count
             LOCAL         l
+            mov           ch, 00h
             mov           cl, count
 l:          printc        sym
             loop          l
 ENDM
 
 alert MACRO msg
+            set_videopage 6
             call          cls
             prints        msg
 ENDM
@@ -61,7 +66,7 @@ withdrawable MACRO amount, balance
     ; reverse the balance string
     ; push each byte to al
             mov           cl, 00h
-            mov           ch, amount[1]        
+            mov           ch, amount[1]
 push_amnt:
             xor           ax, ax
             ; convert to real value
@@ -80,4 +85,11 @@ ENDM
 
 update_balance MACRO new_balance
 
+ENDM
+
+; select active video page
+set_videopage MACRO pageno
+            mov           al, pageno
+            mov           ah, 05h
+            int           10h
 ENDM
