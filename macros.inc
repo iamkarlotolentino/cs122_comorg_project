@@ -63,19 +63,6 @@ alert MACRO msg
 ENDM
 
 withdrawable MACRO amount, balance
-    ; reverse the balance string
-    ; push each byte to al
-            mov           cl, 00h
-            mov           ch, amount[1]
-push_amnt:
-            xor           ax, ax
-            ; convert to real value
-            ; mov           al, amount[cx+2]
-            sub           al, 30h
-            push          ax
-            loop          push_amnt
-    ; reverse the amount string
-    ; push each byte to ah
 ENDM
 
 ; passes the new pin

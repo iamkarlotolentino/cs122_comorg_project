@@ -1,9 +1,9 @@
 
-include 'macros.inc'
+INCLUDE 'macros.inc'
 
-title "Bank Account Manager"
+TITLE "Bank Account Manager"
 
-.MODEL small
+.MODEL SMALL
 .STACK 100h
 .DATA
     acct_login      db   0
@@ -26,8 +26,8 @@ title "Bank Account Manager"
     
     time            db  "Time:$"
     timestamp       db  "00:00:00$"
-                    ;   [0]   [1]   [2]   [3]   [4]   [5]   [6]   [7]   [8]   [9]   [10]  [11]
-    _sym            db  185d, 186d, 187d, 188d, 200d, 201d, 202d, 203d, 204d, 205d, 206d, 175d
+                    ;   [0]   [1]   [2]   [3]   [4]   [5]   [6]   [7]   [8]   [9]   [10]
+    _sym            db  185d, 186d, 187d, 188d, 200d, 201d, 202d, 203d, 204d, 205d, 206d
 
     login_accnt     db "Welcome, JC!$"
     login_desc      db "Your personal bank acc't manager$"
@@ -376,8 +376,6 @@ menu_page PROC
                     jnge           render_loop
                     cmp            dx, 0047h
                     jnle           btn_balance
-                    cursor_at      8,3,1
-                    printc         _sym[11]
                     ; PROCESS: withdraw
                     ; withdraw process
                     call           input_page
@@ -390,8 +388,6 @@ menu_page PROC
                     jnge           render_loop
                     cmp            dx, 0067h
                     jnle           btn_logout
-                    cursor_at      12,3,1
-                    printc         _sym[11]
                     ; PROCESS: balance
                     ; ENDPRC
                     jmp            render_loop
@@ -400,8 +396,6 @@ menu_page PROC
                     jnge           render_loop
                     cmp            dx, 0087h
                     jnle           render_loop
-                    cursor_at      16,3,1
-                    printc         _sym[11]
                     ; PROCESS: logout
                     ; sets all significant data to invalid state
                     mov            in_card_no[2], '$'
@@ -424,8 +418,6 @@ menu_page PROC
                     jnge           render_loop
                     cmp            dx, 0067h
                     jnle           btn_details
-                    cursor_at      12,21,1
-                    printc         _sym[11]
                     ; PROCESS: reset pin
                     call           input_page
                     ; TODO
@@ -436,8 +428,6 @@ menu_page PROC
                     jnge           render_loop
                     cmp            dx, 0087h
                     jnle           render_loop
-                    cursor_at      16,21,1
-                    printc         _sym[11]
                     jmp            render_loop
                     jmp            render_loop
                     ret
