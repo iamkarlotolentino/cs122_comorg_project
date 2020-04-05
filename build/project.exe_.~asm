@@ -1,9 +1,9 @@
 
-include 'macros.inc'
+INCLUDE 'macros.inc'
 
-title "Bank Account Manager"
+TITLE "Bank Account Manager"
 
-.MODEL small
+.MODEL SMALL
 .STACK 100h
 .DATA
 acct_login      db   0
@@ -21,8 +21,13 @@ fname           db  "account.txt", 0
 fhandle         dw  ?
 fbuffer         db  38 dup(?)
 
-;  [0][1][2][3][4][5][6][7]
-page_buffer     db  0, 0, 0, 0, 0, 0, 0, 0
+PAGE_LOGIN      db 0
+PAGE_MENU       db 0
+PAGE_INPUT      db 0
+PAGE_RESET      db 0
+PAGE_BALANCE    db 0
+PAGE_ALERT      db 0
+PAGE_WAIT       db 0
 
 time            db  "Time:$"
 timestamp       db  "00:00:00$"
@@ -41,6 +46,8 @@ menu_frm_ftr    db  200d, 15 dup(205d), 188d, '$'
 err_blank       db  "NOT VALID INPUT$"
 err_incorrect   db  "Incorrect! Try again.$"
 err_file404     db  "Error. Account database not found!$"
+
+msg_wait        db  "Please wait$"
 
 input_text      db  "Enter amount:$"
 input_note      db  "NOTE: Amount should be divisible by 20$"
@@ -65,6 +72,17 @@ je             login_error
 call           validate_acct
 cmp            acct_login, 01h
 jne            login
+; load please wait
+set_videopage  7
+cmp            PAGE_WAIT, 1
+je             please_wait
+call           cls
+prints         11, 15, 7, msg_wait
+mov            PAGE_WAIT, 1
+please_wait:
+; removing input text in login page
+printr         9,  16, 0, ' ', 16
+printr         11, 16, 0, ' ', 6
 jmp            continue
 login_error:
 cursor_at      11,13,6
@@ -153,7 +171,7 @@ mov            ah, 3Eh
 mov            bx, fhandle
 ret
 fileerr:
-prints         err_file404
+prints         0, 0, 0, err_file404
 call           sys_exit
 setup ENDP
 
@@ -161,83 +179,61 @@ setup ENDP
 login_page PROC
 set_videopage  0
 ; check if page has been loaded
-cmp            page_buffer[0], 1
+cmp            PAGE_LOGIN, 1
 je             keep_listening
 call           cls
 ; selection form printing
-cursor_at      3,2,0
-printc         _sym[5]
-printr         _sym[9],34
-printc         _sym[2]
+printc         3,  2, 0, _sym[5]
+printr         3,  3, 0, _sym[9], 34
+printc         3, 37, 0, _sym[2]
 
-cursor_at      4,2,0
-printc         _sym[1]
-cursor_at      4,37,0
-printc         _sym[1]
-cursor_at      4,4,0
-prints         login_accnt
+printc         4,  2, 0, _sym[1]
+printc         4, 37, 0, _sym[1]
+prints         4,  4, 0, login_accnt
 
-cursor_at      5,2,0
-printc         _sym[1]
-cursor_at      5,37,0
-printc         _sym[1]
-cursor_at      5,4,0
-prints         login_desc
+printc         5,  2, 0, _sym[1]
+printc         5, 37, 0, _sym[1]
+prints         5,  4, 0, login_desc
 
-cursor_at      6,2,0
-printc         _sym[4]
-printr         _sym[9],34
-printc         _sym[3]
+printc         6,  2, 0, _sym[4]
+printr         6,  3, 0, _sym[9], 34
+printc         6, 37, 0, _sym[3]
 
-cursor_at      8,2,0
-printc         _sym[5]
-printr         _sym[9],12
-printc         _sym[7]
-printr         _sym[9],21
-printc         _sym[2]
+printc         8,  2, 0, _sym[5]
+printr         8,  3, 0, _sym[9], 12
+printc         8, 15, 0, _sym[7]
+printr         8, 16, 0, _sym[9], 21
+printc         8, 37, 0, _sym[2]
 
-cursor_at      9,2,0
-printc         _sym[1]
-cursor_at      9,15,0
-printc         _sym[1]
-cursor_at      9,37,0
-printc         _sym[1]
-cursor_at      9,4,0
-prints         login_frm_text[0]
+printc         9,  2, 0, _sym[1]
+printc         9, 15, 0, _sym[1]
+printc         9, 37, 0, _sym[1]
+prints         9,  4, 0, login_frm_text[0]
 
-cursor_at      10,2,0
-printc         _sym[8]
-printr         _sym[9],12
-printc         _sym[10]
-printr         _sym[9],21
-printc         _sym[0]
+printc         10,  2, 0, _sym[8]
+printr         10,  3, 0, _sym[9], 12
+printc         10, 15, 0, _sym[10]
+printr         10, 16, 0, _sym[9], 21
+printc         10, 37, 0, _sym[0]
 
-cursor_at      11,2,0
-printc         _sym[1]
-cursor_at      11,4,0
-prints         login_frm_text[9]
-cursor_at      11,15,0
-printc         _sym[1]
-cursor_at      11,37,0
-printc         _sym[1]
+printc         11,  2, 0, _sym[1]
+prints         11,  4, 0, login_frm_text[9]
+printc         11, 15, 0, _sym[1]
+printc         11, 37, 0, _sym[1]
 
-cursor_at      12,2,0
-printc         _sym[4]
-printr         _sym[9],12
-printc         _sym[6]
-printr         _sym[9],21
-printc         _sym[3]
+printc         12,  2, 0, _sym[4]
+printr         12,  3, 0, _sym[9], 12
+printc         12, 15, 0, _sym[6]
+printr         12, 16, 0, _sym[9], 21
+printc         12, 37, 0, _sym[3]
 
-cursor_at      14,6,0
-prints         login_frm_sel[0]
-cursor_at      14,18,0
-prints         login_frm_sel[7]
+prints         14,  6, 0, login_frm_sel[0]
+prints         14, 18, 0, login_frm_sel[7]
 
-cursor_at      23,2,0
-prints         app_version
+prints         23,  2, 0, app_version
 
 ; mark the page has been loaded
-mov            page_buffer[0], 1
+mov            PAGE_LOGIN, 1
 
 ; listens to mouse-pos
 keep_listening:
@@ -259,14 +255,14 @@ cmp            dx, 0050h
 jnle           pin_code
 cmp            dx, 0048h
 jnge           menu_selection
-cursor_at      9,16,0
+cursor_at      9, 16, 0
 reads          in_card_no
 pin_code:
 cmp            dx, 005Eh
 jnle           menu_selection
 cmp            dx, 0059h
 jnge           menu_selection
-cursor_at      11,16,0
+cursor_at      11, 16, 0
 reads          in_pin_code
 
 ; ok&cancel menu detection
@@ -295,7 +291,7 @@ menu_page PROC
 menu_start:
 set_videopage  1
 ; check if page has been loaded
-cmp            page_buffer[1], 1
+cmp            PAGE_MENU, 1
 je             render_loop
 call           cls
 
@@ -305,61 +301,44 @@ mov cl,        03h
 ; print the selection box
 create_block:
 ; creates block
-cursor_at      bl,2,1
-prints         menu_hdr
-cursor_at      bl,20,1
-prints         menu_hdr
+prints         bl,  2, 1, menu_hdr
+prints         bl, 20, 1, menu_hdr
 inc            bl
-cursor_at      bl,2,1
-printc         _sym[1]
-cursor_at      bl,18,1
-printc         _sym[1]
-cursor_at      bl,20,1
-printc        _sym[1]
-cursor_at      bl,36,1
-printc         _sym[1]
+printc         bl,  2, 1, _sym[1]
+printc         bl, 18, 1, _sym[1]
+printc         bl, 20, 1, _sym[1]
+printc         bl, 36, 1, _sym[1]
 inc            bl
-cursor_at      bl,2,1
-prints         menu_frm_ftr
-cursor_at      bl,20,1
-prints         menu_frm_ftr
+prints         bl,  2, 1, menu_frm_ftr
+prints         bl, 20, 1, menu_frm_ftr
 add            bl, 2
 loop           create_block
 
 ; withdraw-text
-cursor_at      8,6,1
-prints         menu_frm_text[0]
+prints         8,  6, 1, menu_frm_text[0]
 ; deposit-text
-cursor_at      8,25,1
-prints         menu_frm_text[9]
+prints         8, 25, 1, menu_frm_text[9]
 ; balance-text
-cursor_at      12,7,1
-prints         menu_frm_text[17]
+prints         12,  7, 1, menu_frm_text[17]
 ; reset-pin text
-cursor_at      12,24,1
-prints         menu_frm_text[25]
+prints         12, 24, 1, menu_frm_text[25]
 ; log-out text
-cursor_at      16,7,1
-prints         menu_frm_text[35]
+prints         16,  7, 1, menu_frm_text[35]
 ; details text
-cursor_at      16,25,1
-prints         menu_frm_text[43]
+prints         16, 25, 1, menu_frm_text[43]
 
 ; prints time (text)
-cursor_at      4,2,1
-prints         time
+prints         4, 2, 1, time
 
 ; mark the page has been loaded
-mov            page_buffer[1], 1
+mov            PAGE_MENU, 1
 render_loop:
 ; time printing
 lea            bx,timestamp
 call           get_time
-cursor_at      2,2,1
-prints         login_desc
+prints         2, 2, 1, login_desc
 
-cursor_at      4,8,1
-prints         timestamp
+prints         4, 8, 1, timestamp
 
 call           whereis_mouse
 cmp            bx, 0001h
@@ -410,8 +389,7 @@ cmp            dx, 0040h
 jnge           render_loop
 cmp            dx, 0047h
 jnle           btn_reset_pin
-cursor_at      8,21,1
-printc         _sym[11]
+printc         8, 21, 1, _sym[11]
 jmp            render_loop
 btn_reset_pin:
 cmp            dx, 0060h
@@ -437,17 +415,14 @@ menu_page ENDP
 input_page PROC
 set_videopage  2
 ; check if page has been loaded
-cmp            page_buffer[2], 1
+cmp            PAGE_INPUT, 1
 je             input_read
 call           cls
-cursor_at      9,11,2
-prints         input_text
-cursor_at      12,11,2
-printr         '-',12d
-cursor_at      15,1,2
-prints         input_note
-cursor_at      11,11,2
-mov            page_buffer[2], 1
+prints         9, 11, 2, input_text
+printr         12, 11, 2, '-', 12
+prints         15,  1, 2, input_note
+mov            PAGE_INPUT, 1
+cursor_at      11, 11, 2
 input_read:
 reads          input_amount
 ret

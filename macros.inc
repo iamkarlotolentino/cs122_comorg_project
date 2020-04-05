@@ -4,17 +4,18 @@
 ;**************************************************************************;
 
 ; set cursor position
-cursor_at MACRO row,column, page
+cursor_at MACRO row, column, page
             mov           dh, row
             mov           dl, column
             mov           bh, page
             mov           ah, 2
             int           10h
-ENDM
+cursor_at ENDM
 
 ; string scanner
 reads MACRO buffer
-            ; show cursor
+            pusha
+            ; show standard blinking text cursor
             mov           ch, 06h
             mov           cl, 07h
             mov           ah, 01h
@@ -28,55 +29,87 @@ reads MACRO buffer
             mov           bl, buffer[1]
             mov           buffer[bx+2], '$'
             lea           dx, buffer + 2
-            mov           ch, 32h
+            ; hide blinking cursor
+            mov           ch, 20h
             mov           ah, 01h
             int           10h
-ENDM
+            popa
+reads ENDM
 
 ; string printing
-prints MACRO msg
+prints MACRO row, col, page, msg
+            pusha
+            ; cursor _at
+            mov           dh, row
+            mov           dl, col
+            mov           bh, page
+            mov           ah, 2
+            int           10h
+            ; prints string
             mov           dx, offset msg
             mov           ah, 9
             int           21h
-ENDM
+            popa
+prints ENDM
 
 ; char printing
-printc MACRO char
-            mov           dl, char
+printc MACRO row, col, page, char
+            pusha
+            ; cursor _at
+            mov           dh, row
+            mov           dl, col
+            mov           bh, page
             mov           ah, 2
-            int           21h
-ENDM
+            int           10h
+            ; char
+            mov           al, char
+            mov           cx, 0001h
+            mov           bh, page
+            mov           ah, 0Ah
+            int           10h
+            popa
+printc ENDM
 
 ; repeated char printing
-printr MACRO sym, count
-            LOCAL         l
-            mov           ch, 00h
-            mov           cl, count
-l:          printc        sym
-            loop          l
-ENDM
+printr MACRO row, col, page, sym, count
+            pusha
+            ; cursor _at
+            mov           dh, row
+            mov           dl, col
+            mov           bh, page
+            mov           ah, 2
+            int           10h
+
+            mov           cx, count
+            mov           bh, page
+            mov           bl, 1Eh
+            mov           al, sym
+            mov           ah, 09h
+            int           10h
+            popa
+printr ENDM
 
 alert MACRO msg
             set_videopage 6
             call          cls
-            prints        msg
-ENDM
+            prints        0, 0, 0, msg
+alert ENDM
 
 withdrawable MACRO amount, balance
-ENDM
+withdrawable ENDM
 
 ; passes the new pin
 update_pin MACRO new_pin
     
-ENDM
+update_pin ENDM
 
 update_balance MACRO new_balance
 
-ENDM
+update_balance ENDM
 
 ; select active video page
 set_videopage MACRO pageno
             mov           al, pageno
             mov           ah, 05h
             int           10h
-ENDM
+set_videopage ENDM
