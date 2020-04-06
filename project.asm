@@ -15,7 +15,7 @@ TITLE "Bank Account Manager"
     in_pin_code     db   7, ?,  7 dup('$')
     new_pin_code    db   7, ?,  7 dup('$')
     
-    input_amount    db  13, ?, 13 dup(' ')
+    input_amount    db  13, ?, 13 dup('$')
     
     fname           db  "account.txt", 0
     fhandle         dw  ?
@@ -50,8 +50,7 @@ TITLE "Bank Account Manager"
 
     msg_wait        db  "Please wait$"
     
-    input_text      db  "Enter amount:$"
-    input_note      db  "NOTE: Amount should be divisible by 20$"
+    input_text      db  "ENTER AMOUNT$"
     
     exit_msg        db "Thank you. Goodbye!$"
     app_version     db "Teller Machine @ 2020 ", 179d, " v1.0$"
@@ -417,16 +416,43 @@ input_page PROC
                     cmp            PAGE_INPUT, 1
                     je             input_read
                     call           cls
-                    prints         9, 11, 2, input_text
-                    printr         12, 11, 2, '-', 12
-                    prints         15,  1, 2, input_note 
+                    printc         7,  6, 2, _sym[5]
+                    printr         7,  7, 2, _sym[9], 26
+                    printc         7, 33, 2, _sym[2]
+                    printc         8,  6, 2, _sym[1]
+                    printc         8, 33, 2, _sym[1]
+                    prints         9, 14, 2, input_text
+                    printc         9,  6, 2, _sym[1]
+                    printc         9, 33, 2, _sym[1]
+
+                    printc         11, 13, 2, '['
+                    printr         11, 14, 2, '-', 12
+                    printc         11, 26, 2, ']'
+
+                    printc         12,  6, 2, _sym[1]
+                    printc         12, 33, 2, _sym[1]
+                    printc         13,  6, 2, _sym[4]
+                    printr         13,  7, 2, _sym[9], 26
+                    printc         13, 33, 2, _sym[3]
+
                     mov            PAGE_INPUT, 1
-                    cursor_at      11, 11, 2
+                    cursor_at      11, 14, 2
     input_read:
                     reads          input_amount
-                    set_videopage  PAGE_WAIT
-                    printr         11, 11, 2, ' ', 12
+                    set_videopage  7
+                    printr         11, 14, 2, '-', 12
+                    ; should not be empty
+                    cmp            input_amount[2], '$'
+                    je             empty
+                    ; return to process if not empty
                     ret
+    empty:
+                    set_videopage  7
+                    cursor_at      11,13,6
+                    alert          err_blank
+                    call           delay
+                    set_videopage  2
+                    jmp            input_read
 input_page ENDP
 
 ;----------------------- CLEAR PROC -------------------------;
