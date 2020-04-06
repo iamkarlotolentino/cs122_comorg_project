@@ -3,7 +3,7 @@
 Name                     	Offset    	Size      	Type      	Segment   
 ===================================================================================================
 STACK                    	00000     	-5        	SEGMENT   	(ITSELF)  
-DATA                     	00050     	-5        	SEGMENT   	(ITSELF)  
+DATA                     	00013     	-5        	SEGMENT   	(ITSELF)  
 ACCT_LOGIN               	00000     	1         	VAR       	data      
 FF_CARD_NO               	00001     	1         	VAR       	data      
 FF_PIN_CODE              	00012     	1         	VAR       	data      
@@ -37,10 +37,9 @@ ERR_INCORRECT            	00169     	1         	VAR       	data
 ERR_FILE404              	0017F     	1         	VAR       	data      
 MSG_WAIT                 	001A2     	1         	VAR       	data      
 INPUT_TEXT               	001AE     	1         	VAR       	data      
-INPUT_NOTE               	001BC     	1         	VAR       	data      
-EXIT_MSG                 	001E3     	1         	VAR       	data      
-APP_VERSION              	001F7     	1         	VAR       	data      
-CODE                     	00072     	-5        	SEGMENT   	(ITSELF)  
+EXIT_MSG                 	001BB     	1         	VAR       	data      
+APP_VERSION              	001CF     	1         	VAR       	data      
+CODE                     	00032     	-5        	SEGMENT   	(ITSELF)  
 MAIN                     	00000     	-1        	NEAR      	code      
 LOGIN                    	00003     	-1        	LABEL     	code      
 PLEASE_WAIT              	00046     	-1        	LABEL     	code      
@@ -68,16 +67,17 @@ BTN_DEPOSIT              	0074A     	-1        	LABEL     	code
 BTN_RESET_PIN            	0076F     	-1        	LABEL     	code      
 BTN_DETAILS              	00782     	-1        	LABEL     	code      
 INPUT_PAGE               	0079B     	-1        	NEAR      	code      
-INPUT_READ               	007F9     	-1        	LABEL     	code      
-CLS                      	0083E     	-1        	NEAR      	code      
-SYS_EXIT                 	0084C     	-1        	NEAR      	code      
-GET_TIME                 	00877     	-1        	NEAR      	code      
-TO_ASCII                 	00893     	-1        	NEAR      	code      
-VALIDATE_ACCT            	0089D     	-1        	NEAR      	code      
-STR_NOTEQUAL             	008D1     	-1        	LABEL     	code      
-WHEREIS_MOUSE            	008FB     	-1        	NEAR      	code      
-DELAY                    	00901     	-1        	NEAR      	code      
+INPUT_READ               	0093B     	-1        	LABEL     	code      
+EMPTY                    	00986     	-1        	LABEL     	code      
+CLS                      	009BE     	-1        	NEAR      	code      
+SYS_EXIT                 	009CC     	-1        	NEAR      	code      
+GET_TIME                 	009F7     	-1        	NEAR      	code      
+TO_ASCII                 	00A13     	-1        	NEAR      	code      
+VALIDATE_ACCT            	00A1D     	-1        	NEAR      	code      
+STR_NOTEQUAL             	00A51     	-1        	LABEL     	code      
+WHEREIS_MOUSE            	00A7B     	-1        	NEAR      	code      
+DELAY                    	00A81     	-1        	NEAR      	code      
 ===================================================================================================
-[ 06/04/2020  --  1:45:58 pm ] 
+[ 06/04/2020  --  3:14:08 pm ] 
 < END >
  
