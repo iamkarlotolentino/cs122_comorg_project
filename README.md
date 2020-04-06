@@ -27,7 +27,6 @@ The application changes video page for faster view response. Refer in this list 
 - [ ] Working on withdraw
 - [ ] Working on deposit
 - [ ] Working on details
-- [ ] 
 
 #### About
 
