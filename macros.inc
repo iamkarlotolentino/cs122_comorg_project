@@ -80,7 +80,8 @@ printr MACRO row, col, page, sym, count
             mov           ah, 2
             int           10h
 
-            mov           cx, count
+            xor           cx, cx
+            mov           cl, count
             mov           bh, page
             mov           bl, 1Eh
             mov           al, sym
@@ -96,11 +97,36 @@ alert MACRO msg
 alert ENDM
 
 withdrawable MACRO amount, balance
+
 withdrawable ENDM
 
 ; passes the new pin
 update_pin MACRO new_pin
-    
+            LOCAL         _loop
+            ; update fbuffer before writing to file
+            lea           si, new_pin[2]
+            lea           di, fbuffer[20]
+            xor           cx, cx
+            mov           cx, 0006h
+_loop:
+            mov           al, [si]
+            mov           [di], al
+            inc           si
+            inc           di
+            loop          _loop
+            ; seek file position
+            mov           bx, fhandle
+            mov           cx, 0000h
+            mov           dx, 0000h
+            mov           al, 00h
+            mov           ah, 42h
+            int           21h
+            ; write to file
+            mov           bx, fhandle
+            mov           dx, offset fbuffer
+            mov           cx, 40d
+            mov           ah, 40h
+            int           21h
 update_pin ENDM
 
 update_balance MACRO new_balance

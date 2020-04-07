@@ -13,7 +13,7 @@ The application changes video page for faster view response. Refer in this list 
 [3] --> Reset PIN page
 [4] --> Balance page
 [5] --> Details page
-[6] --> Alert page
+[6] --> Open page (for any purposes)
 [7] --> Please wait page
 ```
 

@@ -6,21 +6,22 @@ TITLE "Bank Account Manager"
 .MODEL small
 .STACK 125h
 .DATA
-acct_login      db   0
-ff_card_no      db  16 dup(' '), '$'
-ff_pin_code     db   7 dup(' '), '$'
-ff_balance      db  12 dup(' '), '$'
+; Accounts flags and details
+acct_login      db   0                              ; {1} = account is active
+ff_card_no      db  16 dup(' '), '$'                ; card no from the account file
+ff_pin_code     db   7 dup(' '), '$'                ; pin code from the account file
+ff_balance      db  12 dup(' '), '$'                ; balance from the account file
 
-in_card_no      db  17, ?, 17 dup('$')
-in_pin_code     db   7, ?,  7 dup('$')
-new_pin_code    db   7, ?,  7 dup('$')
-
-input_amount    db  13, ?, 13 dup('$')
-
+; File handling of the account file
 fname           db  "account.txt", 0
 fhandle         dw  ?
-fbuffer         db  38 dup(?)
+fbuffer         db  40 dup(?)
 
+new_pin_code    db   7, ?,  7 dup('$')
+
+_input          db  13, ?, 13 dup('$')
+
+; Flags to check if page has been loaded
 PAGE_LOGIN      db 0
 PAGE_MENU       db 0
 PAGE_INPUT      db 0
@@ -40,6 +41,11 @@ login_desc      db "Your personal bank acc't manager$"
 login_frm_text  db "CARD NO.$", "PIN CODE$"
 login_frm_sel   db "[ OK ]$", "[ CANCEL ]$"
 
+; Input of account details, used in login page
+input_text      db  "ENTER INPUT$"
+in_card_no      db  17, ?, 17 dup('$')
+in_pin_code     db   7, ?,  7 dup('$')
+
 menu_frm_text   db  "Withdraw$", "Deposit$", "Balance$", "Reset PIN$", "Log Out$", "Details$"
 menu_hdr        db  201d, 15 dup(205d), 187d, '$'
 menu_frm_ftr    db  200d, 15 dup(205d), 188d, '$'
@@ -49,11 +55,8 @@ err_incorrect   db  "Incorrect! Try again.$"
 err_file404     db  "Error. Account database not found!$"
 
 msg_wait        db  "Please wait$"
-
-input_text      db  "ENTER AMOUNT$"
-
-exit_msg        db "Thank you. Goodbye!$"
-app_version     db "Teller Machine @ 2020 ", 179d, " v1.0$"
+msg_exit        db "Thank you. Goodbye!$"
+msg_copyright   db "Teller Machine @ 2020 ", 179d, " v1.0$"
 .CODE
 ;---------------------- MAIN PROC -------------------------;
 main PROC
@@ -230,7 +233,7 @@ printc         12, 37, 0, _sym[3]
 prints         14,  6, 0, login_frm_sel[0]
 prints         14, 18, 0, login_frm_sel[7]
 
-prints         23,  2, 0, app_version
+prints         23,  2, 0, msg_copyright
 
 ; mark the page has been loaded
 mov            PAGE_LOGIN, 1
@@ -355,8 +358,9 @@ cmp            dx, 0047h
 jnle           btn_balance
 ; PROCESS: withdraw
 ; withdraw process
+mov            al, 0Ch
 call           input_page
-withdrawable   input_amount, ff_balance
+withdrawable   _input, ff_balance
 ; ENDPRC
 ; go back to menu
 jmp            menu_start
@@ -395,7 +399,9 @@ jnge           render_loop
 cmp            dx, 0067h
 jnle           btn_details
 ; PROCESS: reset pin
+mov            al, 06h
 call           input_page
+update_pin     _input
 ; TODO
 ; ENDPRC
 jmp            menu_start
@@ -410,7 +416,10 @@ ret
 menu_page ENDP
 
 ;-------------------- INPUT PAGE PROC -----------------------;
+; al = number of input
+; dx = header text
 input_page PROC
+pusha
 set_videopage  2
 ; check if page has been loaded
 cmp            PAGE_INPUT, 1
@@ -421,13 +430,8 @@ printr         7,  7, 2, _sym[9], 26
 printc         7, 33, 2, _sym[2]
 printc         8,  6, 2, _sym[1]
 printc         8, 33, 2, _sym[1]
-prints         9, 14, 2, input_text
 printc         9,  6, 2, _sym[1]
 printc         9, 33, 2, _sym[1]
-
-printc         11, 13, 2, '['
-printr         11, 14, 2, '-', 12
-printc         11, 26, 2, ']'
 
 printc         12,  6, 2, _sym[1]
 printc         12, 33, 2, _sym[1]
@@ -436,13 +440,44 @@ printr         13,  7, 2, _sym[9], 26
 printc         13, 33, 2, _sym[3]
 
 mov            PAGE_INPUT, 1
-cursor_at      11, 14, 2
 input_read:
-reads          input_amount
+popa
+
+; limit the no. of input
+mov            _input[1], al
+
+; preserve the no. of input {al}
+push           ax
+; 19d is the center, 2d for the [ ] symbol
+sub            al, 38d
+neg            al
+; divide by 2
+mov            dx, 0000h
+mov            ah, 00h
+mov            cx, 02h
+div            cx
+; cx=offset
+mov            cl, al
+pop            ax
+mov            ah, cl
+
+; start printing
+printc         11, ah, 2, '['
+inc            ah
+printr         11, ah, 2, '-', al
+add            ah, al
+printc         11, ah, 2, ']'
+
+inc            al
+sub            ah, al
+cursor_at      11, ah, 2
+
+prints         9, 15, 2, input_text
+reads          _input
 set_videopage  7
 printr         11, 14, 2, '-', 12
 ; should not be empty
-cmp            input_amount[2], '$'
+cmp            _input[2], '$'
 je             empty
 ; return to process if not empty
 ret
@@ -457,19 +492,21 @@ input_page ENDP
 
 ;----------------------- CLEAR PROC -------------------------;
 cls PROC
+pusha
 xor            al, al
 xor            cx, cx
 mov            dx, 184fh
 mov            bh, 1eh
 mov            ah, 06h
 int            10h
+popa
 ret
 cls ENDP
 
 ;----------------------- EXIT PROC --------------------------;
 sys_exit PROC
 cursor_at      11,11,6
-alert          exit_msg
+alert          msg_exit
 ; DOS Exit
 mov            ah, 4ch
 int            21h
@@ -516,8 +553,7 @@ validate_acct PROC
 ; compare card_no
 lea            si, ff_card_no
 lea            di, [in_card_no+2]
-xor            cx, cx
-mov            cx, 10h
+mov            cx, 0010h
 mov            al, [si]
 mov            bl, [di]
 cmp            al, bl
@@ -527,8 +563,7 @@ jne            str_notequal
 ; compare pin_code
 lea            si, ff_pin_code
 lea            di, [in_pin_code+2]
-xor            cx, cx
-mov            cx, 06h
+mov            cx, 0006h
 mov            al, [si]
 mov            bl, [di]
 cmp            al, bl
@@ -545,7 +580,7 @@ call           delay
 ret
 validate_acct ENDP
 
-;------------=-- GET MOUSE COORDINATE PROC -----------------;
+;---------------- GET MOUSE COORDINATE PROC ----------------;
 whereis_mouse PROC
 mov            ax, 03h
 int            33h
