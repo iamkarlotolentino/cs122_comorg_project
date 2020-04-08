@@ -90,10 +90,11 @@ printr MACRO row, col, page, sym, count
             popa
 printr ENDM
 
-alert MACRO msg
+alert MACRO c, r, msg
             set_videopage 6
-            call          cls
-            prints        0, 0, 0, msg
+            mov           ah, r
+            mov           al, c
+            prints        ah, al, 6, msg
 alert ENDM
 
 withdrawable MACRO amount, balance
@@ -105,9 +106,9 @@ update_pin MACRO new_pin
             LOCAL         _loop
             ; update fbuffer before writing to file
             lea           si, new_pin[2]
-            lea           di, fbuffer[20]
+            lea           di, fbuffer[18]
             xor           cx, cx
-            mov           cx, 0006h
+            mov           cl, 06h
 _loop:
             mov           al, [si]
             mov           [di], al
