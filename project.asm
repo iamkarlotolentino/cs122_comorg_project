@@ -63,6 +63,7 @@ main PROC
                     ; initialize all proper data and setup
                     call           setup
     login:
+                    call           account
                     call           login_page
                     ; evaluate if the input is valid
                     ; pin-code not empty
@@ -88,8 +89,7 @@ main PROC
                     printr         11, 16, 0, ' ', 6
                     jmp            continue
     login_error:
-                    cursor_at      11,13,6
-                    alert          err_blank
+                    alert          11, 13, err_blank
                     call           delay
                     jmp            login
     continue:
@@ -127,7 +127,10 @@ setup PROC
                     ; display mouse cursor:
                     mov            ax, 01h
                     int            33h
-                    
+                    ret
+setup ENDP
+
+account PROC
                     ; load account details
                     ; open file
                     mov            al, 02h
@@ -175,8 +178,8 @@ setup PROC
                     ret 
     fileerr:
                     prints         0, 0, 0, err_file404
-                    call           sys_exit  
-setup ENDP
+                    call           sys_exit
+account ENDP
 
 ;---------------------- LOGIN PAGE PROC -------------------------;
 login_page PROC
@@ -470,23 +473,21 @@ input_page PROC
 
                     prints         9, 15, 2, input_text
 
-                    inc            al
                     sub            ah, al
                     cursor_at      11, ah, 2
                     reads          _input
 
-                    ; clears input in video page
+                    ; please wait
                     set_videopage  7
-                    printr         11, ah, 2, '-', 12
                     ; should not be empty
                     cmp            _input[2], '$'
                     je             empty
+                    ; clears input in video page
+                    printr         11, 0, 2, ' ', 39
                     ; return to process if not empty
                     ret
     empty:
-                    set_videopage  7
-                    cursor_at      11,13,6
-                    alert          err_blank
+                    alert          11, 13, err_blank
                     call           delay
                     set_videopage  2
                     jmp            input_read
@@ -507,8 +508,7 @@ cls ENDP
 
 ;----------------------- EXIT PROC --------------------------;
 sys_exit PROC
-                    cursor_at      11,11,6
-                    alert          msg_exit
+                    alert          11, 11, msg_exit
                     ; DOS Exit
                     mov            ah, 4ch
                     int            21h
@@ -576,8 +576,7 @@ validate_acct PROC
                     mov            acct_login[0], 01h
                     ret
     str_notequal:
-                    cursor_at      10,10,6
-                    alert          err_incorrect
+                    alert          10, 10, err_incorrect
                     call           delay
                     ret    
 validate_acct ENDP
