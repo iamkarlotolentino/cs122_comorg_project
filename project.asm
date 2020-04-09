@@ -552,6 +552,11 @@ to_ascii ENDP
 
 ;----------------- VALIDATE ACCOUNT PROC -------------------;
 validate_acct PROC
+                    ; ensure correct length of input
+                    cmp            in_card_no[1], 16d
+                    jne            str_notequal
+                    cmp            in_pin_code[1], 16d
+                    jne            str_notequal
                     ; compare card_no
                     lea            si, ff_card_no
                     lea            di, [in_card_no+2]
@@ -578,7 +583,7 @@ validate_acct PROC
     str_notequal:
                     alert          10, 10, err_incorrect
                     call           delay
-                    ret    
+                    ret
 validate_acct ENDP
 
 ;---------------- GET MOUSE COORDINATE PROC ----------------;
