@@ -6,6 +6,10 @@ TITLE "Bank Account Manager"
 .MODEL small
 .STACK 125h
 .DATA
+    blnc_printer1   db  "-------- BANK ACCOUNT --------", "$"
+    blnc_printer2   db  0dh, 0ah, "Acc't No. : ", "$"
+    blnc_printer3   db  0dh, 0ah, "Balance   : ", "$"
+    blnc_printer4   db  "------------------------------", "$"
     ; Accounts flags and details
     acct_login      db   0                              ; {1} = account is active
     ff_card_no      db  16 dup(' '), '$'                ; card no from the account file
@@ -49,6 +53,9 @@ TITLE "Bank Account Manager"
     menu_frm_text   db  "Withdraw$", "Deposit$", "Balance$", "Reset PIN$", "Log Out$", "Details$"
     menu_hdr        db  201d, 15 dup(205d), 187d, '$'
     menu_frm_ftr    db  200d, 15 dup(205d), 188d, '$'
+
+    blnc_text       db  "Your balance$"
+    blnc_frm_sel    db  "[ BACK ]$", "[ PRINT BALANCE ]$"
     
     err_blank       db  "NOT VALID INPUT$"
     err_incorrect   db  "Incorrect! Try again.$"
@@ -89,7 +96,7 @@ main PROC
                     printr         11, 16, 0, ' ', 6
                     jmp            continue
     login_error:
-                    alert          11, 13, err_blank
+                    alert          9, 13, err_blank
                     call           delay
                     jmp            login
     continue:
@@ -142,7 +149,7 @@ account PROC
                     
                     ; read file
                     mov            bx, fhandle
-                    mov            cx, 30h
+                    mov            cx, 28h
                     lea            dx, fbuffer
                     mov            ah, 3Fh
                     int            21h
@@ -337,11 +344,11 @@ menu_page PROC
                     ; mark the page has been loaded
                     mov            PAGE_MENU, 1
     render_loop:
+                    set_videopage  1
                     ; time printing
                     lea            bx,timestamp
                     call           get_time
                     prints         2, 2, 1, login_desc
-                    
                     prints         4, 8, 1, timestamp
                     
                     call           whereis_mouse
@@ -350,15 +357,15 @@ menu_page PROC
     col_1:
                     ; checks if mouse coor is in first column
                     cmp            cx, 0018h
-                    jnge           render_loop
+                    jl             render_loop
                     cmp            cx, 008Fh
                     ; if not, check if it is in second column
-                    jnle           col_2
+                    jg             col_2
     btn_withdraw:
                     cmp            dx, 0040h
-                    jnge           render_loop
+                    jl             render_loop
                     cmp            dx, 0047h
-                    jnle           btn_balance
+                    jg             btn_balance
                     ; PROCESS: withdraw
                     ; withdraw process
                     mov            al, 0Ch
@@ -369,17 +376,18 @@ menu_page PROC
                     jmp            menu_start
     btn_balance:
                     cmp            dx, 0060h
-                    jnge           render_loop
+                    jl             render_loop
                     cmp            dx, 0067h
-                    jnle           btn_logout
+                    jg             btn_logout
                     ; PROCESS: balance
+                    call           balance_page
                     ; ENDPRC
                     jmp            render_loop
     btn_logout:
                     cmp            dx, 0080h
-                    jnge           render_loop
+                    jl             render_loop
                     cmp            dx, 0087h
-                    jnle           render_loop
+                    jg             render_loop
                     ; PROCESS: logout
                     ; sets all significant data to invalid state
                     mov            in_card_no[2], '$'
@@ -391,16 +399,16 @@ menu_page PROC
     col_2:
     btn_deposit:
                     cmp            dx, 0040h
-                    jnge           render_loop
+                    jl             render_loop
                     cmp            dx, 0047h
-                    jnle           btn_reset_pin
+                    jg             btn_reset_pin
                     printc         8, 21, 1, _sym[11]
                     jmp            render_loop
     btn_reset_pin:
                     cmp            dx, 0060h
-                    jnge           render_loop
+                    jl             render_loop
                     cmp            dx, 0067h
-                    jnle           btn_details
+                    jg             btn_details
                     ; PROCESS: reset pin
                     mov            al, 06h
                     call           input_page
@@ -410,10 +418,9 @@ menu_page PROC
                     jmp            menu_start
     btn_details:
                     cmp            dx, 0080h
-                    jnge           render_loop
+                    jl             render_loop
                     cmp            dx, 0087h
-                    jnle           render_loop
-                    jmp            render_loop
+                    jg             render_loop
                     jmp            render_loop
                     ret
 menu_page ENDP
@@ -603,4 +610,52 @@ delay PROC
                     int            15h
                     ret
 ENDP
+
+balance_page PROC
+                    set_videopage  6
+                    cmp            PAGE_BALANCE, 1
+                    je             blnc_listen
+    blnc:
+                    call           cls
+                    prints         8, 7, 6, blnc_text
+                    printr         9, 7, 6, '-', 15
+                    printc         10, 7, 6, 'P'
+                    printr         11, 7, 6, '-', 15
+                    prints         13, 7, 6, blnc_frm_sel[9]
+                    prints         18, 7, 6, blnc_frm_sel[0]
+
+                    ; the page has been loaded
+                    mov            PAGE_BALANCE, 1
+    blnc_listen:
+                    ; reset balance printing
+                    prints         10, 9, 6, ff_balance
+                    ; update mouse position
+                    call           whereis_mouse
+                    cmp            bx, 1
+                    jne            blnc_listen
+    blnc_print:
+                    cmp            dx, 0068h
+                    jl             blnc_listen
+                    cmp            dx, 0070h
+                    jg             blnc_back
+                    cmp            cx, 0038h
+                    jl             blnc_listen
+                    cmp            cx, 00BEh
+                    jg             blnc_listen
+                    ; PRINT PROCESS
+                    ; ENDPRC
+                    jmp            blnc_listen
+    blnc_back:
+                    cmp            dx, 0090h
+                    jl             blnc_listen
+                    cmp            dx, 0098h
+                    jg             blnc_listen
+                    cmp            cx, 0038h
+                    jl             blnc_listen
+                    cmp            cx, 0077h
+                    jg             blnc_print
+                    ; BACK PROCESS
+                    ret
+                    ; ENDPRC
+balance_page ENDP
 END main
