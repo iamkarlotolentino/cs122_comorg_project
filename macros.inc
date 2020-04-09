@@ -92,6 +92,7 @@ printr ENDM
 
 alert MACRO c, r, msg
             set_videopage 6
+            call          cls
             mov           ah, r
             mov           al, c
             prints        ah, al, 6, msg
