@@ -10,6 +10,7 @@ TITLE "Bank Account Manager"
     blnc_printer2   db  0dh, 0ah, "Acc't No. : ", "$"
     blnc_printer3   db  0dh, 0ah, "Balance   : ", "$"
     blnc_printer4   db  "------------------------------", "$"
+
     ; Accounts flags and details
     acct_login      db   0                              ; {1} = account is active
     ff_card_no      db  16 dup(' '), '$'                ; card no from the account file
@@ -36,9 +37,6 @@ TITLE "Bank Account Manager"
     
     time            db  "Time:$"
     timestamp       db  "00:00:00$"
-    
-                    ;   [0]   [1]   [2]   [3]   [4]   [5]   [6]   [7]   [8]   [9]   [10]
-    _sym            db  185d, 186d, 187d, 188d, 200d, 201d, 202d, 203d, 204d, 205d, 206d
 
     login_accnt     db "Welcome, JC!$"
     login_desc      db "Your personal bank acc't manager$"
@@ -196,49 +194,49 @@ login_page PROC
                     je             keep_listening
                     call           cls
                     ; selection form printing
-                    printc         3,  2, 0, _sym[5]
-                    printr         3,  3, 0, _sym[9], 34
-                    printc         3, 37, 0, _sym[2]
+                    printc         3,  2, 0, 201d
+                    printr         3,  3, 0, 205d, 34
+                    printc         3, 37, 0, 187d
                     
-                    printc         4,  2, 0, _sym[1]
-                    printc         4, 37, 0, _sym[1]
+                    printc         4,  2, 0, 186d
+                    printc         4, 37, 0, 186d
                     prints         4,  4, 0, login_accnt
                     
-                    printc         5,  2, 0, _sym[1]
-                    printc         5, 37, 0, _sym[1]
+                    printc         5,  2, 0, 186d
+                    printc         5, 37, 0, 186d
                     prints         5,  4, 0, login_desc
                     
-                    printc         6,  2, 0, _sym[4]
-                    printr         6,  3, 0, _sym[9], 34
-                    printc         6, 37, 0, _sym[3]
+                    printc         6,  2, 0, 200d
+                    printr         6,  3, 0, 205d, 34
+                    printc         6, 37, 0, 188d
                      
-                    printc         8,  2, 0, _sym[5]
-                    printr         8,  3, 0, _sym[9], 12
-                    printc         8, 15, 0, _sym[7]
-                    printr         8, 16, 0, _sym[9], 21
-                    printc         8, 37, 0, _sym[2]
+                    printc         8,  2, 0, 201d
+                    printr         8,  3, 0, 205d, 12
+                    printc         8, 15, 0, 203d
+                    printr         8, 16, 0, 205d, 21
+                    printc         8, 37, 0, 187d
                     
-                    printc         9,  2, 0, _sym[1]
-                    printc         9, 15, 0, _sym[1]
-                    printc         9, 37, 0, _sym[1]
+                    printc         9,  2, 0, 186d
+                    printc         9, 15, 0, 186d
+                    printc         9, 37, 0, 186d
                     prints         9,  4, 0, login_frm_text[0]
                     
-                    printc         10,  2, 0, _sym[8]
-                    printr         10,  3, 0, _sym[9], 12
-                    printc         10, 15, 0, _sym[10]
-                    printr         10, 16, 0, _sym[9], 21
-                    printc         10, 37, 0, _sym[0]
+                    printc         10,  2, 0, 204d
+                    printr         10,  3, 0, 205d, 12
+                    printc         10, 15, 0, 206d
+                    printr         10, 16, 0, 205d, 21
+                    printc         10, 37, 0, 185d
 
-                    printc         11,  2, 0, _sym[1]
+                    printc         11,  2, 0, 186d
                     prints         11,  4, 0, login_frm_text[9]
-                    printc         11, 15, 0, _sym[1]
-                    printc         11, 37, 0, _sym[1]
+                    printc         11, 15, 0, 186d
+                    printc         11, 37, 0, 186d
                     
-                    printc         12,  2, 0, _sym[4]
-                    printr         12,  3, 0, _sym[9], 12
-                    printc         12, 15, 0, _sym[6]
-                    printr         12, 16, 0, _sym[9], 21
-                    printc         12, 37, 0, _sym[3]
+                    printc         12,  2, 0, 200d
+                    printr         12,  3, 0, 205d, 12
+                    printc         12, 15, 0, 202d
+                    printr         12, 16, 0, 205d, 21
+                    printc         12, 37, 0, 188d
                     
                     prints         14,  6, 0, login_frm_sel[0]
                     prints         14, 18, 0, login_frm_sel[7]
@@ -315,10 +313,10 @@ menu_page PROC
                     prints         bl,  2, 1, menu_hdr
                     prints         bl, 20, 1, menu_hdr
                     inc            bl
-                    printc         bl,  2, 1, _sym[1]
-                    printc         bl, 18, 1, _sym[1]
-                    printc         bl, 20, 1, _sym[1]
-                    printc         bl, 36, 1, _sym[1]
+                    printc         bl,  2, 1, 186d
+                    printc         bl, 18, 1, 186d
+                    printc         bl, 20, 1, 186d
+                    printc         bl, 36, 1, 186d
                     inc            bl
                     prints         bl,  2, 1, menu_frm_ftr
                     prints         bl, 20, 1, menu_frm_ftr
@@ -435,19 +433,19 @@ input_page PROC
                     cmp            PAGE_INPUT, 1
                     je             input_read
                     call           cls
-                    printc         7,  6, 2, _sym[5]
-                    printr         7,  7, 2, _sym[9], 26
-                    printc         7, 33, 2, _sym[2]
-                    printc         8,  6, 2, _sym[1]
-                    printc         8, 33, 2, _sym[1]
-                    printc         9,  6, 2, _sym[1]
-                    printc         9, 33, 2, _sym[1]
+                    printc         7,  6, 2, 201d
+                    printr         7,  7, 2, 205d, 26
+                    printc         7, 33, 2, 187d
+                    printc         8,  6, 2, 186d
+                    printc         8, 33, 2, 186d
+                    printc         9,  6, 2, 186d
+                    printc         9, 33, 2, 186d
 
-                    printc         12,  6, 2, _sym[1]
-                    printc         12, 33, 2, _sym[1]
-                    printc         13,  6, 2, _sym[4]
-                    printr         13,  7, 2, _sym[9], 26
-                    printc         13, 33, 2, _sym[3]
+                    printc         12,  6, 2, 186d
+                    printc         12, 33, 2, 186d
+                    printc         13,  6, 2, 200d
+                    printr         13,  7, 2, 205d, 26
+                    printc         13, 33, 2, 188d
 
                     mov            PAGE_INPUT, 1
     input_read:
@@ -618,9 +616,9 @@ balance_page PROC
     blnc:
                     call           cls
                     prints         8, 7, 6, blnc_text
-                    printr         9, 7, 6, '-', 15
+                    printr         9, 7, 6, 205d, 15
                     printc         10, 7, 6, 'P'
-                    printr         11, 7, 6, '-', 15
+                    printr         11, 7, 6, 205d, 15
                     prints         13, 7, 6, blnc_frm_sel[9]
                     prints         18, 7, 6, blnc_frm_sel[0]
 
