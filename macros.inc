@@ -98,8 +98,21 @@ alert MACRO c, r, msg
             prints        ah, al, 6, msg
 alert ENDM
 
+; OF is 1 if negative value
 withdrawable MACRO amount, balance
-
+            xor           bx, bx
+            ; setup the loop
+            mov           cx, 12
+            mov           bx, 11
+next_digit:
+            ; subtract digit
+            mov           al, balance[bx]
+            sbb           al, amount[bx+2]
+            aas
+            ; store result
+            mov           _comp[bx], al
+            dec           bx
+            loop          next_digit
 withdrawable ENDM
 
 ; passes the new pin

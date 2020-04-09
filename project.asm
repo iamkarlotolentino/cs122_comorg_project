@@ -24,7 +24,10 @@ TITLE "Bank Account Manager"
     
     new_pin_code    db   7, ?,  7 dup('$')
     
+    ; for reading input
     _input          db  13, ?, 13 dup('$')
+    ; temporary placement for computation
+    _comp           db  13 len dup(0)
 
     ; Flags to check if page has been loaded
     PAGE_LOGIN      db 0
@@ -342,7 +345,6 @@ menu_page PROC
                     ; mark the page has been loaded
                     mov            PAGE_MENU, 1
     render_loop:
-                    set_videopage  1
                     ; time printing
                     lea            bx,timestamp
                     call           get_time
@@ -369,9 +371,16 @@ menu_page PROC
                     mov            al, 0Ch
                     call           input_page
                     withdrawable   _input, ff_balance
+                    jc             wdraw_neg
                     ; ENDPRC
                     ; go back to menu
                     jmp            menu_start
+    wdraw_neg:
+                    set_videopage  6
+                    alert          13, 8, err_blank
+                    call           delay
+                    set_videopage  1
+                    jmp            btn_withdraw
     btn_balance:
                     cmp            dx, 0060h
                     jl             render_loop
@@ -379,6 +388,7 @@ menu_page PROC
                     jg             btn_logout
                     ; PROCESS: balance
                     call           balance_page
+                    set_videopage  1
                     ; ENDPRC
                     jmp            render_loop
     btn_logout:
@@ -400,7 +410,8 @@ menu_page PROC
                     jl             render_loop
                     cmp            dx, 0047h
                     jg             btn_reset_pin
-                    printc         8, 21, 1, _sym[11]
+                    ; PROCESS: deposit
+                    ; ENDPRC
                     jmp            render_loop
     btn_reset_pin:
                     cmp            dx, 0060h
