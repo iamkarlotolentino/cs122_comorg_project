@@ -555,7 +555,7 @@ validate_acct PROC
                     ; ensure correct length of input
                     cmp            in_card_no[1], 16d
                     jne            str_notequal
-                    cmp            in_pin_code[1], 16d
+                    cmp            in_pin_code[1], 6d
                     jne            str_notequal
                     ; compare card_no
                     lea            si, ff_card_no
