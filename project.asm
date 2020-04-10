@@ -12,7 +12,6 @@ TITLE "Bank Account Manager"
     blnc_printer4   db  "------------------------------", "$"
 
     ; Accounts flags and details
-    acct_login      db   0                              ; {1} = account is active
     ff_card_no      db  16 dup(0), '$'                ; card no from the account file
     ff_pin_code     db   7 dup(0), '$'                ; pin code from the account file
     ff_balance      db  12 dup(0), '$'                ; balance from the account file
@@ -71,8 +70,16 @@ TITLE "Bank Account Manager"
 main PROC
                     ; initialize all proper data and setup
                     call           setup
+    load_pw:
+                    ; load please wait
+                    set_videopage  7
+                    call           cls
+                    prints         11, 15, 7, msg_wait
+                    mov            PAGE_WAIT, 1
     login:
-                    call           account
+                    call           load_account
+                    mov            al, 16d
+                    call           input_page
                     call           login_page
                     ; evaluate if the input is valid
                     ; pin-code not empty
@@ -83,16 +90,10 @@ main PROC
                     je             login_error
                     ; validate acccount
                     call           validate_acct
-                    cmp            acct_login, 01h
+                    cmp            ah, 01h
                     jne            login
-                    ; load please wait
                     set_videopage  7
-                    cmp            PAGE_WAIT, 1
-                    je             please_wait
-                    call           cls
-                    prints         11, 15, 7, msg_wait
-                    mov            PAGE_WAIT, 1
-    please_wait:    
+    clear_input:    
                     ; removing input text in login page
                     printr         9,  16, 0, ' ', 16
                     printr         11, 16, 0, ' ', 6
@@ -139,7 +140,7 @@ setup PROC
                     ret
 setup ENDP
 
-account PROC
+load_account PROC
                     ; load account details
                     ; open file
                     mov            al, 02h
@@ -188,7 +189,7 @@ account PROC
     fileerr:
                     prints         0, 0, 0, err_file404
                     call           sys_exit
-account ENDP
+load_account ENDP
 
 ;---------------------- LOGIN PAGE PROC -------------------------;
 login_page PROC
@@ -403,7 +404,6 @@ menu_page PROC
                     ; sets all significant data to invalid state
                     mov            in_card_no[2], '$'
                     mov            in_pin_code[2], '$'
-                    mov            acct_login[0], 00h
                     ; ENDPRC
                     ; returns to main PROC
                     ret
@@ -496,20 +496,24 @@ input_page PROC
                     cursor_at      11, ah, 2
                     reads          _input
 
+                    ; validate if input is valid
+                    validate       _input, w.[_input[1]]
+                    cmp            al, 1
+                    jne            inp_blank
+
                     ; please wait
                     set_videopage  7
                     ; should not be empty
                     cmp            _input[2], '$'
-                    je             empty
+                    je             inp_blank
                     ; clears input in video page
                     printr         11, 0, 2, ' ', 39
                     ; return to process if not empty
                     ret
-    empty:
+    inp_blank:
                     alert          11, 13, err_blank
                     call           delay
-                    set_videopage  2
-                    jmp            input_read
+                    ret
 input_page ENDP
 
 ;----------------------- CLEAR PROC -------------------------;
@@ -571,11 +575,21 @@ to_ascii ENDP
 
 ;----------------- VALIDATE ACCOUNT PROC -------------------;
 validate_acct PROC
+                    ; output:
+                    ; AH={1} if valid or {0} when not
+                    set_videopage  7
                     ; ensure correct length of input
                     cmp            in_card_no[1], 16d
-                    jne            str_notequal
+                    jne            str_invalid
                     cmp            in_pin_code[1], 6d
-                    jne            str_notequal
+                    jne            str_invalid
+                    ; validate if input is a series of digit
+                    validate       [in_card_no+2], 16d
+                    cmp            al, 1
+                    jne            str_invalid
+                    validate       [in_pin_code+2], 06d
+                    cmp            al, 1
+                    jne            str_invalid
                     ; compare card_no
                     lea            si, ff_card_no
                     lea            di, [in_card_no+2]
@@ -596,12 +610,20 @@ validate_acct PROC
                     jne            str_notequal
                     repe cmpsb
                     jne            str_notequal
-                    ; equal
-                    mov            acct_login[0], 01h
+                    set_videopage  0
+                    mov            ah, 1
                     ret
     str_notequal:
                     alert          10, 10, err_incorrect
                     call           delay
+                    set_videopage  0
+                    mov            ah, 0
+                    ret
+    str_invalid:
+                    alert          10, 10, err_blank
+                    call           delay
+                    set_videopage  0
+                    mov            ah, 0
                     ret
 validate_acct ENDP
 

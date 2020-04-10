@@ -100,12 +100,12 @@ alert ENDM
 
 ; OF is 1 if negative value
 withdrawable MACRO amount, balance
-            LOCAL next_digit
+            LOCAL wbl_next
             xor           bx, bx
             ; setup the loop
             mov           cx, 12
             mov           bx, 11
-next_digit:
+wbl_next:
             ; subtract digit
             mov           al, balance[bx]
             sbb           al, amount[bx+2]
@@ -113,16 +113,16 @@ next_digit:
             ; store result
             mov           _comp[bx], al
             dec           bx
-            loop          next_digit
+            loop          wbl_next
 withdrawable ENDM
 
 withdraw MACRO new_balance
-            LOCAL         _loop, _next_digit
+            LOCAL         wdr_next
             xor           bx, bx
             ; setup the loop
             mov           cx, 12
             mov           bx, 11
-_next_digit:
+wdr_next:
             ; write the digit to ff_balance
             or            new_balance[bx], 30h
             mov           al, new_balance[bx]
@@ -130,7 +130,7 @@ _next_digit:
             ; update fbuffer before writing to file
             mov           fbuffer[bx+25], al
             dec           bx
-            loop          _next_digit
+            loop          wdr_next
             ; update balance in account database
             ; seek file position
             mov           bx, fhandle
@@ -149,18 +149,18 @@ withdraw ENDM
 
 ; passes the new pin
 update_pin MACRO new_pin
-            LOCAL         _loop
+            LOCAL         upi_loop
             ; update fbuffer before writing to file
             lea           si, new_pin[2]
             lea           di, fbuffer[18]
             xor           cx, cx
             mov           cl, 06h
-_loop:
+upi_loop:
             mov           al, [si]
             mov           [di], al
             inc           si
             inc           di
-            loop          _loop
+            loop          upi_loop
             ; seek file position
             mov           bx, fhandle
             mov           cx, 0000h
@@ -179,6 +179,25 @@ update_pin ENDM
 update_balance MACRO new_balance
 
 update_balance ENDM
+
+; al = 1 if input is valid, otherwise 0
+validate MACRO input, count
+            LOCAL vdt_loop, vdt_error, vdt_exit
+            mov           cx, count
+            mov           bx, count-1
+vdt_loop:
+            cmp           input[bx], 0030h
+            jl            vdt_error
+            cmp           input[bx], 0039h
+            jg            vdt_error
+            inc           si
+            loop          vdt_loop
+            mov           al, 1
+            jmp           vdt_exit
+vdt_error:
+            mov           al, 0
+vdt_exit:
+validate ENDM
 
 ; select active video page
 set_videopage MACRO pageno
