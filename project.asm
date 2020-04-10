@@ -13,9 +13,9 @@ TITLE "Bank Account Manager"
 
     ; Accounts flags and details
     acct_login      db   0                              ; {1} = account is active
-    ff_card_no      db  16 dup(' '), '$'                ; card no from the account file
-    ff_pin_code     db   7 dup(' '), '$'                ; pin code from the account file
-    ff_balance      db  12 dup(' '), '$'                ; balance from the account file
+    ff_card_no      db  16 dup(0), '$'                ; card no from the account file
+    ff_pin_code     db   7 dup(0), '$'                ; pin code from the account file
+    ff_balance      db  12 dup(0), '$'                ; balance from the account file
     
     ; File handling of the account file
     fname           db  "account.txt", 0
@@ -62,6 +62,7 @@ TITLE "Bank Account Manager"
     err_incorrect   db  "Incorrect! Try again.$"
     err_file404     db  "Error. Account database not found!$"
 
+    msg_success     db  "Successful!$"
     msg_wait        db  "Please wait$"
     msg_exit        db "Thank you. Goodbye!$"
     msg_copyright   db "Teller Machine @ 2020 ", 179d, " v1.0$"
@@ -372,6 +373,8 @@ menu_page PROC
                     call           input_page
                     withdrawable   _input, ff_balance
                     jc             wdraw_neg
+                    withdraw       _comp
+                    alert          12, 7, msg_success
                     ; ENDPRC
                     ; go back to menu
                     jmp            menu_start

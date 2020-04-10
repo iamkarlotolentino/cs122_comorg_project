@@ -100,6 +100,7 @@ alert ENDM
 
 ; OF is 1 if negative value
 withdrawable MACRO amount, balance
+            LOCAL next_digit
             xor           bx, bx
             ; setup the loop
             mov           cx, 12
@@ -114,6 +115,37 @@ next_digit:
             dec           bx
             loop          next_digit
 withdrawable ENDM
+
+withdraw MACRO new_balance
+            LOCAL         _loop, _next_digit
+            xor           bx, bx
+            ; setup the loop
+            mov           cx, 12
+            mov           bx, 11
+_next_digit:
+            ; write the digit to ff_balance
+            or            new_balance[bx], 30h
+            mov           al, new_balance[bx]
+            mov           ff_balance[bx], al
+            ; update fbuffer before writing to file
+            mov           fbuffer[bx+25], al
+            dec           bx
+            loop          _next_digit
+            ; update balance in account database
+            ; seek file position
+            mov           bx, fhandle
+            mov           cx, 0000h
+            mov           dx, 0000h
+            mov           al, 00h
+            mov           ah, 42h
+            int           21h
+            ; write to file
+            mov           bx, fhandle
+            mov           dx, offset fbuffer
+            mov           cx, 40d
+            mov           ah, 40h
+            int           21h
+withdraw ENDM
 
 ; passes the new pin
 update_pin MACRO new_pin
