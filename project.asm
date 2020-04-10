@@ -370,19 +370,20 @@ menu_page PROC
                     ; withdraw process
                     mov            al, 0Ch
                     call           input_page
+                    set_videopage  7
                     withdrawable   _input, ff_balance
                     jc             wdraw_neg
-                    withdraw       _comp
-                    alert          12, 7, msg_success
+                    set_balance    _comp
+                    alert          15, 10, msg_success
+                    set_videopage  1
                     ; ENDPRC
                     ; go back to menu
-                    jmp            menu_start
+                    jmp            render_loop
     wdraw_neg:
-                    set_videopage  6
-                    alert          13, 8, err_blank
+                    alert          9, 13, err_blank
                     call           delay
                     set_videopage  1
-                    jmp            btn_withdraw
+                    jmp            render_loop
     btn_balance:
                     cmp            dx, 0060h
                     jl             render_loop
@@ -412,7 +413,21 @@ menu_page PROC
                     cmp            dx, 0047h
                     jg             btn_reset_pin
                     ; PROCESS: deposit
+                    mov            al, 0Ch
+                    call           input_page
+                    set_videopage  7
+                    depositable    _input, ff_balance
+                    jo             dsit_overflow
+                    set_balance    _comp
+                    alert          15, 10, msg_success
+                    set_videopage  1
                     ; ENDPRC
+                    ; go back to menu
+                    jmp           render_loop
+    dsit_overflow:
+                    alert          9, 13, err_blank
+                    call           delay
+                    set_videopage  1
                     jmp            render_loop
     btn_reset_pin:
                     cmp            dx, 0060h
@@ -495,7 +510,7 @@ input_page PROC
                     reads          _input
 
                     ; validate if input is valid
-                    validate       _input, w.[_input[1]]
+                    validate       _input, _input[1]
                     cmp            al, 1
                     jne            inp_blank
 
@@ -644,28 +659,29 @@ delay PROC
 ENDP
 
 balance_page PROC
-                    set_videopage  6
+                    set_videopage  4
                     cmp            PAGE_BALANCE, 1
-                    je             blnc_listen
+                    je             blnc_print
     blnc:
                     call           cls
-                    prints         8, 7, 6, blnc_text
-                    printr         9, 7, 6, 205d, 15
-                    printc         10, 7, 6, 'P'
-                    printr         11, 7, 6, 205d, 15
-                    prints         13, 7, 6, blnc_frm_sel[9]
-                    prints         18, 7, 6, blnc_frm_sel[0]
+                    prints         8, 7, 4, blnc_text
+                    printr         9, 7, 4, 205d, 15
+                    printc         10, 7, 4, 'P'
+                    printr         11, 7, 4, 205d, 15
+                    prints         13, 7, 4, blnc_frm_sel[9]
+                    prints         18, 7, 4, blnc_frm_sel[0]
 
                     ; the page has been loaded
                     mov            PAGE_BALANCE, 1
-    blnc_listen:
+    blnc_print:
                     ; reset balance printing
-                    prints         10, 9, 6, ff_balance
+                    prints         10, 9, 4, ff_balance
+    blnc_listen:
                     ; update mouse position
                     call           whereis_mouse
                     cmp            bx, 1
                     jne            blnc_listen
-    blnc_print:
+    blnc_btn:
                     cmp            dx, 0068h
                     jl             blnc_listen
                     cmp            dx, 0070h
@@ -685,7 +701,7 @@ balance_page PROC
                     cmp            cx, 0038h
                     jl             blnc_listen
                     cmp            cx, 0077h
-                    jg             blnc_print
+                    jg             blnc_btn
                     ; BACK PROCESS
                     ret
                     ; ENDPRC

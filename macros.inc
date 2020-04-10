@@ -101,10 +101,9 @@ alert ENDM
 ; OF is 1 if negative value
 withdrawable MACRO amount, balance
             LOCAL wbl_next
-            xor           bx, bx
             ; setup the loop
-            mov           cx, 12
-            mov           bx, 11
+            mov           cx, 12d
+            mov           bx, 11d
 wbl_next:
             ; subtract digit
             mov           al, balance[bx]
@@ -116,13 +115,29 @@ wbl_next:
             loop          wbl_next
 withdrawable ENDM
 
-withdraw MACRO new_balance
-            LOCAL         wdr_next
-            xor           bx, bx
+depositable MACRO amount, balance
+            LOCAL dbl_next
             ; setup the loop
-            mov           cx, 12
-            mov           bx, 11
-wdr_next:
+            mov           cx, 12d
+            mov           bx, 11d
+dbl_next:
+            ; subtract digit
+            mov           al, balance[bx]
+            adc           al, amount[bx+2]
+            aaa
+            ; store result
+            mov           _comp[bx], al
+            dec           bx
+            loop          dbl_next
+            adc           _comp[bx], 0
+depositable ENDM
+
+set_balance MACRO new_balance
+            LOCAL         upb_next
+            ; setup the loop
+            mov           cx, 12d
+            mov           bx, 11d
+upb_next:
             ; write the digit to ff_balance
             or            new_balance[bx], 30h
             mov           al, new_balance[bx]
@@ -130,7 +145,7 @@ wdr_next:
             ; update fbuffer before writing to file
             mov           fbuffer[bx+25], al
             dec           bx
-            loop          wdr_next
+            loop          upb_next
             ; update balance in account database
             ; seek file position
             mov           bx, fhandle
@@ -145,7 +160,7 @@ wdr_next:
             mov           cx, 40d
             mov           ah, 40h
             int           21h
-withdraw ENDM
+set_balance ENDM
 
 ; passes the new pin
 update_pin MACRO new_pin
@@ -176,21 +191,19 @@ upi_loop:
             int           21h
 update_pin ENDM
 
-update_balance MACRO new_balance
-
-update_balance ENDM
-
 ; al = 1 if input is valid, otherwise 0
 validate MACRO input, count
             LOCAL vdt_loop, vdt_error, vdt_exit
-            mov           cx, count
-            mov           bx, count-1
+            xor           cx, cx
+            mov           cl, count
+            xor           bx, bx
+            mov           bl, count-1
 vdt_loop:
             cmp           input[bx], 0030h
             jl            vdt_error
             cmp           input[bx], 0039h
             jg            vdt_error
-            inc           si
+            dec           bx
             loop          vdt_loop
             mov           al, 1
             jmp           vdt_exit
