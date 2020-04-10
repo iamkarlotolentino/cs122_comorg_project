@@ -16,7 +16,18 @@ The application changes video page for faster view response. Refer in this list 
 [6] --> Open page (for any purposes)
 [7] --> Please wait page
 ```
-
+#### Account File Format
+There are three important data in the text file: (1) ATM Card No. (2) Pin code (3) Balance.
+An example of the text file content below:
+```
+0123456789012345
+123456
+000000000000
+```
+Each data is separated by `new line`.
+- 16 digits for ATM Card No.
+- 6 digits for Pin code
+- 12 digits for Balance
 
 #### To-Do List:
 
