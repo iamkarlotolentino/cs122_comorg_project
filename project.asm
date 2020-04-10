@@ -64,8 +64,8 @@ TITLE "Bank Account Manager"
 
     msg_success     db  "Successful!$"
     msg_wait        db  "Please wait$"
-    msg_exit        db "Thank you. Goodbye!$"
-    msg_copyright   db "Teller Machine @ 2020 ", 179d, " v1.0$"
+    msg_exit        db  "Thank you. Goodbye!$"
+    msg_copyright   db  "Teller Machine @ 2020 ", 179d, " v1.0$"
 .CODE
 ;---------------------- MAIN PROC -------------------------;
 main PROC
