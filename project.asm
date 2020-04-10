@@ -78,8 +78,6 @@ main PROC
                     mov            PAGE_WAIT, 1
     login:
                     call           load_account
-                    mov            al, 16d
-                    call           input_page
                     call           login_page
                     ; evaluate if the input is valid
                     ; pin-code not empty
