@@ -21,10 +21,9 @@ The application changes video page for faster view response. Refer in this list 
 #### To-Do List:
 
 - [x] Implementation of pages for each views (login, input, etc.).
-- [ ] Working on file write
-- [ ] Working on balance deduction
-- [ ] Working on balance reversal
-- [ ] Working on withdraw
+- [x] Working on file write
+- [x] Working on balance deduction
+- [x] Working on withdraw
 - [ ] Working on deposit
 - [ ] Working on details
 
