@@ -1,103 +1,7 @@
 
-;**************************************************************************;
-;-------------------------------   MACRO   --------------------------------;
-;**************************************************************************;
-
-; set cursor position
-cursor_at MACRO row, column, page
-            mov           dh, row
-            mov           dl, column
-            mov           bh, page
-            mov           ah, 2
-            int           10h
-cursor_at ENDM
-
-; string scanner
-reads MACRO buffer
-            pusha
-            ; show standard blinking text cursor
-            mov           ch, 06h
-            mov           cl, 07h
-            mov           ah, 01h
-            int           10h
-            ; read string
-            lea           dx, buffer
-            mov           ah, 0ah
-            int           21h
-            ; add terminate character
-            xor           bx, bx
-            mov           bl, buffer[1]
-            mov           buffer[bx+2], '$'
-            lea           dx, buffer + 2
-            ; hide blinking cursor
-            mov           ch, 20h
-            mov           ah, 01h
-            int           10h
-            popa
-reads ENDM
-
-; string printing
-prints MACRO row, col, page, msg
-            pusha
-            ; cursor _at
-            mov           dh, row
-            mov           dl, col
-            mov           bh, page
-            mov           ah, 2
-            int           10h
-            ; prints string
-            mov           dx, offset msg
-            mov           ah, 9
-            int           21h
-            popa
-prints ENDM
-
-; char printing
-printc MACRO row, col, page, char
-            pusha
-            ; cursor _at
-            mov           dh, row
-            mov           dl, col
-            mov           bh, page
-            mov           ah, 2
-            int           10h
-            ; char
-            mov           al, char
-            mov           cx, 0001h
-            mov           bh, page
-            mov           ah, 0Ah
-            int           10h
-            popa
-printc ENDM
-
-; repeated char printing
-printr MACRO row, col, page, sym, count
-            pusha
-            ; cursor _at
-            mov           dh, row
-            mov           dl, col
-            mov           bh, page
-            mov           ah, 2
-            int           10h
-
-            xor           cx, cx
-            mov           cl, count
-            mov           bh, page
-            mov           bl, 1Eh
-            mov           al, sym
-            mov           ah, 09h
-            int           10h
-            popa
-printr ENDM
-
-alert MACRO c, r, msg
-            set_videopage 6
-            call          cls
-            mov           ah, r
-            mov           al, c
-            prints        ah, al, 6, msg
-alert ENDM
-
+; ---
+; Raises flag to evaluate if withdraw is possible
+; [output]
 ; OF is 1 if negative value
 withdrawable MACRO amount, balance
             LOCAL wbl_next
@@ -115,6 +19,10 @@ wbl_next:
             loop          wbl_next
 withdrawable ENDM
 
+; ---
+; Raises flag to evaluate if deposit is possible
+; [output]
+; Overflow flag is 1 if more than length
 depositable MACRO amount, balance
             LOCAL dbl_next
             ; setup the loop
@@ -132,6 +40,8 @@ dbl_next:
             adc           _comp[bx], 0
 depositable ENDM
 
+; ---
+; Writes balance into the variable and account file
 set_balance MACRO new_balance
             LOCAL         upb_next
             ; setup the loop
@@ -162,7 +72,8 @@ upb_next:
             int           21h
 set_balance ENDM
 
-; passes the new pin
+; ---
+;  Writes to account file the new account pin code
 update_pin MACRO new_pin
             LOCAL         upi_loop
             ; update fbuffer before writing to file
@@ -191,7 +102,11 @@ upi_loop:
             int           21h
 update_pin ENDM
 
-; al = 1 if input is valid, otherwise 0
+; ---
+; Validates input if it is a series of digit numbers.
+; [output]
+; al=1 if account is valid
+; al=0 if account is not valid
 validate MACRO input, count
             LOCAL vdt_loop, vdt_error, vdt_exit
             xor           cx, cx
@@ -211,10 +126,3 @@ vdt_error:
             mov           al, 0
 vdt_exit:
 validate ENDM
-
-; select active video page
-set_videopage MACRO pageno
-            mov           al, pageno
-            mov           ah, 05h
-            int           10h
-set_videopage ENDM
