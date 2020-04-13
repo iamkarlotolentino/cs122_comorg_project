@@ -101,28 +101,3 @@ upi_loop:
             mov           ah, 40h
             int           21h
 update_pin ENDM
-
-; ---
-; Validates input if it is a series of digit numbers.
-; [output]
-; al=1 if account is valid
-; al=0 if account is not valid
-validate MACRO input, count
-            LOCAL vdt_loop, vdt_error, vdt_exit
-            xor           cx, cx
-            mov           cl, count
-            xor           bx, bx
-            mov           bl, count-1
-vdt_loop:
-            cmp           input[bx], 0030h
-            jl            vdt_error
-            cmp           input[bx], 0039h
-            jg            vdt_error
-            dec           bx
-            loop          vdt_loop
-            mov           al, 1
-            jmp           vdt_exit
-vdt_error:
-            mov           al, 0
-vdt_exit:
-validate ENDM

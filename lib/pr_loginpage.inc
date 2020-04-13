@@ -55,7 +55,7 @@ pg_login PROC
 
                     prints         23,  2, 0, msg_copyright
 
-                    ; mark the page has been loaded
+                    ; flag the page it has been loaded
                     mov            pgf_login, 1
 
     ; listens to mouse-pos
@@ -78,14 +78,14 @@ pg_login PROC
                     cmp            dx, 0048h
                     jnge           menu_selection
                     cursor_at      9, 16, 0
-                    reads          in_card_no
+                    reads          in_card_no, 16
     pin_code:
                     cmp            dx, 005Eh
                     jnle           menu_selection
                     cmp            dx, 0059h
                     jnge           menu_selection
                     cursor_at      11, 16, 0
-                    reads          in_pin_code
+                    reads          in_pin_code, 6
                     ; ok&cancel menu detection 
     menu_selection:
                     cmp            dx, 006Eh

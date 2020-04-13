@@ -11,22 +11,42 @@ cursor_at ENDM
 
 ; ---
 ; Reads string
-reads MACRO buffer
+reads MACRO buffer, len
+            LOCAL         rd_size, rd_read, rd_back, rd_cont
             pusha
             ; show standard blinking text cursor
             mov           ch, 06h
             mov           cl, 07h
             mov           ah, 01h
             int           10h
-            ; read string
-            lea           dx, buffer
-            mov           ah, 0ah
-            int           21h
-            ; add terminate character
+            ; read string, char by char
+            ; setup the loop
+            xor           cx, cx
             xor           bx, bx
-            mov           bl, buffer[1]
-            mov           buffer[bx+2], '$'
-            lea           dx, buffer + 2
+            mov           cx, len
+            mov           bx, 0
+rd_read:
+            ; read character
+            mov           ah, 1
+            int           21h
+            ; check if not backspace
+            cmp           al, 08h
+            je            rd_back
+            ; check if enter
+            cmp           al, 0Dh
+            je            rd_cont
+            ; if valid, then store character
+            mov           buffer[bx], al
+            inc           bx
+            loop          rd_read
+            jmp           rd_cont
+rd_back:
+            ; recover the lost count
+            add           cx, 0002h
+            loop          rd_read
+rd_cont:
+            ; add string terminator
+            mov           buffer[bx], '$'
             ; hide blinking cursor
             mov           ch, 20h
             mov           ah, 01h
@@ -92,11 +112,26 @@ printr MACRO row, col, page, sym, count
 printr ENDM
 
 ; ---
-; Prints message treated as an alert
-alert MACRO c, r, msg
-            set_videopage 6
-            clear_screen
-            mov           ah, r
-            mov           al, c
-            prints        ah, al, 6, msg
-alert ENDM
+; Validates input if it is a series of digit numbers.
+; [output]
+; al=1 if account is valid
+; al=0 if account is not valid
+validate MACRO input, count
+            LOCAL vdt_loop, vdt_error, vdt_exit
+            xor           cx, cx
+            mov           cl, count
+            xor           bx, bx
+            mov           bl, count-1
+vdt_loop:
+            cmp           input[bx], 0030h
+            jl            vdt_error
+            cmp           input[bx], 0039h
+            jg            vdt_error
+            dec           bx
+            loop          vdt_loop
+            mov           al, 1
+            jmp           vdt_exit
+vdt_error:
+            mov           al, 0
+vdt_exit:
+validate ENDM

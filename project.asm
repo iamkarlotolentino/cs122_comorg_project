@@ -17,6 +17,7 @@ TITLE "Bank Account Manager"
     ; File handling of the account file
     fname           db  "account.txt", 0
     fhandle         dw  ?
+    ; All important data are stored in here
     fbuffer         db  40 dup(?)
     
     new_pin_code    db   7, ?,  7 dup('$')
@@ -47,8 +48,8 @@ TITLE "Bank Account Manager"
     
     ; Input of account details, used in login page
     input_text      db  "ENTER INPUT$"
-    in_card_no      db  17, ?, 17 dup('$')
-    in_pin_code     db   7, ?,  7 dup('$')
+    in_card_no      db  17 dup(0)
+    in_pin_code     db   7 dup(0)
 
     menu_frm_text   db  "Withdraw$", "Deposit$", "Balance$", "Reset PIN$", "Log Out$", "Details$"
     menu_hdr        db  201d, 15 dup(205d), 187d, '$'
@@ -97,11 +98,11 @@ main PROC
                     load_account   fname
                     call           pg_login
                     ; evaluate if the input is valid
-                    ; pin-code not empty
-                    cmp            in_pin_code[2], '$'
-                    je             login_error
                     ; card_no not empty
-                    cmp            in_card_no[2], '$'
+                    cmp            in_card_no[0], '$'
+                    je             login_error
+                    ; pin-code not empty
+                    cmp            in_pin_code[0], '$'
                     je             login_error
                     ; validate acccount
                     call           validate_acct
