@@ -106,7 +106,7 @@ alert MACRO c, r, msg
             xor            al, al
             xor            cx, cx 
             mov            dx, 184fh
-            mov            bh, B4h      
+            mov            bh, 00B4h      
             mov            ah, 06h
             int            10h
             mov           ah, r
