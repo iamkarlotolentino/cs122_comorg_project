@@ -5,13 +5,14 @@
 ; OF is 1 if negative value
 withdrawable MACRO amount, balance
             LOCAL wbl_next
+            cld
             ; setup the loop
             mov           cx, 12d
             mov           bx, 11d
 wbl_next:
             ; subtract digit
             mov           al, balance[bx]
-            sbb           al, amount[bx+2]
+            sbb           al, amount[bx]
             aas
             ; store result
             mov           _comp[bx], al
@@ -25,19 +26,19 @@ withdrawable ENDM
 ; Overflow flag is 1 if more than length
 depositable MACRO amount, balance
             LOCAL dbl_next
+            cld
             ; setup the loop
             mov           cx, 12d
             mov           bx, 11d
 dbl_next:
             ; subtract digit
             mov           al, balance[bx]
-            adc           al, amount[bx+2]
+            adc           al, amount[bx]
             aaa
             ; store result
             mov           _comp[bx], al
             dec           bx
             loop          dbl_next
-            adc           _comp[bx], 0
 depositable ENDM
 
 ; ---

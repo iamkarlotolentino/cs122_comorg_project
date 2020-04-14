@@ -4,10 +4,10 @@ validate_acct PROC
                     ; AH={1} if valid or {0} when not
                     set_videopage  7
                     ; validate if input is a series of digit
-                    validate       [in_card_no], 16d
+                    validate       [in_card_no]
                     cmp            al, 1
                     jne            str_invalid
-                    validate       [in_pin_code], 06d
+                    validate       [in_pin_code]
                     cmp            al, 1
                     jne            str_invalid
                     ; compare card_no

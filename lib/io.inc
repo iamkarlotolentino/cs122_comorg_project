@@ -21,10 +21,12 @@ reads MACRO buffer, len
             int           10h
             ; read string, char by char
             ; setup the loop
+            popa
             xor           cx, cx
             xor           bx, bx
             mov           cx, len
             mov           bx, 0
+            pusha
 rd_read:
             ; read character
             mov           ah, 1
@@ -42,6 +44,7 @@ rd_read:
             jmp           rd_cont
 rd_back:
             ; recover the lost count
+            dec           bx
             add           cx, 0002h
             loop          rd_read
 rd_cont:
@@ -114,24 +117,78 @@ printr ENDM
 ; ---
 ; Validates input if it is a series of digit numbers.
 ; [output]
-; al=1 if account is valid
-; al=0 if account is not valid
-validate MACRO input, count
-            LOCAL vdt_loop, vdt_error, vdt_exit
-            xor           cx, cx
-            mov           cl, count
-            xor           bx, bx
-            mov           bl, count-1
+; al=1 if input is valid
+; al=0 if input is not valid
+validate MACRO input
+            LOCAL vdt_loop, vdt_good, vdt_error, vdt_exit
+            mov           bx, 0000h
 vdt_loop:
+            ; check if not yet end of string
+            cmp           input[bx], '$'
+            je            vdt_good
+            ; check if digit
             cmp           input[bx], 0030h
             jl            vdt_error
             cmp           input[bx], 0039h
             jg            vdt_error
-            dec           bx
-            loop          vdt_loop
+            inc           bx
+            jmp           vdt_loop
+vdt_good:
             mov           al, 1
             jmp           vdt_exit
 vdt_error:
             mov           al, 0
 vdt_exit:
 validate ENDM
+
+; ---
+; Cleans the _input by shifting all digits to the right
+clean_input MACRO strlen
+            LOCAL         cln_len, cln_set, cln_g, cln_h, cln_exit
+            ; get string length
+            lea           si, _input-1
+            mov           bx, -1h
+cln_len:
+            inc           bx
+            inc           si
+            cmp           [si], '$'
+            jne           cln_len
+            ;bx=input length
+            ; if complete then no need
+            cmp           bx, strlen
+            je            cln_exit
+            ; to retain for another loop
+            push          bx
+            ; if not complete then set blanks to '0'
+            ; setup the loop
+            xor           cx, cx
+            mov           cx, strlen
+            ; points to start
+            mov           si, offset _input
+            ; points to last
+            mov           di, offset _input
+            add           di, strlen
+cln_set:
+            ; transfer the data to correct position
+            ; decrease bx
+            cmp           bx, 0
+            je            cln_g
+            ; handling input first
+            sub           di, bx
+            mov           al, [si]
+            mov           [di], al
+            add           di, bx
+            inc           si
+            dec           bx
+            loop          cln_set
+cln_g:
+            pop           bx
+            sub           di, bx
+            dec           di
+cln_h:
+            ; handling zeros
+            mov           [di], '0'
+            dec           di
+            loop          cln_h
+cln_exit:
+clean_input ENDM
