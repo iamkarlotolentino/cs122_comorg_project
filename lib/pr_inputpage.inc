@@ -35,7 +35,7 @@ pg_input PROC
 
                     ; preserve the no. of input {al}
                     push           ax
-                    ; 19d is the center, 2d for the [ ] symbol
+                    ; 36d is the center, 2d for the [ ] symbol
                     sub            al, 38d
                     neg            al
                     ; divide by 2
@@ -59,12 +59,14 @@ pg_input PROC
 
                     sub            ah, al
                     cursor_at      11, ah, 2
-                    reads          _input
+
+                    mov            _input[12], al
+                    reads          _input, w.[_input[12]]
 
                     ; validate if input is valid
                     validate       _input, _input[1]
                     cmp            al, 1
-                    jne            inp_blank
+                    jne            inp_invalid
 
                     ; please wait
                     set_videopage  7
@@ -77,6 +79,10 @@ pg_input PROC
                     ret
     inp_blank:
                     alert          11, 13, err_blank
+                    call           delay
+                    ret
+    inp_invalid:
+                    alert          10, 13, err_invalid
                     call           delay
                     ret
 pg_input ENDP

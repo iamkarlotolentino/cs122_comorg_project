@@ -5,6 +5,7 @@
 ; 4. to ascii PROC
 ; 5. clear screen MACRO
 ; 6. set video page MACRO
+; 7. alert MACRO
 
 ; ---
 ; Creates one second delay of the program
@@ -95,3 +96,13 @@ set_videopage MACRO pageno
             ; update tracker to current page
             mov           pgf__current, pageno
 set_videopage ENDM
+
+; ---
+; Prints message treated as an alert
+alert MACRO c, r, msg
+            set_videopage 6
+            clear_screen
+            mov           ah, r
+            mov           al, c
+            prints        ah, al, 6, msg
+alert ENDM
