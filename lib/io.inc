@@ -44,6 +44,7 @@ rd_read:
             jmp           rd_cont
 rd_back:
             ; recover the lost count
+            dec           bx
             add           cx, 0002h
             loop          rd_read
 rd_cont:

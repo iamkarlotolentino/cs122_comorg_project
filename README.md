@@ -29,15 +29,6 @@ Each data is separated by `new line`.
 - 6 digits for Pin code
 - 12 digits for Balance
 
-#### To-Do List:
-
-- [x] Implementation of pages for each views (login, input, etc.).
-- [x] Working on file write
-- [x] Working on balance deduction
-- [x] Working on withdraw
-- [ ] Working on deposit
-- [ ] Working on details
-
 #### About
 
 Started working on this project under the Enhance Community Quarantine caused by COVID-19. 

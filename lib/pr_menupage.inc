@@ -77,16 +77,12 @@ pg_menu PROC
                     ; show please wait
                     set_videopage  7
                     withdrawable   _input, ff_balance
-                    jc             wdraw_neg
+                    jc             trans_error
                     set_balance    _comp
                     ; success message appears
                     alert          15, 10, msg_success
                     ; ENDPRC
                     ; go back to menu
-                    jmp            render_loop
-    wdraw_neg:
-                    alert          9, 10, err_invalid
-                    call           delay
                     jmp            render_loop
     btn_balance:
                     cmp            dx, 0060h
@@ -123,7 +119,7 @@ pg_menu PROC
                     set_videopage  7
                     ; checks if possible to deposit
                     depositable    _input, ff_balance
-                    jc             dsit_overflow
+                    jc             trans_error
                     ; set the new balance
                     set_balance    _comp
                     alert          15, 10, msg_success
@@ -132,11 +128,6 @@ pg_menu PROC
                     ; ENDPRC
                     ; go back to menu
                     jmp           render_loop
-    dsit_overflow:
-                    alert          9, 13, err_blank
-                    call           delay
-                    set_videopage  1
-                    jmp            render_loop
     btn_reset_pin:
                     cmp            dx, 0060h
                     jl             render_loop
@@ -155,5 +146,8 @@ pg_menu PROC
                     cmp            dx, 0087h
                     jg             render_loop
                     jmp            render_loop
-                    ret
+    trans_error:
+                    alert          9, 10, err_invalid
+                    call           delay
+                    jmp            render_loop
 pg_menu ENDP

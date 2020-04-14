@@ -83,6 +83,9 @@ main PROC
                     ; initialize all appropriate setup
                     mov            dx, @data
                     init_prog
+                    alert          1, 1, msg_wait
+                    mov ah, 1
+                    int
     load_pw:
                     ; load please wait
                     set_videopage  7
