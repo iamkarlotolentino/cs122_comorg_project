@@ -4,11 +4,6 @@ TITLE "Bank Account Manager"
 .MODEL small
 .STACK 125h
 .DATA
-    blnc_printer1   db  "-------- BANK ACCOUNT --------", "$"
-    blnc_printer2   db  0dh, 0ah, "Acc't No. : ", "$"
-    blnc_printer3   db  0dh, 0ah, "Balance   : ", "$"
-    blnc_printer4   db  "------------------------------", "$"
-
     ; Accounts flags and details
     ff_card_no      db  16 dup(0), '$'                ; card no from the account file
     ff_pin_code     db   7 dup(0), '$'                ; pin code from the account file
@@ -23,9 +18,9 @@ TITLE "Bank Account Manager"
     new_pin_code    db   7, ?,  7 dup('$')
     
     ; for reading input
-    _input          db  13, ?, 13 dup('$')
+    _input          db  12 dup(0), '$'
     ; temporary placement for computation
-    _comp           db  13 len dup(0)
+    _comp           db  12 dup(0), '$'
 
     ; [page flags] 1=loaded, 0=empty
     pgf_login       db 0

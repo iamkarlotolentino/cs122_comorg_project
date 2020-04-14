@@ -73,6 +73,7 @@ pg_menu PROC
                     ; PROCESS: withdraw
                     mov            al, 0Ch        ; 0Ch=12d
                     call           pg_input
+                    clean_input    12d
                     ; show please wait
                     set_videopage  7
                     withdrawable   _input, ff_balance
@@ -84,7 +85,7 @@ pg_menu PROC
                     ; go back to menu
                     jmp            render_loop
     wdraw_neg:
-                    alert          9, 13, err_blank
+                    alert          9, 10, err_invalid
                     call           delay
                     jmp            render_loop
     btn_balance:
@@ -117,11 +118,16 @@ pg_menu PROC
                     ; PROCESS: deposit
                     mov            al, 0Ch
                     call           pg_input
+                    clean_input    12d
+                    ; show please wait
                     set_videopage  7
+                    ; checks if possible to deposit
                     depositable    _input, ff_balance
-                    jo             dsit_overflow
+                    jc             dsit_overflow
+                    ; set the new balance
                     set_balance    _comp
                     alert          15, 10, msg_success
+                    ; show menu page
                     set_videopage  1
                     ; ENDPRC
                     ; go back to menu

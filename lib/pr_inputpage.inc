@@ -31,7 +31,7 @@ pg_input PROC
                     popa
 
                     ; limit the no. of input
-                    mov            _input[1], al
+                    mov            _input[0], al
 
                     ; preserve the no. of input {al}
                     push           ax
@@ -60,18 +60,19 @@ pg_input PROC
                     sub            ah, al
                     cursor_at      11, ah, 2
 
-                    mov            _input[12], al
-                    reads          _input, w.[_input[12]]
+                    mov            ah, 0
+                    mov            al, _input[0]
+                    reads          _input, ax
 
                     ; validate if input is valid
-                    validate       _input, _input[1]
+                    validate       _input
                     cmp            al, 1
                     jne            inp_invalid
 
                     ; please wait
                     set_videopage  7
                     ; should not be empty
-                    cmp            _input[2], '$'
+                    cmp            _input[0], '$'
                     je             inp_blank
                     ; clears input in video page
                     printr         11, 0, 2, ' ', 39
