@@ -21,7 +21,8 @@ validate_acct PROC
                     repe cmpsb
                     jne            str_notequal
                     ; compare pin_code
-                    lea            si, fbuffer[18]
+                    ; pin_code data is in the next 2 bytes
+                    add            si, 2d
                     lea            di, [in_pin_code]
                     mov            cx, 0006h
                     mov            al, [si]
