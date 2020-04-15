@@ -1,3 +1,4 @@
+; This source file contains the view page for login.
 
 pg_login PROC
                     set_videopage  0

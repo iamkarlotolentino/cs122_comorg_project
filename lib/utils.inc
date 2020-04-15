@@ -1,4 +1,4 @@
-; This source file contains the following PROC:
+; This source file contains the following:
 ; 1. delay PROC
 ; 2. get mouse position PROC
 ; 3. get time PROC

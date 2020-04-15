@@ -1,3 +1,11 @@
+; This source file contains the following:
+; 1. cursor at MACRO
+; 2. reads MACRO
+; 3. prints MACRO 
+; 4. printc MACRO
+; 5. printr MACRO
+; 6. validate MACRO
+; 7. clean input MACRO
 
 ; ---
 ; Changes the cursor position

@@ -1,3 +1,8 @@
+; This source file contains the following:
+; 1. withdrawable MACRO
+; 2. depositable MACRO
+; 3. set balance MACRO
+; 4. update pin MACRO
 
 ; ---
 ; Raises flag to evaluate if withdraw is possible

@@ -1,3 +1,5 @@
+; This source file contains code instruction for reading file.
+; This file contains the credentials of the person's account.
 
 load_account MACRO filename
                     ; load account details

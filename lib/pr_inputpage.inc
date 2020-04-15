@@ -1,3 +1,4 @@
+; This source file contains a page view where it reads input from user at maximum of 12 digits.
 
 ;-------------------- INPUT PAGE PROC -----------------------;
 ; [input]

@@ -1,3 +1,6 @@
+; This source file is a page view where it contains special menus that
+; is accessed after login.
+
 
 pg_menu PROC
     menu_start:
