@@ -26,8 +26,8 @@ load_account MACRO filename
                     rep
                     movsb
                     ; close file
-                    mov            ah, 3Eh
                     mov            bx, fhandle   
+                    mov            ah, 3Eh
                     jmp            lct_continue
     fileerr:
                     prints         0, 0, 0, err_file404

@@ -101,7 +101,7 @@ set_videopage ENDM
 ; Prints message treated as an alert
 alert MACRO c, r, msg
             set_videopage 6
-            
+            prints        ah, al, 6, msg
             ; clear_screen (new color)
             xor            al, al
             xor            cx, cx 
@@ -111,5 +111,4 @@ alert MACRO c, r, msg
             int            10h
             mov           ah, r
             mov           al, c
-            prints        ah, al, 6, msg
 alert ENDM
