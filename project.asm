@@ -5,8 +5,6 @@ TITLE "Bank Account Manager"
 .STACK 125h
 .DATA
     ; Accounts flags and details
-    ff_card_no      db  16 dup(0), '$'                ; card no from the account file
-    ff_pin_code     db   7 dup(0), '$'                ; pin code from the account file
     ff_balance      db  12 dup(0), '$'                ; balance from the account file
     
     ; File handling of the account file
