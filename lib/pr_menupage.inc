@@ -1,3 +1,6 @@
+; This source file is a page view where it contains special menus that
+; is accessed after login.
+
 
 pg_menu PROC
     menu_start:
@@ -79,7 +82,6 @@ pg_menu PROC
                     withdrawable   _input, ff_balance
                     jc             trans_error
                     set_balance    _comp
-                    ; success message appears
                     alert          15, 10, msg_success
                     ; ENDPRC
                     ; go back to menu
@@ -123,21 +125,30 @@ pg_menu PROC
                     ; set the new balance
                     set_balance    _comp
                     alert          15, 10, msg_success
-                    ; show menu page
-                    set_videopage  1
                     ; ENDPRC
                     ; go back to menu
-                    jmp           render_loop
+                    jmp            render_loop
     btn_reset_pin:
                     cmp            dx, 0060h
                     jl             render_loop
                     cmp            dx, 0067h
                     jg             btn_details
                     ; PROCESS: reset pin
+                    ; get the new pin
                     mov            al, 06h
                     call           pg_input
+                    ; check if exact 6 digits
+                    ; setup string counting
+                    mov            bx, 0000h
+    rsp_str:
+                    inc            bx
+                    cmp            _input[bx], '$'
+                    jne            rsp_str
+                    ; should be 6 digits
+                    cmp            bx, 0006d
+                    jne            trans_error
                     update_pin     _input
-                    ; TODO
+                    alert          15, 10, msg_success
                     ; ENDPRC
                     jmp            menu_start
     btn_details:

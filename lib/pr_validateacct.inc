@@ -11,7 +11,7 @@ validate_acct PROC
                     cmp            al, 1
                     jne            str_invalid
                     ; compare card_no
-                    lea            si, ff_card_no
+                    lea            si, fbuffer
                     lea            di, [in_card_no]
                     mov            cx, 0010h
                     mov            al, [si]
@@ -21,7 +21,8 @@ validate_acct PROC
                     repe cmpsb
                     jne            str_notequal
                     ; compare pin_code
-                    lea            si, ff_pin_code
+                    ; pin_code data is in the next 2 bytes
+                    add            si, 2d
                     lea            di, [in_pin_code]
                     mov            cx, 0006h
                     mov            al, [si]

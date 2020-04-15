@@ -1,3 +1,8 @@
+; This source file contains the following:
+; 1. withdrawable MACRO
+; 2. depositable MACRO
+; 3. set balance MACRO
+; 4. update pin MACRO
 
 ; ---
 ; Raises flag to evaluate if withdraw is possible
@@ -78,8 +83,9 @@ set_balance ENDM
 update_pin MACRO new_pin
             LOCAL         upi_loop
             ; update fbuffer before writing to file
-            lea           si, new_pin[2]
-            lea           di, fbuffer[18]
+            lea           si, new_pin
+            lea           di, fbuffer
+            add           di, 18d
             xor           cx, cx
             mov           cl, 06h
 upi_loop:

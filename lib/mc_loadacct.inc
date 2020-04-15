@@ -1,3 +1,5 @@
+; This source file contains code instruction for reading file.
+; This file contains the credentials of the person's account.
 
 load_account MACRO filename
                     ; load account details
@@ -16,25 +18,9 @@ load_account MACRO filename
                     mov            ah, 3Fh
                     int            21h
                     
-                    ; parse data
-                    ; first 16 bytes is acc't no.
-                    lea            si, [fbuffer-1]
-                    lea            di, ff_card_no
-                    mov            cx, 0010h
-                    inc            si
-                    cld
-                    rep
-                    movsb
-                    ; next 6 bytes is pin code
-                    inc            si
-                    lea            di, ff_pin_code
-                    mov            cx, 0006h
-                    inc            si
-                    cld
-                    rep
-                    movsb
-                    ; next 12 bytes is current balance
-                    inc            si
+                    ; parse current balance
+                    lea            si, fbuffer
+                    add            si, 25d             ; offset from card_no to balance
                     lea            di, ff_balance
                     mov            cx, 000Ch
                     inc            si
@@ -42,8 +28,8 @@ load_account MACRO filename
                     rep
                     movsb
                     ; close file
-                    mov            ah, 3Eh
                     mov            bx, fhandle   
+                    mov            ah, 3Eh
                     jmp            lct_continue
     fileerr:
                     prints         0, 0, 0, err_file404
