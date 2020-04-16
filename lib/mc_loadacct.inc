@@ -1,23 +1,22 @@
 ; This source file contains code instruction for reading file.
 ; This file contains the credentials of the person's account.
 
-load_account MACRO filename
+load_account MACRO
+     LOCAL fileerr, lct_continue
                     ; load account details
                     ; open file
                     mov            al, 02h
-                    mov            dx, offset filename
+                    mov            dx, offset fname
                     mov            ah, 3Dh
                     int            21h
                     jc             fileerr
                     mov            fhandle, ax
-                    
                     ; read file
                     mov            bx, fhandle
-                    mov            cx, 28h
+                    mov            cx, 26h
                     lea            dx, fbuffer
                     mov            ah, 3Fh
                     int            21h
-                    
                     ; parse current balance
                     lea            si, fbuffer
                     add            si, 25d             ; offset from card_no to balance
