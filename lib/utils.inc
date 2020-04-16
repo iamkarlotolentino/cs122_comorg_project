@@ -104,6 +104,7 @@ alert MACRO c, r, msg
             mov           ah, r
             mov           al, c
             prints        ah, al, 6, msg
+            call          delay
             ; clear_screen (new color)
             xor            al, al
             xor            cx, cx 
