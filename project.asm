@@ -2,7 +2,7 @@
 TITLE "Bank Account Manager"
 
 .MODEL small
-.STACK 125h
+.STACK 64h
 .DATA
     ; Strings are placed above, herein the constants
     menu_frm_text   db  "Withdraw$", "Deposit$", "Balance$", "Reset PIN$", "Log Out$", "Details$"
@@ -43,7 +43,7 @@ TITLE "Bank Account Manager"
     fname           db  "account.txt", 0
     fhandle         dw  ?
     ; All important account data are stored in this data
-    fbuffer         db  40 dup(?)
+    fbuffer         db  38 dup(?)
     
     ; Inputs for money are buffered in this data
     _input          db  12 dup(0), '$'

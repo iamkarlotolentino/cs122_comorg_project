@@ -2,7 +2,7 @@
 
 #### THIS PROJECT
 
-It is a working Automated Teller Machine designed for a simple demonstration on how assembly language is applied to create a menu-driven applications. This is a project requirement in our CS122 subject at Mariano Marcos State University.
+An automated teller machine mobile designed to imitate an industrial bank machine. This is a project requirement in our CS-122 course subject at Mariano Marcos State University. To demonstrate how we can create a menu-driven interface applications using vanilla assembly language (ASM). 
 
 #### Video Pages
 The application changes video page for faster view response. Refer in this list to identify which page is being displayed and has been dedicated to.
