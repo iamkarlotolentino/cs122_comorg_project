@@ -89,6 +89,7 @@ main PROC
                     ; initialize all appropriate setup
                     mov            dx, @data
                     init_prog
+                    load_account
     load_pw:
                     ; load please wait
                     set_videopage  7
@@ -96,7 +97,6 @@ main PROC
                     prints         11, 15, 7, msg_wait
                     mov            pgf_wait, 1
     login:
-                    load_account   fname
                     call           pg_login
                     ; evaluate if the input is valid
                     ; card_no not empty
@@ -105,23 +105,23 @@ main PROC
                     ; pin-code not empty
                     cmp            in_pin_code[0], '$'
                     je             login_error
-                    ; validate acccount
-                    call           validate_acct
+                    ; process account
+                    set_videopage  7
+                    validate_account
+                    ; checks flag if account valid
                     cmp            ah, 1
                     jne            login
-                    set_videopage  7
     clear_input:    
                     ; removing input text in login page
                     printr         9,  16, 0, ' ', 16
                     printr         11, 16, 0, ' ', 6
                     jmp            continue
-    login_error:
-                    alert          9, 13, err_blank
-                    call           delay
-                    jmp            login
     continue:
                     call           pg_menu
                     ; expected logout has been called
+                    jmp            login
+    login_error:
+                    alert          9, 13, err_blank
                     jmp            login
 main ENDP
 END main
