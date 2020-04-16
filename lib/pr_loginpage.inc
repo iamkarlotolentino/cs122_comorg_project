@@ -70,40 +70,40 @@ pg_login PROC
                     
                     ; form-selected detection
                     cmp            cx, 0080h
-                    jnge           menu_selection
+                    jl             menu_selection
                     cmp            cx, 0126H
-                    jnle           menu_selection
+                    jg             menu_selection
     card_no:
-                    cmp            dx, 0050h
-                    jnle           pin_code
                     cmp            dx, 0048h
-                    jnge           menu_selection
+                    jl             menu_selection
+                    cmp            dx, 0050h
+                    jg             pin_code
                     cursor_at      9, 16, 0
                     reads          in_card_no, 16
     pin_code:
-                    cmp            dx, 005Eh
-                    jnle           menu_selection
                     cmp            dx, 0059h
-                    jnge           menu_selection
+                    jl             menu_selection
+                    cmp            dx, 005Eh
+                    jg             menu_selection
                     cursor_at      11, 16, 0
                     reads          in_pin_code, 6
                     ; ok&cancel menu detection 
     menu_selection:
                     cmp            dx, 006Eh
-                    jnge           keep_listening
+                    jl             keep_listening
                     cmp            dx, 0075h
-                    jnle           keep_listening
+                    jg             keep_listening
     cancel_button:
                     cmp            cx, 0090h
-                    jnge           ok_button
+                    jl             ok_button
                     cmp            cx, 00DFh
-                    jnle           keep_listening
+                    jg             keep_listening
                     call           sys_exit
     ok_button:
                     cmp            cx, 0030h
-                    jnge           keep_listening
+                    jl             keep_listening
                     cmp            cx, 005Fh
-                    jnle           keep_listening
+                    jg             keep_listening
                     ; returns to check credibility
                     ret
 pg_login ENDP
