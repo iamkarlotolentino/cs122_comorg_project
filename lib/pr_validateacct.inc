@@ -1,8 +1,8 @@
 
-validate_acct PROC
+validate_account MACRO
+     LOCAL str_notequal, str_invalid
                     ; output:
                     ; AH={1} if valid or {0} when not
-                    set_videopage  7
                     ; validate if input is a series of digit
                     validate       [in_card_no]
                     cmp            al, 1
@@ -31,19 +31,14 @@ validate_acct PROC
                     jne            str_notequal
                     repe cmpsb
                     jne            str_notequal
-                    set_videopage  0
                     mov            ah, 1
-                    ret
+                    jmp            str_exit
     str_notequal:
                     alert          10, 10, err_incorrect
-                    call           delay
-                    set_videopage  0
                     mov            ah, 0
-                    ret
+                    jmp            str_exit
     str_invalid:
                     alert          10, 10, err_invalid
-                    call           delay
-                    set_videopage  0
                     mov            ah, 0
-                    ret
-validate_acct ENDP
+     str_exit:
+validate_account ENDM
