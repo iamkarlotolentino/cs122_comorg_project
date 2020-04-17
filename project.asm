@@ -25,7 +25,7 @@ TITLE "Bank Account Manager"
     time            db  "Time:$"
     timestamp       db  "00:00:00$"
 
-    login_accnt     db  "Welcome, JC!$"
+    login_accnt     db  "Welcome!$"
     login_desc      db  "Your personal bank acc't manager$"
     login_frm_text  db  "CARD NO.$", "PIN CODE$" 
     login_frm_sel   db  "[ OK ]$", "[ CANCEL ]$"
@@ -42,8 +42,10 @@ TITLE "Bank Account Manager"
     ; File handling of the account file
     fname           db  "account.txt", 0
     fhandle         dw  ?
+    faccountn       dw  -40d
     ; All important account data are stored in this data
-    fbuffer         db  38 dup(?)
+    ; NOTE: Additional 2 bytes to detect the EOF.
+    fbuffer         db  40 dup(?)
     
     ; Inputs for money are buffered in this data
     _input          db  12 dup(0), '$'
@@ -89,7 +91,6 @@ main PROC
                     ; initialize all appropriate setup
                     mov            dx, @data
                     init_prog
-                    load_account
     load_pw:
                     ; load please wait
                     set_videopage  7
@@ -107,11 +108,28 @@ main PROC
                     je             login_error
                     ; process account
                     set_videopage  7
+                    open_file
+    verify:
+                    add            faccountn, 40d
+                    load_account
+                    ; if all accounts are retrieved from the database
+                    pop            ax
+                    cmp            ax, 0000h
+                    je             no_match
                     validate_account
-                    ; checks flag if account valid
+                    ; ah = 1 if account is valid
                     cmp            ah, 1
-                    jne            login
+                    je             clear_input
+                    ; if all accounts are verified from the database
+                    pop            ax
+                    cmp            ax, 28h
+                    je             verify
+    no_match:
+                    ; if no accounts matches the database
+                    alert          10, 10, err_incorrect
+                    jmp            login
     clear_input:    
+                    close_file
                     ; removing input text in login page
                     printr         9,  16, 0, ' ', 16
                     printr         11, 16, 0, ' ', 6

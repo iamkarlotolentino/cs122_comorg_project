@@ -159,6 +159,5 @@ pg_menu PROC
                     jmp            render_loop
     trans_error:
                     alert          9, 10, err_invalid
-                    call           delay
                     jmp            render_loop
 pg_menu ENDP

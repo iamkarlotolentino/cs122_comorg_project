@@ -1,6 +1,6 @@
 
 validate_account MACRO
-     LOCAL str_notequal, str_invalid
+     LOCAL str_invalid, str_notequal
                     ; output:
                     ; AH={1} if valid or {0} when not
                     ; validate if input is a series of digit
@@ -33,12 +33,11 @@ validate_account MACRO
                     jne            str_notequal
                     mov            ah, 1
                     jmp            str_exit
-    str_notequal:
-                    alert          10, 10, err_incorrect
+     str_invalid:
+                    alert          10, 10, err_invalid
                     mov            ah, 0
                     jmp            str_exit
-    str_invalid:
-                    alert          10, 10, err_invalid
+     str_notequal:
                     mov            ah, 0
      str_exit:
 validate_account ENDM

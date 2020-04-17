@@ -59,14 +59,14 @@ upb_next:
             mov           al, new_balance[bx]
             mov           ff_balance[bx], al
             ; update fbuffer before writing to file
-            mov           fbuffer[bx+25], al
+            mov           fbuffer[bx+26], al
             dec           bx
             loop          upb_next
             ; update balance in account database
             ; seek file position (go to start of file)
             mov           bx, fhandle
             mov           cx, 0000h
-            mov           dx, 0000h
+            mov           dx, faccountn
             mov           al, 00h
             mov           ah, 42h
             int           21h
@@ -97,7 +97,7 @@ upi_loop:
             ; seek file position (goto to start of file)
             mov           bx, fhandle
             mov           cx, 0000h
-            mov           dx, 0000h
+            mov           dx, faccountn
             mov           al, 00h
             mov           ah, 42h
             int           21h
