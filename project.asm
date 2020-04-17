@@ -106,26 +106,29 @@ main PROC
                     ; pin-code not empty
                     cmp            in_pin_code[0], '$'
                     je             login_error
-                    ; process account
+                    ; PROCESS login
                     set_videopage  7
+                    ; open file, or reset if not first call
                     open_file
     verify:
                     add            faccountn, 40d
                     load_account
-                    ; if all accounts are retrieved from the database
+                    ; all accounts are checked (end of file)
                     pop            ax
                     cmp            ax, 0000h
                     je             no_match
+                    ; verify account from buffered data
                     validate_account
                     ; ah = 1 if account is valid
                     cmp            ah, 1
                     je             clear_input
-                    ; if all accounts are verified from the database
+                    ; more accounts to check
                     pop            ax
                     cmp            ax, 28h
                     je             verify
+                    ; ENDPRC
     no_match:
-                    ; if no accounts matches the database
+                    ; no account matches
                     alert          10, 10, err_incorrect
                     jmp            login
     clear_input:    
