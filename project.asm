@@ -2,7 +2,7 @@
 TITLE "Bank Account Manager"
 
 .MODEL small
-.STACK 125h
+.STACK 64h
 .DATA
     ; Strings are placed above, herein the constants
     menu_frm_text   db  "Withdraw$", "Deposit$", "Balance$", "Reset PIN$", "Log Out$", "Details$"
@@ -25,7 +25,7 @@ TITLE "Bank Account Manager"
     time            db  "Time:$"
     timestamp       db  "00:00:00$"
 
-    login_accnt     db  "Welcome, JC!$"
+    login_accnt     db  "Welcome!$"
     login_desc      db  "Your personal bank acc't manager$"
     login_frm_text  db  "CARD NO.$", "PIN CODE$" 
     login_frm_sel   db  "[ OK ]$", "[ CANCEL ]$"
@@ -42,7 +42,9 @@ TITLE "Bank Account Manager"
     ; File handling of the account file
     fname           db  "account.txt", 0
     fhandle         dw  ?
+    faccountn       dw  -40d
     ; All important account data are stored in this data
+    ; NOTE: Additional 2 bytes to detect the EOF.
     fbuffer         db  40 dup(?)
     
     ; Inputs for money are buffered in this data
@@ -96,7 +98,6 @@ main PROC
                     prints         11, 15, 7, msg_wait
                     mov            pgf_wait, 1
     login:
-                    load_account   fname
                     call           pg_login
                     ; evaluate if the input is valid
                     ; card_no not empty
@@ -105,23 +106,40 @@ main PROC
                     ; pin-code not empty
                     cmp            in_pin_code[0], '$'
                     je             login_error
-                    ; validate acccount
-                    call           validate_acct
-                    cmp            ah, 1
-                    jne            login
+                    ; process account
                     set_videopage  7
+                    open_file
+    verify:
+                    add            faccountn, 40d
+                    load_account
+                    ; if all accounts are retrieved from the database
+                    pop            ax
+                    cmp            ax, 0000h
+                    je             no_match
+                    validate_account
+                    ; ah = 1 if account is valid
+                    cmp            ah, 1
+                    je             clear_input
+                    ; if all accounts are verified from the database
+                    pop            ax
+                    cmp            ax, 28h
+                    je             verify
+    no_match:
+                    ; if no accounts matches the database
+                    alert          10, 10, err_incorrect
+                    jmp            login
     clear_input:    
+                    close_file
                     ; removing input text in login page
                     printr         9,  16, 0, ' ', 16
                     printr         11, 16, 0, ' ', 6
                     jmp            continue
-    login_error:
-                    alert          9, 13, err_blank
-                    call           delay
-                    jmp            login
     continue:
                     call           pg_menu
                     ; expected logout has been called
+                    jmp            login
+    login_error:
+                    alert          9, 13, err_blank
                     jmp            login
 main ENDP
 END main

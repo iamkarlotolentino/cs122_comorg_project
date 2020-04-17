@@ -7,7 +7,7 @@
 ; ---
 ; Raises flag to evaluate if withdraw is possible
 ; [output]
-; OF is 1 if negative value
+; CF = 1 if negative value
 withdrawable MACRO amount, balance
             LOCAL wbl_next
             cld
@@ -28,7 +28,7 @@ withdrawable ENDM
 ; ---
 ; Raises flag to evaluate if deposit is possible
 ; [output]
-; Overflow flag is 1 if more than length
+; CF = 1 if amount overflows
 depositable MACRO amount, balance
             LOCAL dbl_next
             cld
@@ -59,14 +59,14 @@ upb_next:
             mov           al, new_balance[bx]
             mov           ff_balance[bx], al
             ; update fbuffer before writing to file
-            mov           fbuffer[bx+25], al
+            mov           fbuffer[bx+26], al
             dec           bx
             loop          upb_next
             ; update balance in account database
-            ; seek file position
+            ; seek file position (go to start of file)
             mov           bx, fhandle
             mov           cx, 0000h
-            mov           dx, 0000h
+            mov           dx, faccountn
             mov           al, 00h
             mov           ah, 42h
             int           21h
@@ -94,10 +94,10 @@ upi_loop:
             inc           si
             inc           di
             loop          upi_loop
-            ; seek file position
+            ; seek file position (goto to start of file)
             mov           bx, fhandle
             mov           cx, 0000h
-            mov           dx, 0000h
+            mov           dx, faccountn
             mov           al, 00h
             mov           ah, 42h
             int           21h

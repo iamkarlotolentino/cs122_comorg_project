@@ -81,10 +81,8 @@ pg_input PROC
                     ret
     inp_blank:
                     alert          11, 13, err_blank
-                    call           delay
                     ret
     inp_invalid:
                     alert          10, 13, err_invalid
-                    call           delay
                     ret
 pg_input ENDP
