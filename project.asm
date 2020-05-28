@@ -5,12 +5,12 @@ TITLE "Bank Account Manager"
 .STACK 64h
 .DATA
     ; Strings are placed above, herein the constants
-    menu_frm_text   db  "Withdraw$", "Deposit$", "Balance$", "Reset PIN$", "Log Out$", "Details$"
+    menu_frm_text   db  "Withdraw$", "Deposit$", "Balance$", "Reset PIN$", "Log Out$", "--$"
     menu_hdr        db  201d, 15 dup(205d), 187d, '$'
     menu_frm_ftr    db  200d, 15 dup(205d), 188d, '$'
 
     blnc_text       db  "Your balance is$"
-    blnc_frm_sel    db  "[ BACK ]$", "[ PRINT BALANCE ]$"
+    blnc_frm_sel    db  "[ BACK ]$"
     
     err_blank       db  "Input cannot be blank$"
     err_incorrect   db  "Incorrect! Try again.$"
@@ -110,9 +110,11 @@ main PROC
                     set_videopage  7
                     ; open file, or reset if not first call
                     open_file
-    verify:
+    verify:         
+                    ; offset to next account
                     add            faccountn, 40d
                     load_account
+                    ; PROCESS evaluation
                     ; all accounts are checked (end of file)
                     pop            ax
                     cmp            ax, 0000h
@@ -136,8 +138,7 @@ main PROC
                     ; removing input text in login page
                     printr         9,  16, 0, ' ', 16
                     printr         11, 16, 0, ' ', 6
-                    jmp            continue
-    continue:
+                    
                     call           pg_menu
                     ; expected logout has been called
                     jmp            login

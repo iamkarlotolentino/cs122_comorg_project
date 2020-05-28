@@ -40,7 +40,7 @@ pg_menu PROC
                     ; log-out text
                     prints         16,  7, 1, menu_frm_text[35]
                     ; details text
-                    prints         16, 25, 1, menu_frm_text[43]
+                    prints         16, 27, 1, menu_frm_text[43]
     
                     ; prints time (text) 
                     prints         4, 2, 1, time
@@ -132,7 +132,7 @@ pg_menu PROC
                     cmp            dx, 0060h
                     jl             render_loop
                     cmp            dx, 0067h
-                    jg             btn_details
+                    jg             render_loop
                     ; PROCESS: reset pin
                     ; get the new pin
                     mov            al, 06h
@@ -151,13 +151,10 @@ pg_menu PROC
                     alert          15, 10, msg_success
                     ; ENDPRC
                     jmp            menu_start
-    btn_details:
-                    cmp            dx, 0080h
-                    jl             render_loop
-                    cmp            dx, 0087h
-                    jg             render_loop
+
+                    ; return to mouse listen
                     jmp            render_loop
     trans_error:
-                    alert          9, 10, err_invalid
+                    alert          11, 13, err_invalid
                     jmp            render_loop
 pg_menu ENDP

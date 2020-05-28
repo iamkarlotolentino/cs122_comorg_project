@@ -76,7 +76,7 @@ prints MACRO row, col, page, msg
             mov           ah, 2
             int           10h
             ; prints string
-            mov           dx, offset msg
+            lea           dx, msg
             mov           ah, 9
             int           21h
             popa
@@ -151,6 +151,7 @@ validate ENDM
 
 ; ---
 ; Cleans the _input by shifting all digits to the right
+; e.g _input= 12$0000 becomes 000012$
 clean_input MACRO strlen
             LOCAL         cln_len, cln_set, cln_g, cln_h, cln_exit
             ; get string length

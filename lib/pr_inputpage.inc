@@ -83,6 +83,6 @@ pg_input PROC
                     alert          11, 13, err_blank
                     ret
     inp_invalid:
-                    alert          10, 13, err_invalid
+                    alert          11, 13, err_invalid
                     ret
 pg_input ENDP

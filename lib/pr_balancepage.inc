@@ -9,7 +9,6 @@ pg_balance PROC
                     printr         9, 7, 4, 205d, 15
                     printc         10, 7, 4, 'P'
                     printr         11, 7, 4, 205d, 15
-                    prints         13, 7, 4, blnc_frm_sel[9]
                     prints         18, 7, 4, blnc_frm_sel[0]
 
                     ; the page has been loaded
@@ -22,19 +21,8 @@ pg_balance PROC
                     call           whereis_mouse
                     cmp            bx, 1
                     jne            blnc_listen
-    blnc_btn:
-                    cmp            dx, 0068h
-                    jl             blnc_listen
-                    cmp            dx, 0070h
-                    jg             blnc_back
-                    cmp            cx, 0038h
-                    jl             blnc_listen
-                    cmp            cx, 00BEh
-                    jg             blnc_listen
-                    ; PRINT PROCESS
-                    ; ENDPRC
-                    jmp            blnc_listen
-    blnc_back:
+
+                    ; Go Back
                     cmp            dx, 0090h
                     jl             blnc_listen
                     cmp            dx, 0098h
@@ -42,7 +30,7 @@ pg_balance PROC
                     cmp            cx, 0038h
                     jl             blnc_listen
                     cmp            cx, 0077h
-                    jg             blnc_btn
+                    jg             blnc_listen
                     ; BACK PROCESS
                     ret
                     ; ENDPRC
